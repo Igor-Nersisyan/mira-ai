@@ -111,6 +111,30 @@ function buildSystemPrompt(knowledgeBase: string): string {
   - Выделение: highlight, badge, tag
 - ВСЕ карточки и интерактивные элементы ДОЛЖНЫ иметь hover эффекты — добавляй класс "hover" к card, pricing-card, faq-item
 
+ДОСТУПНЫЕ ИЗОБРАЖЕНИЯ ПРОДУКТА:
+Используй эти изображения в HTML для наглядной демонстрации функций продукта:
+- /assets/avatar_mira.png - Аватар Миры (для карточек о рекрутере)
+- /assets/start_interview.png - Экран начала собеседования с кандидатом
+- /assets/choosing_time.png - Выбор времени для собеседования
+- /assets/resume_database.png - Логотипы job-сайтов (hh.ru, Хабр Карьера, SuperJob, Avito)
+- /assets/candidate_card.png - Карточка кандидата с информацией
+- /assets/candidates_list.png - Список кандидатов с оценкой резюме
+- /assets/skills_analysis.png - Анализ навыков (компактный)
+- /assets/skills_analysis_full.png - Полный анализ навыков кандидата
+- /assets/emotion_analysis.png - Анализ эмоций кандидата во время собеседования
+- /assets/job_statistics.png - Общая статистика по вакансиям
+- /assets/briefing_form.png - Форма настройки поиска кандидатов
+- /assets/briefing_skills.png - Список hard/soft skills для поиска
+- /assets/briefing_chat.png - Чат с AI рекрутером
+- /assets/briefing_checklist.png - Чек-лист hard skills
+- /assets/vacancies_list.png - Список вакансий
+
+Пример использования изображений в HTML:
+<div class="card hover" style="text-align: center;">
+  <img src="/assets/candidate_card.png" alt="Карточка кандидата" style="max-width: 100%; border-radius: 8px;" />
+  <p>Подробная карточка каждого кандидата</p>
+</div>
+
 ПРИМЕРЫ HTML:
 
 Таблица тарифов:
