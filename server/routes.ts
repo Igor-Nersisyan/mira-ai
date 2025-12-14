@@ -182,9 +182,9 @@ function buildHtmlSystemPrompt(): string {
 /assets/vacancies_list.png - список вакансий
 
 РАЗМЕРЫ ИЗОБРАЖЕНИЙ:
-- Аватар: max-width: 220px
-- Остальные: max-width: 680px (чтобы не были огромными на весь экран)
-- Всегда добавляй border-radius: 8px
+- Аватар: style="max-width: 220px; border-radius: 12px;"
+- Остальные: style="max-width: 680px; border-radius: 8px;"
+- НЕ используй width: 100% - это растягивает маленькие картинки!
 - Используй 1-2 изображения на экран
 
 КНОПКИ CTA:
@@ -239,11 +239,11 @@ function buildHtmlSystemPrompt(): string {
 Карточки с изображениями:
 <div class="grid-2">
   <div class="card hover">
-    <img src="/assets/candidate_card.png" alt="Карточка кандидата" style="max-width: 680px; width: 100%; border-radius: 8px;" />
+    <img src="/assets/candidate_card.png" alt="Карточка кандидата" style="max-width: 680px; border-radius: 8px;" />
     <h3>Подробная карточка каждого кандидата</h3>
   </div>
   <div class="card hover">
-    <img src="/assets/skills_analysis.png" alt="Анализ навыков" style="max-width: 680px; width: 100%; border-radius: 8px;" />
+    <img src="/assets/skills_analysis.png" alt="Анализ навыков" style="max-width: 680px; border-radius: 8px;" />
     <h3>Глубокий анализ навыков</h3>
   </div>
 </div>
