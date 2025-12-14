@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { chatRequestSchema, htmlRequestSchema, type Message } from "@shared/schema";
+import { chatRequestSchema, htmlRequestSchema, type AIResponse, type Message } from "@shared/schema";
 import fs from "fs";
 import path from "path";
 import multer from "multer";
@@ -131,45 +131,61 @@ function buildHtmlSystemPrompt(): string {
 На основе контекста разговора, сгенерируй ТОЛЬКО HTML код для визуальной панели справа.
 
 КОГДА ГЕНЕРИРОВАТЬ HTML:
-- Сменился контекст разговора
-- Пользователь задал вопрос, требующий визуализации
-- Нужно показать данные (тарифы, функции, процесс, сравнение)
+- Сменился контекст разговора на новую тему
+- Пользователь задал вопрос, требующий визуализации данных
+- Нужно показать конкретную информацию (тарифы, функции, процесс, сравнение)
 
 КОГДА ВЕРНУТЬ ПУСТОЙ ОТВЕТ:
 - Простой вопрос-ответ в рамках текущей темы
-- Уточняющий вопрос
+- Уточняющий вопрос без новой информации
 - Приветствие без запроса информации
+- Если уже был показан релевантный контент по этой теме
 
 ТРИГГЕРЫ ДЛЯ HTML:
 
 ВОПРОСЫ ПРО ХОЛОДНЫЙ ПОИСК / ПОИСК КАНДИДАТОВ:
-→ html с feature cards про холодный поиск + изображение /assets/resume_database.png
+→ html с feature cards про холодный поиск + изображение /assets/resume_database.png или /assets/candidates_list.png
 
 ВОПРОСЫ ПРО ВИДЕО-ИНТЕРВЬЮ / АВАТАРА:
-→ html с процессом видео-интервью + изображения /assets/start_interview.png, /assets/avatar_mira.png
+→ html с процессом видео-интервью + изображения /assets/start_interview.png (основное)
 
 ВОПРОСЫ ПРО ЦЕНУ / СТОИМОСТЬ:
-→ html с таблицей тарифов (pricing cards)
+→ html с таблицей тарифов (pricing cards) - БЕЗ ИЗОБРАЖЕНИЙ
 
 СРАВНЕНИЕ С ЧЕЛОВЕКОМ:
 → html со сравнительной таблицей AI vs Живой рекрутер
 
-ДОСТУПНЫЕ ИЗОБРАЖЕНИЯ:
-/assets/avatar_mira.png
-/assets/start_interview.png
-/assets/choosing_time.png
-/assets/resume_database.png
-/assets/candidate_card.png
-/assets/candidates_list.png
-/assets/skills_analysis.png
-/assets/skills_analysis_full.png
-/assets/emotion_analysis.png
-/assets/job_statistics.png
-/assets/briefing_form.png
-/assets/briefing_skills.png
-/assets/briefing_chat.png
-/assets/briefing_checklist.png
-/assets/vacancies_list.png
+АНАЛИЗ КАНДИДАТОВ:
+→ html с /assets/skills_analysis.png или /assets/candidate_card.png
+
+ПРАВИЛА ИСПОЛЬЗОВАНИЯ ИЗОБРАЖЕНИЙ:
+
+КРИТИЧЕСКИ ВАЖНО - АВАТАР MIRA (/assets/avatar_mira.png):
+- Используй ТОЛЬКО когда разговор идёт КОНКРЕТНО о видео-интервью или об AI-аватаре
+- НИКОГДА не используй аватар просто для украшения
+- Максимальный размер: style="max-width: 180px; border-radius: 12px;"
+- Предпочитай другие, более релевантные изображения
+
+ДРУГИЕ ИЗОБРАЖЕНИЯ (используй чаще):
+/assets/start_interview.png - начало интервью
+/assets/choosing_time.png - выбор времени
+/assets/resume_database.png - база резюме
+/assets/candidate_card.png - карточка кандидата
+/assets/candidates_list.png - список кандидатов
+/assets/skills_analysis.png - анализ навыков
+/assets/skills_analysis_full.png - полный анализ
+/assets/emotion_analysis.png - анализ эмоций
+/assets/job_statistics.png - статистика вакансии
+/assets/briefing_form.png - форма брифинга
+/assets/briefing_skills.png - навыки в брифинге
+/assets/briefing_chat.png - чат брифинга
+/assets/briefing_checklist.png - чеклист
+/assets/vacancies_list.png - список вакансий
+
+ПРАВИЛА ДЛЯ ВСЕХ ИЗОБРАЖЕНИЙ:
+- Максимальный размер: style="max-width: 280px; border-radius: 8px;"
+- Используй 1-2 изображения на экран, не больше
+- Выбирай изображения по релевантности к теме
 
 КЛАССЫ ДИЗАЙН-СИСТЕМЫ ДЛЯ HTML:
 - Сетки: grid-2, grid-3, grid-4
@@ -189,7 +205,7 @@ function buildHtmlSystemPrompt(): string {
 
 ПРИМЕРЫ HTML:
 
-Таблица тарифов:
+Таблица тарифов (БЕЗ изображений):
 <h2>Тарифы AIR Mira</h2>
 <div class="grid-3">
   <div class="pricing-card hover">
@@ -215,15 +231,15 @@ function buildHtmlSystemPrompt(): string {
   </div>
 </div>
 
-Карточки с изображениями:
+Карточки с изображениями (НЕ аватар):
 <div class="grid-2">
   <div class="card hover">
-    <img src="/assets/candidate_card.png" alt="Карточка кандидата" style="max-width: 100%; border-radius: 8px;" />
+    <img src="/assets/candidate_card.png" alt="Карточка кандидата" style="max-width: 280px; border-radius: 8px;" />
     <h3>Подробная карточка каждого кандидата</h3>
   </div>
   <div class="card hover">
-    <img src="/assets/emotion_analysis.png" alt="Анализ эмоций" style="max-width: 100%; border-radius: 8px;" />
-    <h3>Анализ эмоций во время интервью</h3>
+    <img src="/assets/skills_analysis.png" alt="Анализ навыков" style="max-width: 280px; border-radius: 8px;" />
+    <h3>Глубокий анализ навыков</h3>
   </div>
 </div>`;
 }

@@ -162,6 +162,7 @@ export default function Home() {
         };
         setMessages((prev) => [...prev, assistantMessage]);
         setStreamingMessage("");
+        setIsLoading(false);
 
         const context = allMessages
           .slice(-6)

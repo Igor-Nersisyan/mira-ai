@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, useRef, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 
@@ -17,23 +17,35 @@ export function DynamicContent({
 }: DynamicContentProps) {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [currentContent, setCurrentContent] = useState<string | null>(null);
+  const previousHtmlRef = useRef<string | null>(null);
+  const hasReceivedFirstChunk = streamingHtml.length > 0;
 
   useEffect(() => {
     if (!isStreaming && html !== currentContent) {
       setIsTransitioning(true);
       const timer = setTimeout(() => {
         setCurrentContent(html);
+        previousHtmlRef.current = html;
         setIsTransitioning(false);
       }, 150);
       return () => clearTimeout(timer);
     }
   }, [html, currentContent, isStreaming]);
 
-  const displayContent = isStreaming ? streamingHtml : currentContent;
+  let displayContent: string | null;
+  if (isStreaming) {
+    if (hasReceivedFirstChunk) {
+      displayContent = streamingHtml;
+    } else {
+      displayContent = previousHtmlRef.current || currentContent;
+    }
+  } else {
+    displayContent = currentContent;
+  }
 
   return (
     <div className="min-h-screen p-6 lg:p-8 xl:p-12">
-      {isStreaming && (
+      {isStreaming && hasReceivedFirstChunk && (
         <div className="flex items-center gap-2 mb-4 text-muted-foreground">
           <Loader2 className="w-4 h-4 animate-spin" />
           <span className="text-sm" data-testid="html-streaming-indicator">
