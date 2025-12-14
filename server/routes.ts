@@ -182,8 +182,9 @@ function buildHtmlSystemPrompt(): string {
 /assets/briefing_checklist.png - чеклист
 /assets/vacancies_list.png - список вакансий
 
-ПРАВИЛА ДЛЯ ВСЕХ ИЗОБРАЖЕНИЙ:
-- Максимальный размер: style="max-width: 280px; border-radius: 8px;"
+ПРАВИЛА ДЛЯ ОСТАЛЬНЫХ ИЗОБРАЖЕНИЙ (не аватар):
+- НЕ ограничивай размер - пусть занимают естественный размер
+- Просто добавляй border-radius: 8px; для скругления
 - Используй 1-2 изображения на экран, не больше
 - Выбирай изображения по релевантности к теме
 
@@ -234,11 +235,11 @@ function buildHtmlSystemPrompt(): string {
 Карточки с изображениями (НЕ аватар):
 <div class="grid-2">
   <div class="card hover">
-    <img src="/assets/candidate_card.png" alt="Карточка кандидата" style="max-width: 280px; border-radius: 8px;" />
+    <img src="/assets/candidate_card.png" alt="Карточка кандидата" style="border-radius: 8px;" />
     <h3>Подробная карточка каждого кандидата</h3>
   </div>
   <div class="card hover">
-    <img src="/assets/skills_analysis.png" alt="Анализ навыков" style="max-width: 280px; border-radius: 8px;" />
+    <img src="/assets/skills_analysis.png" alt="Анализ навыков" style="border-radius: 8px;" />
     <h3>Глубокий анализ навыков</h3>
   </div>
 </div>`;
