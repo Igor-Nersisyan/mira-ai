@@ -44,7 +44,10 @@ function MessageBubble({ message }: { message: Message }) {
             : "bg-muted text-foreground rounded-bl-md"
         )}
       >
-        <div className="whitespace-pre-wrap break-words prose prose-sm dark:prose-invert max-w-none prose-p:my-0 prose-p:leading-relaxed">
+        <div className={cn(
+          "whitespace-pre-wrap break-words prose prose-sm max-w-none prose-p:my-0 prose-p:leading-relaxed",
+          isUser ? "[&_*]:text-white" : "dark:prose-invert"
+        )}>
           <ReactMarkdown>{message.content}</ReactMarkdown>
         </div>
         <time className={cn(
