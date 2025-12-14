@@ -1,4 +1,5 @@
 import { Sparkles } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 import type { Message } from "@shared/schema";
 import { cn } from "@/lib/utils";
 
@@ -43,7 +44,9 @@ function MessageBubble({ message }: { message: Message }) {
             : "bg-muted text-foreground rounded-bl-md"
         )}
       >
-        <p className="whitespace-pre-wrap break-words">{message.content}</p>
+        <div className="whitespace-pre-wrap break-words prose prose-sm dark:prose-invert max-w-none prose-p:my-0 prose-p:leading-relaxed">
+          <ReactMarkdown>{message.content}</ReactMarkdown>
+        </div>
         <time className={cn(
           "block text-xs mt-1",
           isUser ? "text-primary-foreground/70" : "text-muted-foreground"

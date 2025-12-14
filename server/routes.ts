@@ -41,41 +41,50 @@ function buildSystemPrompt(knowledgeBase: string): string {
 - Генерируй html ТОЛЬКО когда это добавляет ценность к разговору
 - Используй html для: таблиц тарифов, сравнительных таблиц, карточек функций, калькуляторов ROI, схем процессов, FAQ блоков
 - Если обновлять правую часть не нужно — ставь html: null
-- HTML должен использовать классы из дизайн-системы: card, grid-2, grid-3, metric, metric-value, metric-label, highlight, pricing-card, featured, cta-button, faq-item, faq-question, faq-answer, process-step, step-number, step-content, step-title, step-description
+- HTML должен использовать классы из дизайн-системы:
+  - Сетки: grid-2, grid-3, grid-4
+  - Карточки: card, pricing-card, feature-card (добавляй class="card hover" для интерактивности)
+  - Метрики: metric, metric-value, metric-label
+  - Кнопки: cta-button, cta-button-secondary
+  - Процессы: process-step, step-number, step-content, step-title, step-description
+  - FAQ: faq-item (добавляй class="faq-item hover" для интерактивности), faq-question, faq-answer
+  - Тарифы: pricing-card, featured, pricing-price, pricing-period, feature-list, feature-item
+  - Выделение: highlight, badge, tag
+- ВСЕ карточки и интерактивные элементы ДОЛЖНЫ иметь hover эффекты — добавляй класс "hover" к card, pricing-card, faq-item
 
 ПРИМЕРЫ HTML:
 
 Таблица тарифов:
 <h2>Тарифы AIR Mira</h2>
 <div class="grid-3">
-  <div class="pricing-card">
+  <div class="pricing-card hover">
     <h3>Старт</h3>
     <div class="pricing-price">25 000 ₽</div>
     <div class="pricing-period">в месяц</div>
     <div class="feature-list">
-      <div class="feature-item">✓ До 50 вакансий</div>
-      <div class="feature-item">✓ Базовая аналитика</div>
+      <div class="feature-item">До 50 вакансий</div>
+      <div class="feature-item">Базовая аналитика</div>
     </div>
   </div>
-  <div class="pricing-card featured">
+  <div class="pricing-card featured hover">
     <h3>Бизнес</h3>
     <div class="pricing-price">75 000 ₽</div>
     <div class="pricing-period">в месяц</div>
     <div class="feature-list">
-      <div class="feature-item">✓ До 200 вакансий</div>
-      <div class="feature-item">✓ Полная аналитика</div>
-      <div class="feature-item">✓ Приоритетная поддержка</div>
+      <div class="feature-item">До 200 вакансий</div>
+      <div class="feature-item">Полная аналитика</div>
+      <div class="feature-item">Приоритетная поддержка</div>
     </div>
   </div>
 </div>
 
 Метрики:
 <div class="grid-2">
-  <div class="metric">
+  <div class="metric hover">
     <div class="metric-value">87%</div>
     <div class="metric-label">Экономия времени HR</div>
   </div>
-  <div class="metric">
+  <div class="metric hover">
     <div class="metric-value">3 дня</div>
     <div class="metric-label">Среднее время найма</div>
   </div>
@@ -83,7 +92,7 @@ function buildSystemPrompt(knowledgeBase: string): string {
 
 Процесс:
 <h2>Как работает Mira</h2>
-<div class="process-step">
+<div class="process-step hover">
   <div class="step-number">1</div>
   <div class="step-content">
     <div class="step-title">Загрузи вакансию</div>
