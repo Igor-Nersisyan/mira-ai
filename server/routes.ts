@@ -3,8 +3,67 @@ import { createServer, type Server } from "http";
 import { chatRequestSchema, type AIResponse, type Message } from "@shared/schema";
 import fs from "fs";
 import path from "path";
+import multer from "multer";
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+const ASSEMBLYAI_API_KEY = process.env.ASSEMBLYAI_API_KEY;
+
+const upload = multer({ storage: multer.memoryStorage() });
+
+async function transcribeAudio(audioBuffer: Buffer): Promise<string> {
+  if (!ASSEMBLYAI_API_KEY) {
+    throw new Error("ASSEMBLYAI_API_KEY is not configured");
+  }
+
+  const uploadResponse = await fetch("https://api.assemblyai.com/v2/upload", {
+    method: "POST",
+    headers: {
+      authorization: ASSEMBLYAI_API_KEY,
+      "Content-Type": "application/octet-stream",
+    },
+    body: audioBuffer,
+  });
+
+  if (!uploadResponse.ok) {
+    throw new Error("Failed to upload audio to AssemblyAI");
+  }
+
+  const { upload_url } = await uploadResponse.json() as { upload_url: string };
+
+  const transcriptResponse = await fetch("https://api.assemblyai.com/v2/transcript", {
+    method: "POST",
+    headers: {
+      authorization: ASSEMBLYAI_API_KEY,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      audio_url: upload_url,
+      language_code: "ru",
+    }),
+  });
+
+  if (!transcriptResponse.ok) {
+    throw new Error("Failed to start transcription");
+  }
+
+  const { id } = await transcriptResponse.json() as { id: string };
+
+  while (true) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    const pollingResponse = await fetch(`https://api.assemblyai.com/v2/transcript/${id}`, {
+      headers: { authorization: ASSEMBLYAI_API_KEY },
+    });
+
+    const result = await pollingResponse.json() as { status: string; text: string; error?: string };
+
+    if (result.status === "completed") {
+      return result.text;
+    } else if (result.status === "error") {
+      throw new Error(result.error || "Transcription failed");
+    }
+  }
+}
 
 function getKnowledgeBase(): string {
   try {
@@ -167,6 +226,28 @@ export async function registerRoutes(
 ): Promise<Server> {
   const knowledgeBase = getKnowledgeBase();
   const systemPrompt = buildSystemPrompt(knowledgeBase);
+
+  app.post("/api/transcribe", upload.single("audio"), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "No audio file provided" });
+      }
+
+      if (!ASSEMBLYAI_API_KEY) {
+        return res.status(500).json({
+          error: "ASSEMBLYAI_API_KEY не настроен. Добавьте ключ в переменные окружения.",
+        });
+      }
+
+      const text = await transcribeAudio(req.file.buffer);
+      return res.json({ text });
+    } catch (error) {
+      console.error("Transcription error:", error);
+      return res.status(500).json({
+        error: error instanceof Error ? error.message : "Transcription failed",
+      });
+    }
+  });
 
   app.post("/api/chat", async (req, res) => {
     try {

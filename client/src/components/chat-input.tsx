@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Send } from "lucide-react";
+import { VoiceRecorder } from "./voice-recorder";
 
 interface ChatInputProps {
   onSend: (message: string) => void;
@@ -37,8 +38,13 @@ export function ChatInput({ onSend, disabled, placeholder }: ChatInputProps) {
     }
   };
 
+  const handleTranscription = (text: string) => {
+    setValue((prev) => prev + (prev ? " " : "") + text);
+  };
+
   return (
     <div className="flex items-end gap-2">
+      <VoiceRecorder onTranscription={handleTranscription} disabled={disabled} />
       <Textarea
         ref={textareaRef}
         value={value}
