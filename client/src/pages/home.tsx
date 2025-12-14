@@ -1,75 +1,206 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { ChatPanel } from "@/components/chat-panel";
 import { DynamicContent } from "@/components/dynamic-content";
 import { HeroBlock } from "@/components/hero-block";
-import type { Message, AIResponse } from "@shared/schema";
-import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
-
-interface MutationContext {
-  userMessage: Message;
-  allMessages: Message[];
-}
+import type { Message, StreamEvent } from "@shared/schema";
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [dynamicHtml, setDynamicHtml] = useState<string | null>(null);
+  const [streamingMessage, setStreamingMessage] = useState<string>("");
+  const [streamingHtml, setStreamingHtml] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isHtmlStreaming, setIsHtmlStreaming] = useState(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
-  const chatMutation = useMutation({
-    mutationFn: async (context: MutationContext): Promise<AIResponse> => {
-      const response = await apiRequest("POST", "/api/chat", {
-        messages: context.allMessages,
-      });
-      
-      return response.json();
-    },
-    onSuccess: (data: AIResponse) => {
-      const assistantMessage: Message = {
-        id: crypto.randomUUID(),
-        role: "assistant",
-        content: data.message,
-        timestamp: Date.now(),
-      };
-      setMessages((prev) => [...prev, assistantMessage]);
-      
-      if (data.html !== null) {
-        setDynamicHtml(data.html);
+  const streamChat = useCallback(async (allMessages: Message[]): Promise<string> => {
+    const response = await fetch("/api/chat/stream", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages: allMessages }),
+      signal: abortControllerRef.current?.signal,
+    });
+
+    if (!response.ok) {
+      throw new Error("Chat request failed");
+    }
+
+    const reader = response.body?.getReader();
+    if (!reader) throw new Error("No response body");
+
+    const decoder = new TextDecoder();
+    let buffer = "";
+    let fullMessage = "";
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split("\n");
+      buffer = lines.pop() || "";
+
+      for (const line of lines) {
+        if (line.startsWith("data: ")) {
+          try {
+            const event: StreamEvent = JSON.parse(line.slice(6));
+            
+            if (event.type === "chat_chunk") {
+              fullMessage += event.content;
+              setStreamingMessage(fullMessage);
+            } else if (event.type === "chat_end") {
+              fullMessage = event.fullMessage;
+            } else if (event.type === "error") {
+              throw new Error(event.message);
+            }
+          } catch (e) {
+            if (e instanceof SyntaxError) continue;
+            throw e;
+          }
+        }
       }
-    },
-    onError: () => {
-      const errorMessage: Message = {
-        id: crypto.randomUUID(),
-        role: "assistant",
-        content: "Извините, произошла ошибка. Попробуйте ещё раз.",
-        timestamp: Date.now(),
-      };
-      setMessages((prev) => [...prev, errorMessage]);
-    },
-  });
+    }
+
+    return fullMessage;
+  }, []);
+
+  const streamHtml = useCallback(async (
+    conversationContext: string, 
+    lastUserMessage: string, 
+    lastAssistantMessage: string
+  ): Promise<string | null> => {
+    setIsHtmlStreaming(true);
+    setStreamingHtml("");
+
+    try {
+      const response = await fetch("/api/html/stream", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          conversationContext, 
+          lastUserMessage, 
+          lastAssistantMessage 
+        }),
+        signal: abortControllerRef.current?.signal,
+      });
+
+      if (!response.ok) {
+        throw new Error("HTML request failed");
+      }
+
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error("No response body");
+
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let fullHtml = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || "";
+
+        for (const line of lines) {
+          if (line.startsWith("data: ")) {
+            try {
+              const event: StreamEvent = JSON.parse(line.slice(6));
+              
+              if (event.type === "html_chunk") {
+                fullHtml += event.content;
+                setStreamingHtml(fullHtml);
+              } else if (event.type === "html_end") {
+                return event.fullHtml;
+              } else if (event.type === "error") {
+                throw new Error(event.message);
+              }
+            } catch (e) {
+              if (e instanceof SyntaxError) continue;
+              throw e;
+            }
+          }
+        }
+      }
+
+      return fullHtml.trim() || null;
+    } finally {
+      setIsHtmlStreaming(false);
+      setStreamingHtml("");
+    }
+  }, []);
 
   const handleSendMessage = useCallback(
-    (messageText: string) => {
-      if (messageText.trim() && !chatMutation.isPending) {
-        const userMessage: Message = {
+    async (messageText: string) => {
+      if (!messageText.trim() || isLoading) return;
+
+      abortControllerRef.current = new AbortController();
+
+      const userMessage: Message = {
+        id: crypto.randomUUID(),
+        role: "user",
+        content: messageText.trim(),
+        timestamp: Date.now(),
+      };
+
+      const allMessages = [...messages, userMessage];
+      setMessages(allMessages);
+      setIsLoading(true);
+      setStreamingMessage("");
+
+      try {
+        const chatPromise = streamChat(allMessages);
+
+        const assistantResponse = await chatPromise;
+
+        const assistantMessage: Message = {
           id: crypto.randomUUID(),
-          role: "user",
-          content: messageText.trim(),
+          role: "assistant",
+          content: assistantResponse,
           timestamp: Date.now(),
         };
-        
-        setMessages((prev) => {
-          const allMessages = [...prev, userMessage];
-          chatMutation.mutate({ userMessage, allMessages });
-          return allMessages;
-        });
+        setMessages((prev) => [...prev, assistantMessage]);
+        setStreamingMessage("");
+
+        const context = allMessages
+          .slice(-6)
+          .map((m) => `${m.role}: ${m.content}`)
+          .join("\n");
+
+        const html = await streamHtml(context, messageText.trim(), assistantResponse);
+        if (html) {
+          setDynamicHtml(html);
+        }
+      } catch (error) {
+        if ((error as Error).name !== "AbortError") {
+          const errorMessage: Message = {
+            id: crypto.randomUUID(),
+            role: "assistant",
+            content: "Извините, произошла ошибка. Попробуйте ещё раз.",
+            timestamp: Date.now(),
+          };
+          setMessages((prev) => [...prev, errorMessage]);
+        }
+      } finally {
+        setIsLoading(false);
+        setStreamingMessage("");
+        abortControllerRef.current = null;
       }
     },
-    [chatMutation]
+    [messages, isLoading, streamChat, streamHtml]
   );
 
   const handleResetChat = useCallback(() => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
     setMessages([]);
     setDynamicHtml(null);
+    setStreamingMessage("");
+    setStreamingHtml("");
+    setIsLoading(false);
+    setIsHtmlStreaming(false);
   }, []);
 
   return (
@@ -79,12 +210,17 @@ export default function Home() {
           messages={messages}
           onSendMessage={handleSendMessage}
           onReset={handleResetChat}
-          isLoading={chatMutation.isPending}
+          isLoading={isLoading}
+          streamingMessage={streamingMessage}
         />
       </div>
       
       <div className="flex-1 overflow-y-auto">
-        <DynamicContent html={dynamicHtml}>
+        <DynamicContent 
+          html={dynamicHtml} 
+          streamingHtml={streamingHtml}
+          isStreaming={isHtmlStreaming}
+        >
           <HeroBlock />
         </DynamicContent>
       </div>

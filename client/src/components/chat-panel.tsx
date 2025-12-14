@@ -10,6 +10,7 @@ interface ChatPanelProps {
   onSendMessage: (message: string) => void;
   onReset: () => void;
   isLoading: boolean;
+  streamingMessage?: string;
 }
 
 export function ChatPanel({
@@ -17,6 +18,7 @@ export function ChatPanel({
   onSendMessage,
   onReset,
   isLoading,
+  streamingMessage = "",
 }: ChatPanelProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -24,7 +26,7 @@ export function ChatPanel({
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages, isLoading]);
+  }, [messages, isLoading, streamingMessage]);
 
   return (
     <div className="flex flex-col h-full bg-card">
@@ -74,7 +76,11 @@ export function ChatPanel({
             </p>
           </div>
         ) : (
-          <MessageList messages={messages} isLoading={isLoading} />
+          <MessageList 
+            messages={messages} 
+            isLoading={isLoading} 
+            streamingMessage={streamingMessage}
+          />
         )}
       </div>
 
