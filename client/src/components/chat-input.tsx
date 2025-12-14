@@ -38,7 +38,7 @@ export function ChatInput({ onSend, disabled, placeholder }: ChatInputProps) {
   };
 
   return (
-    <div className="relative flex items-end gap-2">
+    <div className="flex items-end gap-2">
       <Textarea
         ref={textareaRef}
         value={value}
@@ -46,7 +46,7 @@ export function ChatInput({ onSend, disabled, placeholder }: ChatInputProps) {
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         disabled={disabled}
-        className="min-h-[44px] max-h-[120px] resize-none pr-12 text-sm"
+        className="min-h-[44px] max-h-[120px] resize-none flex-1 text-sm"
         rows={1}
         data-testid="input-chat-message"
       />
@@ -54,7 +54,7 @@ export function ChatInput({ onSend, disabled, placeholder }: ChatInputProps) {
         size="icon"
         onClick={handleSubmit}
         disabled={disabled || !value.trim()}
-        className="absolute right-2 bottom-2"
+        className="flex-shrink-0 mb-[2px]"
         data-testid="button-send-message"
       >
         <Send className="w-4 h-4" />

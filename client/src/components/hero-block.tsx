@@ -69,12 +69,16 @@ export function HeroBlock() {
         </p>
         
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-          <Button size="lg" className="text-base px-8" data-testid="button-hero-cta">
-            Попробовать бесплатно
-            <ArrowRight className="w-4 h-4 ml-2" />
+          <Button size="lg" className="text-base px-8" asChild data-testid="button-hero-cta">
+            <a href="https://ai-recruiter.ru/" target="_blank" rel="noopener noreferrer">
+              Попробовать бесплатно
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </a>
           </Button>
-          <Button size="lg" variant="outline" className="text-base px-8" data-testid="button-hero-demo">
-            Запросить демо
+          <Button size="lg" variant="outline" className="text-base px-8" asChild data-testid="button-hero-demo">
+            <a href="https://ai-recruiter.ru/" target="_blank" rel="noopener noreferrer">
+              Запросить демо
+            </a>
           </Button>
         </div>
       </div>
