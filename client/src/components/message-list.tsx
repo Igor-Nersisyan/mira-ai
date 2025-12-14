@@ -40,7 +40,7 @@ function MessageBubble({ message }: { message: Message }) {
         className={cn(
           "max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed",
           isUser
-            ? "bg-primary text-primary-foreground rounded-br-md"
+            ? "bg-primary text-white rounded-br-md"
             : "bg-muted text-foreground rounded-bl-md"
         )}
       >
