@@ -6,24 +6,19 @@ import type { Message, AIResponse } from "@shared/schema";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 
+interface MutationContext {
+  userMessage: Message;
+  allMessages: Message[];
+}
+
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [dynamicHtml, setDynamicHtml] = useState<string | null>(null);
 
   const chatMutation = useMutation({
-    mutationFn: async (userMessage: string): Promise<AIResponse> => {
-      const newMessage: Message = {
-        id: crypto.randomUUID(),
-        role: "user",
-        content: userMessage,
-        timestamp: Date.now(),
-      };
-      
-      const updatedMessages = [...messages, newMessage];
-      setMessages(updatedMessages);
-      
+    mutationFn: async (context: MutationContext): Promise<AIResponse> => {
       const response = await apiRequest("POST", "/api/chat", {
-        messages: updatedMessages,
+        messages: context.allMessages,
       });
       
       return response.json();
@@ -41,7 +36,7 @@ export default function Home() {
         setDynamicHtml(data.html);
       }
     },
-    onError: (error) => {
+    onError: () => {
       const errorMessage: Message = {
         id: crypto.randomUUID(),
         role: "assistant",
@@ -49,14 +44,24 @@ export default function Home() {
         timestamp: Date.now(),
       };
       setMessages((prev) => [...prev, errorMessage]);
-      console.error("Chat error:", error);
     },
   });
 
   const handleSendMessage = useCallback(
-    (message: string) => {
-      if (message.trim() && !chatMutation.isPending) {
-        chatMutation.mutate(message);
+    (messageText: string) => {
+      if (messageText.trim() && !chatMutation.isPending) {
+        const userMessage: Message = {
+          id: crypto.randomUUID(),
+          role: "user",
+          content: messageText.trim(),
+          timestamp: Date.now(),
+        };
+        
+        setMessages((prev) => {
+          const allMessages = [...prev, userMessage];
+          chatMutation.mutate({ userMessage, allMessages });
+          return allMessages;
+        });
       }
     },
     [chatMutation]
