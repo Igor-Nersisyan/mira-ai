@@ -15,6 +15,14 @@ export const chatRequestSchema = z.object({
 
 export type ChatRequest = z.infer<typeof chatRequestSchema>;
 
+export const htmlRequestSchema = z.object({
+  conversationContext: z.string(),
+  lastUserMessage: z.string(),
+  lastAssistantMessage: z.string(),
+});
+
+export type HtmlRequest = z.infer<typeof htmlRequestSchema>;
+
 export const aiResponseSchema = z.object({
   message: z.string(),
   html: z.string().nullable(),
@@ -29,3 +37,12 @@ export const chatResponseSchema = z.object({
 });
 
 export type ChatResponse = z.infer<typeof chatResponseSchema>;
+
+export type StreamEvent = 
+  | { type: "chat_start" }
+  | { type: "chat_chunk"; content: string }
+  | { type: "chat_end"; fullMessage: string }
+  | { type: "html_start" }
+  | { type: "html_chunk"; content: string }
+  | { type: "html_end"; fullHtml: string }
+  | { type: "error"; message: string };
