@@ -286,3 +286,141 @@
     inset: -1px;
   }
 }
+
+/* Dynamic HTML Content Styles */
+.dynamic-html-content {
+  @apply text-foreground;
+}
+
+.dynamic-html-content h1 {
+  @apply text-3xl lg:text-4xl font-bold tracking-tight text-foreground mb-6;
+}
+
+.dynamic-html-content h2 {
+  @apply text-2xl lg:text-3xl font-semibold text-foreground mb-4 mt-8;
+}
+
+.dynamic-html-content h3 {
+  @apply text-xl lg:text-2xl font-semibold text-foreground mb-3 mt-6;
+}
+
+.dynamic-html-content p {
+  @apply text-muted-foreground leading-relaxed mb-4;
+}
+
+.dynamic-html-content ul,
+.dynamic-html-content ol {
+  @apply mb-4 pl-6 space-y-2;
+}
+
+.dynamic-html-content li {
+  @apply text-muted-foreground;
+}
+
+.dynamic-html-content table {
+  @apply w-full border-collapse mb-6 text-sm;
+}
+
+.dynamic-html-content th {
+  @apply bg-muted text-foreground font-semibold text-left p-3 border border-border;
+}
+
+.dynamic-html-content td {
+  @apply p-3 border border-border text-muted-foreground;
+}
+
+.dynamic-html-content .card {
+  @apply bg-card border border-card-border rounded-lg p-6 mb-4;
+}
+
+.dynamic-html-content .grid-2 {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-4;
+}
+
+.dynamic-html-content .grid-3 {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4;
+}
+
+.dynamic-html-content .metric {
+  @apply text-center p-6 bg-card border border-card-border rounded-lg;
+}
+
+.dynamic-html-content .metric-value {
+  @apply text-4xl font-black text-foreground mb-1;
+}
+
+.dynamic-html-content .metric-label {
+  @apply text-sm font-medium text-muted-foreground;
+}
+
+.dynamic-html-content .highlight {
+  @apply bg-primary/10 border-primary/20 border rounded-lg p-4;
+}
+
+.dynamic-html-content .cta-button {
+  @apply inline-flex items-center justify-center px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium transition-colors;
+}
+
+.dynamic-html-content .cta-button:hover {
+  @apply opacity-90;
+}
+
+.dynamic-html-content .pricing-card {
+  @apply bg-card border border-card-border rounded-lg p-6 text-center;
+}
+
+.dynamic-html-content .pricing-card.featured {
+  @apply border-primary ring-2 ring-primary/20;
+}
+
+.dynamic-html-content .pricing-price {
+  @apply text-4xl font-black text-foreground;
+}
+
+.dynamic-html-content .pricing-period {
+  @apply text-sm text-muted-foreground;
+}
+
+.dynamic-html-content .feature-list {
+  @apply space-y-2 text-left;
+}
+
+.dynamic-html-content .feature-item {
+  @apply flex items-center gap-2 text-sm text-muted-foreground;
+}
+
+.dynamic-html-content .icon-check {
+  @apply w-4 h-4 text-primary flex-shrink-0;
+}
+
+.dynamic-html-content .faq-item {
+  @apply border-b border-border py-4;
+}
+
+.dynamic-html-content .faq-question {
+  @apply font-medium text-foreground mb-2;
+}
+
+.dynamic-html-content .faq-answer {
+  @apply text-sm text-muted-foreground;
+}
+
+.dynamic-html-content .process-step {
+  @apply flex items-start gap-4 mb-6;
+}
+
+.dynamic-html-content .step-number {
+  @apply w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm flex-shrink-0;
+}
+
+.dynamic-html-content .step-content {
+  @apply flex-1;
+}
+
+.dynamic-html-content .step-title {
+  @apply font-semibold text-foreground mb-1;
+}
+
+.dynamic-html-content .step-description {
+  @apply text-sm text-muted-foreground;
+}
