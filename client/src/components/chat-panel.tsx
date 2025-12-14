@@ -27,7 +27,7 @@ export function ChatPanel({
   }, [messages, isLoading]);
 
   return (
-    <div className="flex flex-col h-[50vh] lg:h-screen bg-card">
+    <div className="flex flex-col h-full bg-card">
       <div className="flex items-center justify-between gap-4 px-4 py-3 border-b border-border bg-card sticky top-0 z-10">
         <div className="flex items-center gap-3">
           <div className="relative">

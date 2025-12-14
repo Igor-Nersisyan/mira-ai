@@ -73,8 +73,8 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-background">
-      <div className="w-full lg:w-[30%] lg:min-w-[360px] lg:max-w-[480px] border-b lg:border-b-0 lg:border-r border-border">
+    <div className="flex flex-col lg:flex-row h-screen overflow-hidden bg-background">
+      <div className="w-full lg:w-[30%] lg:min-w-[360px] lg:max-w-[480px] h-[50vh] lg:h-full border-b lg:border-b-0 lg:border-r border-border flex-shrink-0">
         <ChatPanel
           messages={messages}
           onSendMessage={handleSendMessage}
@@ -83,7 +83,7 @@ export default function Home() {
         />
       </div>
       
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-y-auto">
         <DynamicContent html={dynamicHtml}>
           <HeroBlock />
         </DynamicContent>
