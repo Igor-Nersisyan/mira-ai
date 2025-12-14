@@ -49,7 +49,9 @@ function MessageBubble({ message }: { message: Message }) {
         )}
       >
         <div className={cn(
-          "whitespace-pre-wrap break-words prose prose-sm max-w-none prose-p:my-0 prose-p:leading-relaxed",
+          "whitespace-pre-wrap break-words prose prose-sm max-w-none",
+          "prose-p:my-1 prose-p:leading-normal",
+          "prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5 prose-li:leading-normal",
           isUser ? "[&_*]:text-white" : "dark:prose-invert"
         )}>
           <ReactMarkdown>{message.content}</ReactMarkdown>
@@ -81,7 +83,7 @@ function StreamingMessageBubble({ content }: { content: string }) {
         <Sparkles className="w-4 h-4 text-primary animate-pulse" />
       </div>
       <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 text-sm leading-relaxed bg-muted text-foreground">
-        <div className="whitespace-pre-wrap break-words prose prose-sm max-w-none prose-p:my-0 prose-p:leading-relaxed dark:prose-invert">
+        <div className="whitespace-pre-wrap break-words prose prose-sm max-w-none prose-p:my-1 prose-p:leading-normal prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5 prose-li:leading-normal dark:prose-invert">
           <ReactMarkdown>{content}</ReactMarkdown>
           <span className="inline-block w-1.5 h-4 bg-primary/50 animate-pulse ml-0.5" />
         </div>
