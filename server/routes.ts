@@ -130,16 +130,19 @@ function buildHtmlSystemPrompt(): string {
 ТВОЯ ЗАДАЧА:
 На основе контекста разговора, сгенерируй ТОЛЬКО HTML код для визуальной панели справа.
 
-КОГДА ГЕНЕРИРОВАТЬ HTML:
-- Сменился контекст разговора на новую тему
-- Пользователь задал вопрос, требующий визуализации данных
-- Нужно показать конкретную информацию (тарифы, функции, процесс, сравнение)
+ВАЖНО - ГЕНЕРИРУЙ HTML АКТИВНО:
+Ты должен генерировать HTML почти на каждое сообщение! Панель справа должна быть информативной и полезной.
 
-КОГДА ВЕРНУТЬ ПУСТОЙ ОТВЕТ:
-- Простой вопрос-ответ в рамках текущей темы
-- Уточняющий вопрос без новой информации
-- Приветствие без запроса информации
-- Если уже был показан релевантный контент по этой теме
+КОГДА ГЕНЕРИРОВАТЬ HTML (почти всегда!):
+- Любой вопрос о продукте, функциях, возможностях
+- Любое упоминание темы: найм, кандидаты, резюме, интервью, цена
+- Когда можно визуально усилить ответ ассистента
+- Когда можно показать преимущества, метрики, процессы
+- Даже на приветствие - покажи ключевые метрики или преимущества!
+
+КОГДА НЕ ГЕНЕРИРОВАТЬ HTML (редко):
+- Только если пользователь задаёт очень личный/оффтоп вопрос
+- Если буквально тот же самый контент уже показан
 
 ТРИГГЕРЫ ДЛЯ HTML:
 
@@ -183,10 +186,14 @@ function buildHtmlSystemPrompt(): string {
 /assets/vacancies_list.png - список вакансий
 
 ПРАВИЛА ДЛЯ ОСТАЛЬНЫХ ИЗОБРАЖЕНИЙ (не аватар):
-- НЕ ограничивай размер - пусть занимают естественный размер
-- Просто добавляй border-radius: 8px; для скругления
+- Максимальный размер: style="max-width: 500px; width: 100%; border-radius: 8px;"
 - Используй 1-2 изображения на экран, не больше
 - Выбирай изображения по релевантности к теме
+
+ПРАВИЛА ДЛЯ КНОПОК:
+- ВСЕ кнопки CTA должны вести на https://ai-recruiter.ru/
+- Используй: <a href="https://ai-recruiter.ru/" target="_blank" class="cta-button">Текст кнопки</a>
+- Или: <a href="https://ai-recruiter.ru/" target="_blank" class="cta-button-secondary">Текст</a>
 
 КЛАССЫ ДИЗАЙН-СИСТЕМЫ ДЛЯ HTML:
 - Сетки: grid-2, grid-3, grid-4
@@ -235,14 +242,33 @@ function buildHtmlSystemPrompt(): string {
 Карточки с изображениями (НЕ аватар):
 <div class="grid-2">
   <div class="card hover">
-    <img src="/assets/candidate_card.png" alt="Карточка кандидата" style="border-radius: 8px;" />
+    <img src="/assets/candidate_card.png" alt="Карточка кандидата" style="max-width: 500px; width: 100%; border-radius: 8px;" />
     <h3>Подробная карточка каждого кандидата</h3>
   </div>
   <div class="card hover">
-    <img src="/assets/skills_analysis.png" alt="Анализ навыков" style="border-radius: 8px;" />
+    <img src="/assets/skills_analysis.png" alt="Анализ навыков" style="max-width: 500px; width: 100%; border-radius: 8px;" />
     <h3>Глубокий анализ навыков</h3>
   </div>
-</div>`;
+</div>
+<a href="https://ai-recruiter.ru/" target="_blank" class="cta-button">Попробовать бесплатно</a>
+
+Пример для приветствия (показывай метрики):
+<h2>AIR Mira в цифрах</h2>
+<div class="grid-3">
+  <div class="metric">
+    <div class="metric-value">10 000</div>
+    <div class="metric-label">резюме в день</div>
+  </div>
+  <div class="metric">
+    <div class="metric-value">24/7</div>
+    <div class="metric-label">работа без перерывов</div>
+  </div>
+  <div class="metric">
+    <div class="metric-value">в 5 раз</div>
+    <div class="metric-label">дешевле рекрутера</div>
+  </div>
+</div>
+<a href="https://ai-recruiter.ru/" target="_blank" class="cta-button">Узнать больше</a>`;
 }
 
 async function* streamOpenRouterChat(messages: Message[], systemPrompt: string): AsyncGenerator<string> {

@@ -18,6 +18,7 @@ export function DynamicContent({
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [currentContent, setCurrentContent] = useState<string | null>(null);
   const previousHtmlRef = useRef<string | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const hasReceivedFirstChunk = streamingHtml.length > 0;
 
   useEffect(() => {
@@ -32,6 +33,12 @@ export function DynamicContent({
     }
   }, [html, currentContent, isStreaming]);
 
+  useEffect(() => {
+    if (isStreaming && hasReceivedFirstChunk && containerRef.current) {
+      containerRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+  }, [streamingHtml, isStreaming, hasReceivedFirstChunk]);
+
   let displayContent: string | null;
   if (isStreaming) {
     if (hasReceivedFirstChunk) {
@@ -44,7 +51,7 @@ export function DynamicContent({
   }
 
   return (
-    <div className="min-h-screen p-6 lg:p-8 xl:p-12">
+    <div ref={containerRef} className="min-h-screen p-6 lg:p-8 xl:p-12">
       {isStreaming && hasReceivedFirstChunk && (
         <div className="flex items-center gap-2 mb-4 text-muted-foreground">
           <Loader2 className="w-4 h-4 animate-spin" />
