@@ -141,7 +141,7 @@ export function VoiceRecorder({ onTranscription, disabled }: VoiceRecorderProps)
           variant="outline"
           onClick={togglePlayback}
           disabled={isTranscribing}
-          className="flex-shrink-0 mb-[2px]"
+          className="flex-shrink-0"
           data-testid="button-voice-play"
         >
           {isPlaying ? (
@@ -155,7 +155,7 @@ export function VoiceRecorder({ onTranscription, disabled }: VoiceRecorderProps)
           variant="ghost"
           onClick={discardRecording}
           disabled={isTranscribing}
-          className="flex-shrink-0 mb-[2px] text-muted-foreground"
+          className="flex-shrink-0 text-muted-foreground"
           data-testid="button-voice-discard"
         >
           <X className="w-4 h-4" />
@@ -165,7 +165,7 @@ export function VoiceRecorder({ onTranscription, disabled }: VoiceRecorderProps)
           variant="default"
           onClick={transcribeRecording}
           disabled={isTranscribing}
-          className="flex-shrink-0 mb-[2px]"
+          className="flex-shrink-0"
           data-testid="button-voice-transcribe"
         >
           {isTranscribing ? (
@@ -185,7 +185,7 @@ export function VoiceRecorder({ onTranscription, disabled }: VoiceRecorderProps)
       onClick={handleRecordClick}
       disabled={disabled || isTranscribing}
       className={cn(
-        "flex-shrink-0 mb-[2px] transition-all",
+        "flex-shrink-0 transition-all",
         isRecording && "animate-pulse"
       )}
       data-testid="button-voice-record"

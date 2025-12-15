@@ -52,7 +52,7 @@ export function ChatInput({ onSend, disabled, placeholder }: ChatInputProps) {
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         disabled={disabled}
-        className="min-h-[44px] max-h-[120px] resize-none flex-1 text-sm"
+        className="min-h-9 max-h-[120px] resize-none flex-1 text-sm py-2"
         rows={1}
         data-testid="input-chat-message"
       />
@@ -60,7 +60,7 @@ export function ChatInput({ onSend, disabled, placeholder }: ChatInputProps) {
         size="icon"
         onClick={handleSubmit}
         disabled={disabled || !value.trim()}
-        className="flex-shrink-0 mb-[2px]"
+        className="flex-shrink-0"
         data-testid="button-send-message"
       >
         <Send className="w-4 h-4" />
