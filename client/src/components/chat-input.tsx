@@ -52,7 +52,7 @@ export function ChatInput({ onSend, disabled, placeholder }: ChatInputProps) {
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         disabled={disabled}
-        className="min-h-9 max-h-[120px] resize-none flex-1 text-sm py-2"
+        className="min-h-9 max-h-[120px] resize-none flex-1 text-sm py-2 overflow-y-auto scrollbar-none"
         rows={1}
         data-testid="input-chat-message"
       />

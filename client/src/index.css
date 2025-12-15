@@ -430,3 +430,11 @@
 .dynamic-html-content .step-description {
   @apply text-sm text-muted-foreground;
 }
+
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
