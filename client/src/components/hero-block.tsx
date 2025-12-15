@@ -82,7 +82,6 @@ export function HeroBlock() {
           </Button>
         </div>
       </div>
-
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
         {metrics.map((metric) => (
           <Card
@@ -93,7 +92,7 @@ export function HeroBlock() {
             <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
               <metric.icon className="w-6 h-6 text-primary" />
             </div>
-            <div className="text-3xl lg:text-4xl font-black text-foreground mb-1">
+            <div className="text-3xl lg:text-4xl text-foreground mb-1 font-bold">
               {metric.value}
             </div>
             <div className="text-sm font-medium text-foreground mb-2">
@@ -105,7 +104,6 @@ export function HeroBlock() {
           </Card>
         ))}
       </div>
-
       <Card className="p-6 lg:p-8">
         <div className="flex flex-col lg:flex-row lg:items-center gap-6 lg:gap-12">
           <div className="flex-1">
@@ -149,7 +147,6 @@ export function HeroBlock() {
           </div>
         </div>
       </Card>
-
       <div className="text-center text-sm text-muted-foreground">
         <p>
           Начните диалог слева, чтобы узнать больше о возможностях AIR Mira
