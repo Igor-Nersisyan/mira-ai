@@ -299,7 +299,7 @@
 }
 
 .dynamic-html-content img {
-  @apply max-w-md max-h-64 w-auto h-auto rounded-lg my-4;
+  @apply max-w-xl max-h-96 w-auto h-auto rounded-lg my-4;
 }
 
 .dynamic-html-content h1 {
