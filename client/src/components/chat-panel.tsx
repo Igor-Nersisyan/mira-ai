@@ -1,6 +1,7 @@
 import { useRef, useEffect } from "react";
 import { MessageList } from "@/components/message-list";
 import { ChatInput } from "@/components/chat-input";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { RotateCcw, Sparkles } from "lucide-react";
 import type { Message } from "@shared/schema";
@@ -44,18 +45,21 @@ export function ChatPanel({
           </div>
         </div>
         
-        {messages.length > 0 && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onReset}
-            className="text-muted-foreground"
-            data-testid="button-reset-chat"
-          >
-            <RotateCcw className="w-4 h-4 mr-2" />
-            Сбросить
-          </Button>
-        )}
+        <div className="flex items-center gap-1">
+          {messages.length > 0 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onReset}
+              className="text-muted-foreground"
+              data-testid="button-reset-chat"
+            >
+              <RotateCcw className="w-4 h-4 mr-2" />
+              Сбросить
+            </Button>
+          )}
+          <ThemeToggle />
+        </div>
       </div>
 
       <div
