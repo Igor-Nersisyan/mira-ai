@@ -127,7 +127,6 @@ export default function Home() {
       return fullHtml.trim() || null;
     } finally {
       setIsHtmlStreaming(false);
-      setStreamingHtml("");
     }
   }, []);
 

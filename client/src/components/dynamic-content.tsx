@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef, type ReactNode } from "react";
-import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 
 interface DynamicContentProps {
@@ -15,7 +14,6 @@ export function DynamicContent({
   isStreaming = false,
   children 
 }: DynamicContentProps) {
-  const [isTransitioning, setIsTransitioning] = useState(false);
   const [currentContent, setCurrentContent] = useState<string | null>(null);
   const previousHtmlRef = useRef<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -23,13 +21,8 @@ export function DynamicContent({
 
   useEffect(() => {
     if (!isStreaming && html !== currentContent) {
-      setIsTransitioning(true);
-      const timer = setTimeout(() => {
-        setCurrentContent(html);
-        previousHtmlRef.current = html;
-        setIsTransitioning(false);
-      }, 150);
-      return () => clearTimeout(timer);
+      setCurrentContent(html);
+      previousHtmlRef.current = html;
     }
   }, [html, currentContent, isStreaming]);
 
@@ -61,10 +54,6 @@ export function DynamicContent({
         </div>
       )}
       <div
-        className={cn(
-          "transition-opacity duration-300 ease-in-out",
-          isTransitioning ? "opacity-0" : "opacity-100"
-        )}
         data-testid="dynamic-content-container"
       >
         {displayContent ? (
