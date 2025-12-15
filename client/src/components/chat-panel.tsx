@@ -30,8 +30,8 @@ export function ChatPanel({
   }, [messages, isLoading, streamingMessage]);
 
   return (
-    <div className="flex flex-col h-full bg-gradient-to-b from-card via-card to-muted/30">
-      <div className="flex items-center justify-between gap-4 px-4 py-3 border-b border-border/50 backdrop-blur-md bg-card/80 sticky top-0 z-10">
+    <div className="flex flex-col h-full bg-gradient-to-br from-primary/5 via-card to-accent/10">
+      <div className="flex items-center justify-between gap-4 px-4 py-3 border-b border-white/20 dark:border-white/10 backdrop-blur-xl bg-white/60 dark:bg-black/40 sticky top-0 z-10 shadow-sm">
         <div className="flex items-center gap-3">
           <div className="relative">
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shadow-sm">
@@ -64,7 +64,7 @@ export function ChatPanel({
 
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto px-4 py-4 space-y-4"
+        className="flex-1 overflow-y-auto px-4 py-4 space-y-4 bg-gradient-to-b from-transparent to-muted/20"
         data-testid="chat-messages-container"
       >
         {messages.length === 0 ? (
@@ -88,7 +88,7 @@ export function ChatPanel({
         )}
       </div>
 
-      <div className="border-t border-border bg-card p-4">
+      <div className="border-t border-white/20 dark:border-white/10 backdrop-blur-xl bg-white/60 dark:bg-black/40 p-4">
         <ChatInput
           onSend={onSendMessage}
           disabled={isLoading}
