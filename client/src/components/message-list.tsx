@@ -28,10 +28,7 @@ function MessageBubble({ message }: { message: Message }) {
   const isUser = message.role === "user";
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10, scale: 0.98 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.2, ease: "easeOut" }}
+    <div
       className={cn(
         "flex gap-3",
         isUser ? "justify-end" : "justify-start"
@@ -79,7 +76,7 @@ function MessageBubble({ message }: { message: Message }) {
           <span className="text-xs font-medium text-muted-foreground">Вы</span>
         </div>
       )}
-    </motion.div>
+    </div>
   );
 }
 
