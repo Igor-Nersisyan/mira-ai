@@ -58,6 +58,7 @@ export function ChatInput({ onSend, disabled, placeholder }: ChatInputProps) {
       />
       <Button
         size="icon"
+        variant={value.trim() ? "default" : "ghost"}
         onClick={handleSubmit}
         disabled={disabled || !value.trim()}
         className="flex-shrink-0"
