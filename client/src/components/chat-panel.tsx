@@ -30,8 +30,8 @@ export function ChatPanel({
   }, [messages, isLoading, streamingMessage]);
 
   return (
-    <div className="flex flex-col h-full bg-gradient-to-br from-primary/5 via-card to-accent/10">
-      <div className="flex items-center justify-between gap-4 px-4 py-3 border-b border-white/20 dark:border-white/10 backdrop-blur-xl bg-white/60 dark:bg-black/40 sticky top-0 z-10 shadow-sm">
+    <div className="flex flex-col h-full bg-gradient-to-br from-pink-100 via-purple-50 to-blue-100 dark:from-pink-950/30 dark:via-purple-950/20 dark:to-blue-950/30">
+      <div className="flex items-center justify-between gap-4 px-4 py-3 border-b border-white/40 dark:border-white/10 backdrop-blur-2xl bg-white/70 dark:bg-black/50 sticky top-0 z-10 shadow-lg shadow-black/5">
         <div className="flex items-center gap-3">
           <div className="relative">
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shadow-sm">
@@ -64,7 +64,7 @@ export function ChatPanel({
 
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto px-4 py-4 space-y-4 bg-gradient-to-b from-transparent to-muted/20"
+        className="flex-1 overflow-y-auto px-4 py-4 space-y-4"
         data-testid="chat-messages-container"
       >
         {messages.length === 0 ? (
@@ -88,7 +88,7 @@ export function ChatPanel({
         )}
       </div>
 
-      <div className="border-t border-white/20 dark:border-white/10 backdrop-blur-xl bg-white/60 dark:bg-black/40 p-4">
+      <div className="border-t border-white/40 dark:border-white/10 backdrop-blur-2xl bg-white/70 dark:bg-black/50 p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
         <ChatInput
           onSend={onSendMessage}
           disabled={isLoading}
