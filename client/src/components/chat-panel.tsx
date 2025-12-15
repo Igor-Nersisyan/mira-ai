@@ -30,14 +30,18 @@ export function ChatPanel({
   }, [messages, isLoading, streamingMessage]);
 
   return (
-    <div className="flex flex-col h-full bg-gradient-to-br from-pink-100 via-purple-50 to-blue-100 dark:from-pink-950/30 dark:via-purple-950/20 dark:to-blue-950/30">
-      <div className="flex items-center justify-between gap-4 px-4 py-3 border-b border-pink-200/50 dark:border-white/10 backdrop-blur-xl bg-gradient-to-r from-white/60 via-pink-50/40 to-purple-50/40 dark:from-black/40 dark:via-purple-900/20 dark:to-pink-900/20 sticky top-0 z-10 shadow-[0_4px_30px_rgba(0,0,0,0.1)]">
+    <div 
+      ref={scrollRef}
+      className="relative h-full overflow-y-auto bg-gradient-to-br from-pink-100 via-purple-50 to-blue-100 dark:from-pink-950/30 dark:via-purple-950/20 dark:to-blue-950/30"
+    >
+      {/* Sticky Header */}
+      <div className="sticky top-0 z-20 flex items-center justify-between gap-4 px-4 py-3 border-b border-pink-200/50 dark:border-white/10 backdrop-blur-xl bg-white/40 dark:bg-black/30 shadow-[0_4px_30px_rgba(0,0,0,0.08)]">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shadow-sm">
+            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shadow-sm backdrop-blur-sm">
               <Sparkles className="w-5 h-5 text-primary" />
             </div>
-            <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-card animate-pulse" />
+            <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white/80 dark:border-black/50 animate-pulse" />
           </div>
           <div>
             <h2 className="font-semibold text-card-foreground text-sm">Mira</h2>
@@ -62,13 +66,13 @@ export function ChatPanel({
         </div>
       </div>
 
+      {/* Messages Content */}
       <div
-        ref={scrollRef}
-        className="flex-1 overflow-y-auto px-4 py-4 space-y-4"
+        className="px-4 py-4 space-y-4 min-h-[calc(100%-140px)]"
         data-testid="chat-messages-container"
       >
         {messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-center px-4">
+          <div className="flex flex-col items-center justify-center h-full min-h-[300px] text-center px-4">
             <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
               <Sparkles className="w-8 h-8 text-primary" />
             </div>
@@ -88,7 +92,8 @@ export function ChatPanel({
         )}
       </div>
 
-      <div className="border-t border-pink-200/50 dark:border-white/10 backdrop-blur-xl bg-gradient-to-r from-white/60 via-pink-50/40 to-purple-50/40 dark:from-black/40 dark:via-purple-900/20 dark:to-pink-900/20 p-4 shadow-[0_-4px_30px_rgba(0,0,0,0.1)]">
+      {/* Sticky Footer */}
+      <div className="sticky bottom-0 z-20 border-t border-pink-200/50 dark:border-white/10 backdrop-blur-xl bg-white/40 dark:bg-black/30 p-4 shadow-[0_-4px_30px_rgba(0,0,0,0.08)]">
         <ChatInput
           onSend={onSendMessage}
           disabled={isLoading}
