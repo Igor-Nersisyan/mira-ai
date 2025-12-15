@@ -65,6 +65,7 @@ function MessageBubble({ message }: { message: Message }) {
           {new Date(message.timestamp).toLocaleTimeString("ru-RU", {
             hour: "2-digit",
             minute: "2-digit",
+            timeZone: "Europe/Moscow",
           })}
         </time>
       </div>

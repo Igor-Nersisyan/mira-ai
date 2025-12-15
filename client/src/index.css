@@ -298,6 +298,10 @@
   @apply text-foreground;
 }
 
+.dynamic-html-content img {
+  @apply max-w-md max-h-64 w-auto h-auto rounded-lg my-4;
+}
+
 .dynamic-html-content h1 {
   @apply text-3xl lg:text-4xl font-bold tracking-tight text-foreground mb-6;
 }
