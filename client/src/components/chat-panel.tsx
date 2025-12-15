@@ -31,7 +31,7 @@ export function ChatPanel({
 
   return (
     <div className="flex flex-col h-full bg-gradient-to-br from-pink-100 via-purple-50 to-blue-100 dark:from-pink-950/30 dark:via-purple-950/20 dark:to-blue-950/30">
-      <div className="flex items-center justify-between gap-4 px-4 py-3 border-b border-white/40 dark:border-white/10 backdrop-blur-2xl bg-white/70 dark:bg-black/50 sticky top-0 z-10 shadow-lg shadow-black/5">
+      <div className="flex items-center justify-between gap-4 px-4 py-3 border-b border-pink-200/50 dark:border-white/10 backdrop-blur-xl bg-gradient-to-r from-white/60 via-pink-50/40 to-purple-50/40 dark:from-black/40 dark:via-purple-900/20 dark:to-pink-900/20 sticky top-0 z-10 shadow-[0_4px_30px_rgba(0,0,0,0.1)]">
         <div className="flex items-center gap-3">
           <div className="relative">
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shadow-sm">
@@ -88,7 +88,7 @@ export function ChatPanel({
         )}
       </div>
 
-      <div className="border-t border-white/40 dark:border-white/10 backdrop-blur-2xl bg-white/70 dark:bg-black/50 p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+      <div className="border-t border-pink-200/50 dark:border-white/10 backdrop-blur-xl bg-gradient-to-r from-white/60 via-pink-50/40 to-purple-50/40 dark:from-black/40 dark:via-purple-900/20 dark:to-pink-900/20 p-4 shadow-[0_-4px_30px_rgba(0,0,0,0.1)]">
         <ChatInput
           onSend={onSendMessage}
           disabled={isLoading}
