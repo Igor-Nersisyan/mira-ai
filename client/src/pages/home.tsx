@@ -261,7 +261,7 @@ export default function Home() {
       </div>
       
       <div className="relative flex-1 overflow-y-auto">
-        <div className="sticky top-0 left-0 right-0 h-full backdrop-blur-[2px] bg-white/15 dark:bg-black/10 pointer-events-none z-0" style={{ position: 'fixed', width: '100%', height: '100%' }} />
+        <div className="absolute inset-0 backdrop-blur-[2px] bg-white/15 dark:bg-black/10 pointer-events-none z-0 min-h-full" />
         <div className="relative z-10">
           <DynamicContent 
             html={dynamicHtml} 
