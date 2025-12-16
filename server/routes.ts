@@ -160,17 +160,18 @@ function buildHtmlSystemPrompt(): string {
   
   <style>
     .card { transition: all 0.3s ease; background: #ffffff; }
-    .card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px -8px rgba(17,24,39,0.12); }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px -6px rgba(17,24,39,0.1); }
     .btn { transition: all 0.2s ease; }
-    .btn:hover { transform: scale(1.05); filter: brightness(1.1); }
+    .btn:hover { transform: scale(1.02); filter: brightness(1.05); }
     .btn:active { transform: scale(0.98); }
-    .metric { transition: all 0.3s ease; background: #f3f4f6; }
-    .metric:hover { background: #FF8B36; color: white; }
+    .metric { transition: all 0.3s ease; background: #f3f4f6; text-align: center; }
+    .metric:hover { background: #e5e7eb; }
     .img-card { transition: transform 0.4s ease; }
-    .img-card:hover { transform: scale(1.02); }
-    .feature { transition: all 0.3s ease; border-left: 4px solid transparent; }
-    .feature:hover { border-left-color: #FF8B36; padding-left: 20px; background: #fff7ed; }
-    .step-item { position: relative; }
+    .img-card:hover { transform: scale(1.01); }
+    .feature { transition: all 0.3s ease; }
+    .feature:hover { background: #f9fafb; }
+    .step-item { position: relative; background: #ffffff; }
+    .step-item:hover { background: #f9fafb; }
     .step-item::before { content: ''; position: absolute; left: 24px; top: 60px; width: 2px; height: calc(100% - 60px); background: #2D8CFF; }
     @media (prefers-color-scheme: dark) {
       .dark-text { color: #f3f4f6 !important; }
@@ -194,8 +195,10 @@ function buildHtmlSystemPrompt(): string {
 
   📐 СТРУКТУРА:
 
-  КАРТОЧКИ (чистый стиль без обводки):
-  class="card" style="background: #ffffff; border-radius: 20px; padding: 32px; box-shadow: 0 1px 3px rgba(17,24,39,0.06);"
+  КАРТОЧКИ (чистый стиль, БЕЗ border!):
+  class="card" style="background: #ffffff; border-radius: 16px; padding: 28px; box-shadow: 0 4px 12px -4px rgba(17,24,39,0.08);"
+  
+  ❌ НИКОГДА не добавляй border к карточкам!
 
   КНОПКИ ОРАНЖЕВЫЕ:
   class="btn" style="display: inline-block; padding: 14px 28px; background: #FF8B36; border-radius: 12px; color: white; font-weight: 600; text-decoration: none; box-shadow: 0 4px 12px -4px rgba(255,139,54,0.3);"
@@ -203,8 +206,10 @@ function buildHtmlSystemPrompt(): string {
   КНОПКИ СИНИЕ:
   class="btn" style="display: inline-block; padding: 14px 28px; background: #2D8CFF; border-radius: 12px; color: white; font-weight: 600; text-decoration: none; box-shadow: 0 4px 12px -4px rgba(45,140,255,0.3);"
 
-  МЕТРИКИ:
-  class="metric" style="background: #f3f4f6; border-radius: 16px; padding: 24px; text-align: center; cursor: pointer;"
+  МЕТРИКИ (центрированные, крупный шрифт):
+  class="metric" style="background: #f3f4f6; border-radius: 12px; padding: 20px; text-align: center;"
+  <div style="font-size: 36px; font-weight: 800; color: #111827; letter-spacing: -0.02em;">10 000</div>
+  <div style="font-size: 13px; color: #6b7280; margin-top: 4px;">резюме в день</div>
   
   ТЁМНЫЕ СЕКЦИИ:
   style="background: #1f2937; border-radius: 24px; padding: 48px; color: white;"
@@ -226,14 +231,16 @@ function buildHtmlSystemPrompt(): string {
     <div style="width: 75%; height: 100%; background: #FF8B36; border-radius: 100px;"></div>
   </div>
 
-  3. ШАГИ/TIMELINE:
-  <div class="step-item" style="display: flex; gap: 20px; padding-bottom: 32px;">
-    <div style="width: 48px; height: 48px; background: #2D8CFF; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; flex-shrink: 0;">1</div>
+  3. ШАГИ/TIMELINE (без hover-заливки!):
+  <div class="step-item" style="display: flex; gap: 16px; padding: 16px; border-radius: 12px;">
+    <div style="width: 40px; height: 40px; background: #FF8B36; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 16px; flex-shrink: 0;">1</div>
     <div>
-      <h4 style="font-size: 18px; font-weight: 600; color: #111827; margin-bottom: 8px;">Название шага</h4>
-      <p style="color: #6b7280;">Описание шага</p>
+      <h4 style="font-size: 16px; font-weight: 600; color: #111827; margin-bottom: 4px;">Название шага</h4>
+      <p style="font-size: 14px; color: #6b7280; margin: 0;">Описание шага</p>
     </div>
   </div>
+  
+  ❌ При hover НЕ менять цвет фона на оранжевый! Только лёгкое осветление (#f9fafb)
 
   4. КАРТОЧКИ С ИЗОБРАЖЕНИЯМИ:
   <div class="img-card card" style="overflow: hidden; padding: 0;">
@@ -244,9 +251,8 @@ function buildHtmlSystemPrompt(): string {
     </div>
   </div>
 
-  5. BADGES/ТЕГИ (сплошные цвета!):
-  <span style="display: inline-block; padding: 6px 14px; background: #e0f2fe; color: #2D8CFF; border-radius: 100px; font-size: 13px; font-weight: 500;">Тег</span>
-  <span style="display: inline-block; padding: 6px 14px; background: #ffedd5; color: #FF8B36; border-radius: 100px; font-size: 13px; font-weight: 500;">Новое</span>
+  5. BADGES/ТЕГИ (аккуратные пилюли):
+  <span style="display: inline-flex; align-items: center; padding: 4px 10px; background: #f3f4f6; color: #374151; border-radius: 6px; font-size: 12px; font-weight: 500;">Метка</span>
 
   🚨 ПРАВИЛА КАЧЕСТВА:
 
