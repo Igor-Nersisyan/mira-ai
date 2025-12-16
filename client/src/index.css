@@ -294,10 +294,42 @@
   }
 }
 
-/* Dynamic HTML Content Styles */
+/* Dynamic HTML Content Styles - Force contrast */
 .dynamic-html-content {
-  @apply text-foreground;
+  color: #1a1a1a;
 }
+
+.dark .dynamic-html-content {
+  color: #f5f5f5;
+}
+
+/* Override any inline color styles for text elements */
+.dynamic-html-content h1,
+.dynamic-html-content h2,
+.dynamic-html-content h3,
+.dynamic-html-content h4,
+.dynamic-html-content h5,
+.dynamic-html-content h6,
+.dynamic-html-content p,
+.dynamic-html-content li,
+.dynamic-html-content span,
+.dynamic-html-content div:not([style*="background"]) {
+  color: #1a1a1a !important;
+}
+
+.dark .dynamic-html-content h1,
+.dark .dynamic-html-content h2,
+.dark .dynamic-html-content h3,
+.dark .dynamic-html-content h4,
+.dark .dynamic-html-content h5,
+.dark .dynamic-html-content h6,
+.dark .dynamic-html-content p,
+.dark .dynamic-html-content li,
+.dark .dynamic-html-content span,
+.dark .dynamic-html-content div:not([style*="background"]) {
+  color: #f5f5f5 !important;
+}
+
 
 .dynamic-html-content img {
   @apply max-w-full w-auto h-auto rounded-lg my-4;
@@ -306,19 +338,19 @@
 }
 
 .dynamic-html-content h1 {
-  @apply text-3xl lg:text-4xl font-bold tracking-tight mb-6 text-foreground;
+  @apply text-3xl lg:text-4xl font-bold tracking-tight mb-6;
 }
 
 .dynamic-html-content h2 {
-  @apply text-2xl lg:text-3xl font-semibold mb-4 mt-8 text-foreground;
+  @apply text-2xl lg:text-3xl font-semibold mb-4 mt-8;
 }
 
 .dynamic-html-content h3 {
-  @apply text-xl lg:text-2xl font-semibold mb-3 mt-6 text-foreground;
+  @apply text-xl lg:text-2xl font-semibold mb-3 mt-6;
 }
 
 .dynamic-html-content p {
-  @apply leading-relaxed mb-4 text-foreground;
+  @apply leading-relaxed mb-4;
 }
 
 .dynamic-html-content ul,
@@ -327,7 +359,7 @@
 }
 
 .dynamic-html-content li {
-  @apply text-foreground;
+  /* color handled by global rules above */
 }
 
 .dynamic-html-content table {
