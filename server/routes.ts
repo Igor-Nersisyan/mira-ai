@@ -19,6 +19,9 @@ function sanitizeHtmlColors(html: string): string {
     return `rgb(${r}, ${g}, ${b})`;
   });
   
+  result = result.replace(/<(h[1-6]|p|span|div|li|td|th|label|a)(\s)/gi, '<$1 style="color: #111827;" $2');
+  result = result.replace(/<(h[1-6]|p|span|div|li|td|th|label|a)>/gi, '<$1 style="color: #111827;">');
+  
   return result;
 }
 
