@@ -194,8 +194,8 @@ function buildHtmlSystemPrompt(): string {
 
   📐 СТРУКТУРА:
 
-  КАРТОЧКИ (утончённый стиль):
-  class="card" style="background: #ffffff; border-radius: 20px; padding: 32px; border: 1px solid rgba(17,24,39,0.04); box-shadow: 0 1px 3px rgba(17,24,39,0.06);"
+  КАРТОЧКИ (чистый стиль без обводки):
+  class="card" style="background: #ffffff; border-radius: 20px; padding: 32px; box-shadow: 0 1px 3px rgba(17,24,39,0.06);"
 
   КНОПКИ ОРАНЖЕВЫЕ:
   class="btn" style="display: inline-block; padding: 14px 28px; background: #FF8B36; border-radius: 12px; color: white; font-weight: 600; text-decoration: none; box-shadow: 0 4px 12px -4px rgba(255,139,54,0.3);"
