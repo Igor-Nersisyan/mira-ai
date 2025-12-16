@@ -4,18 +4,13 @@ import { DynamicContent } from "@/components/dynamic-content";
 import { HeroBlock } from "@/components/hero-block";
 import type { Message, StreamEvent } from "@shared/schema";
 
-const HTML_THROTTLE_MS = 150;
-
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [dynamicHtml, setDynamicHtml] = useState<string | null>(null);
   const [streamingMessage, setStreamingMessage] = useState<string>("");
-  const [streamingHtml, setStreamingHtml] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [isHtmlStreaming, setIsHtmlStreaming] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
-  const htmlBufferRef = useRef<string>("");
-  const lastHtmlUpdateRef = useRef<number>(0);
 
   const streamChat = useCallback(async (allMessages: Message[]): Promise<string> => {
     const response = await fetch("/api/chat/stream", {
@@ -75,7 +70,6 @@ export default function Home() {
     currentHtml: string | null
   ): Promise<string | null> => {
     setIsHtmlStreaming(true);
-    setStreamingHtml("");
 
     try {
       const response = await fetch("/api/html/stream", {
@@ -116,15 +110,7 @@ export default function Home() {
               
               if (event.type === "html_chunk") {
                 fullHtml += event.content;
-                htmlBufferRef.current = fullHtml;
-                
-                const now = Date.now();
-                if (now - lastHtmlUpdateRef.current >= HTML_THROTTLE_MS) {
-                  setStreamingHtml(fullHtml);
-                  lastHtmlUpdateRef.current = now;
-                }
               } else if (event.type === "html_end") {
-                setStreamingHtml(event.fullHtml || fullHtml);
                 return event.fullHtml;
               } else if (event.type === "error") {
                 throw new Error(event.message);
@@ -211,7 +197,6 @@ export default function Home() {
     setMessages([]);
     setDynamicHtml(null);
     setStreamingMessage("");
-    setStreamingHtml("");
     setIsLoading(false);
     setIsHtmlStreaming(false);
   }, []);
@@ -231,7 +216,6 @@ export default function Home() {
       <div className="flex-1 overflow-y-auto">
         <DynamicContent 
           html={dynamicHtml} 
-          streamingHtml={streamingHtml}
           isStreaming={isHtmlStreaming}
         >
           <HeroBlock />
