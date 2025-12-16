@@ -407,35 +407,6 @@
   color: #111827 !important;
 }
 
-/* 
-  SEMANTIC TEXT CLASSES - AI must use these instead of inline colors!
-  These have highest specificity and will always work.
-*/
-
-/* Surface text - adapts to theme */
-.dynamic-html-content .text-surface {
-  color: var(--dynamic-text) !important;
-}
-
-/* Secondary/muted text - adapts to theme */
-.dynamic-html-content .text-secondary {
-  color: var(--dynamic-text-secondary) !important;
-}
-
-.dynamic-html-content .text-muted {
-  color: var(--dynamic-text-muted) !important;
-}
-
-/* Text on cards - ALWAYS dark because cards are white */
-.dynamic-html-content .text-on-card {
-  color: #111827 !important;
-}
-
-/* Text on brand backgrounds (orange/blue buttons) - ALWAYS white */
-.dynamic-html-content .text-on-brand {
-  color: #ffffff !important;
-}
-
 /* BRAND BUTTONS: White text on orange/blue backgrounds */
 .dynamic-html-content .btn,
 .dynamic-html-content [class*="btn"],
