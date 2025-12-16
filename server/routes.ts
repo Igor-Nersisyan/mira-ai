@@ -8,12 +8,21 @@ import multer from "multer";
 function sanitizeHtmlColors(html: string): string {
   let result = html;
   
-  // Only remove gradients - keep rgba for subtle overlays
+  // Remove gradients
   result = result.replace(/linear-gradient\s*\([^)]+\)/gi, '#ffffff');
   result = result.replace(/radial-gradient\s*\([^)]+\)/gi, '#ffffff');
   
-  // DO NOT convert rgba to rgb - this was causing solid stripes
-  // rgba transparency is needed for progress bars, overlays, etc.
+  // FUNDAMENTAL FIX: Remove ALL inline text color declarations
+  // CSS will handle colors based on context (card vs non-card)
+  // This prevents AI-generated colors from breaking theme contrast
+  
+  // Remove color declarations (but keep background colors for buttons)
+  // Pattern: color: #xxx or color: rgb(...) or color: white etc
+  // But NOT background-color or background
+  result = result.replace(/(?<!background-)color\s*:\s*(?:#[0-9a-fA-F]{3,8}|rgb\([^)]+\)|rgba\([^)]+\)|white|black|inherit)\s*;?/gi, '');
+  
+  // Also remove var(--dynamic-...) color declarations - let CSS handle it
+  result = result.replace(/(?<!background-)color\s*:\s*var\([^)]+\)\s*;?/gi, '');
   
   return result;
 }

@@ -324,19 +324,37 @@
 }
 
 /* 
-  FORCE all text elements to use CSS variables with !important
-  This overrides ANY inline styles from AI-generated content
+  FUNDAMENTAL COLOR SYSTEM:
+  Server strips ALL inline color declarations.
+  CSS controls colors based on context:
+  - Outside cards: uses theme-aware --dynamic-text (dark in light mode, light in dark mode)
+  - Inside cards: ALWAYS dark text because cards are white
+  
+  Using :where() for LOW specificity base rules, regular selectors for card overrides.
 */
-.dynamic-html-content h1,
-.dynamic-html-content h2,
-.dynamic-html-content h3,
-.dynamic-html-content h4,
-.dynamic-html-content h5,
-.dynamic-html-content h6,
-.dynamic-html-content p,
-.dynamic-html-content span:not(.btn):not([style*="background"]),
-.dynamic-html-content div:not(.card):not(.metric):not(.btn):not([style*="background: #FF"]):not([style*="background: #2D"]) {
-  color: var(--dynamic-text) !important;
+
+/* Base text color - LOW specificity with :where() */
+.dynamic-html-content :where(h1, h2, h3, h4, h5, h6, p, span, div, li, td, th, label) {
+  color: var(--dynamic-text);
+}
+
+/* CARD CONTEXT - HIGH specificity, overrides base rules */
+/* Cards always have white background, so text must ALWAYS be dark */
+.dynamic-html-content .card,
+.dynamic-html-content .card *,
+.dynamic-html-content .metric,
+.dynamic-html-content .metric *,
+.dynamic-html-content .step,
+.dynamic-html-content .step *,
+.dynamic-html-content .feature,
+.dynamic-html-content .feature *,
+.dynamic-html-content .feature-card,
+.dynamic-html-content .feature-card *,
+.dynamic-html-content .pricing-card,
+.dynamic-html-content .pricing-card *,
+.dynamic-html-content [style*="background: var(--dynamic-card-bg)"],
+.dynamic-html-content [style*="background: var(--dynamic-card-bg)"] * {
+  color: #111827 !important;
 }
 
 /* Buttons with brand colors ALWAYS have white text */
@@ -345,63 +363,23 @@
 .dynamic-html-content [style*="background: #FF8B36"],
 .dynamic-html-content [style*="background:#FF8B36"],
 .dynamic-html-content [style*="background: #2D8CFF"],
-.dynamic-html-content [style*="background:#2D8CFF"] {
+.dynamic-html-content [style*="background:#2D8CFF"],
+.dynamic-html-content [style*="background:#FF"],
+.dynamic-html-content [style*="background: #FF"],
+.dynamic-html-content [style*="background:#2D"],
+.dynamic-html-content [style*="background: #2D"] {
   color: #ffffff !important;
-}
-
-/* 
-  UNIVERSAL CARD CONTRAST SYSTEM:
-  Any element with .card class ALWAYS has dark text - even in dark mode.
-  This is because cards always have white/light backgrounds.
-*/
-
-/* 
-  CARD SYSTEM:
-  Cards use CSS variables that ALWAYS resolve to white background + dark text.
-  This works in both light and dark modes.
-*/
-.dynamic-html-content .card,
-.dynamic-html-content .card *,
-.dynamic-html-content .metric,
-.dynamic-html-content .metric *,
-.dynamic-html-content .feature-card,
-.dynamic-html-content .feature-card *,
-.dynamic-html-content .pricing-card,
-.dynamic-html-content .pricing-card *,
-.dynamic-html-content .step-item,
-.dynamic-html-content .step-item *,
-.dynamic-html-content .step,
-.dynamic-html-content .step *,
-.dynamic-html-content .feature,
-.dynamic-html-content .feature * {
-  color: var(--dynamic-card-text) !important;
 }
 
 /* Card backgrounds - always white */
 .dynamic-html-content .card,
 .dynamic-html-content .metric,
-.dynamic-html-content .step-item,
 .dynamic-html-content .step,
 .dynamic-html-content .feature,
 .dynamic-html-content .feature-card,
 .dynamic-html-content .pricing-card {
-  background-color: var(--dynamic-card-bg) !important;
-  background: var(--dynamic-card-bg) !important;
-}
-
-/* Secondary text in cards */
-.dynamic-html-content .card p,
-.dynamic-html-content .feature-card p,
-.dynamic-html-content .pricing-card p,
-.dynamic-html-content .step-item p,
-.dynamic-html-content .feature p {
-  color: #374151 !important;
-}
-
-/* Muted text in metrics */
-.dynamic-html-content .metric > div:last-child,
-.dynamic-html-content .card .text-muted {
-  color: #6b7280 !important;
+  background-color: #ffffff !important;
+  background: #ffffff !important;
 }
 
 
