@@ -14,7 +14,11 @@ export function DynamicContent({
   isStreaming = false,
   children 
 }: DynamicContentProps) {
-  const displayHtml = streamingHtml || html;
+  const hasStreamingContent = streamingHtml && streamingHtml.trim().length > 0;
+  const hasFinalHtml = html && html.trim().length > 0;
+  
+  const displayHtml = hasStreamingContent ? streamingHtml : (hasFinalHtml ? html : null);
+  const showDefault = !displayHtml && !isStreaming;
   
   return (
     <div className="min-h-screen p-6 lg:p-8 xl:p-12">
@@ -32,9 +36,9 @@ export function DynamicContent({
             className="dynamic-html-content prose prose-slate dark:prose-invert max-w-none"
             dangerouslySetInnerHTML={{ __html: displayHtml }}
           />
-        ) : (
+        ) : showDefault ? (
           children
-        )}
+        ) : null}
       </div>
     </div>
   );

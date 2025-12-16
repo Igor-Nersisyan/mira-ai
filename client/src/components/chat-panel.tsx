@@ -2,7 +2,6 @@ import { useRef, useEffect } from "react";
 import { MessageList } from "@/components/message-list";
 import { ChatInput } from "@/components/chat-input";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { ChatBackground } from "@/components/chat-background";
 import { Button } from "@/components/ui/button";
 import { RotateCcw, Sparkles } from "lucide-react";
 import type { Message } from "@shared/schema";
@@ -12,6 +11,7 @@ interface ChatPanelProps {
   onSendMessage: (message: string) => void;
   onReset: () => void;
   isLoading: boolean;
+  isChatTyping: boolean;
   streamingMessage?: string;
 }
 
@@ -20,6 +20,7 @@ export function ChatPanel({
   onSendMessage,
   onReset,
   isLoading,
+  isChatTyping,
   streamingMessage = "",
 }: ChatPanelProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -28,14 +29,13 @@ export function ChatPanel({
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages, isLoading, streamingMessage]);
+  }, [messages, isChatTyping, streamingMessage]);
 
   return (
     <div 
       ref={scrollRef}
-      className="relative h-full overflow-y-auto bg-gradient-to-br from-pink-100 via-purple-50 to-blue-100 dark:from-pink-950/30 dark:via-purple-950/20 dark:to-blue-950/30"
+      className="relative h-full overflow-y-auto"
     >
-      <ChatBackground />
       
       {/* Sticky Header */}
       <div className="sticky top-0 z-20 flex items-center justify-between gap-4 px-4 py-3 border-b border-pink-200/50 dark:border-white/10 backdrop-blur-xl bg-white/40 dark:bg-black/30 shadow-[0_4px_30px_rgba(0,0,0,0.08)]">
@@ -89,7 +89,7 @@ export function ChatPanel({
         ) : (
           <MessageList 
             messages={messages} 
-            isLoading={isLoading} 
+            isChatTyping={isChatTyping} 
             streamingMessage={streamingMessage}
           />
         )}

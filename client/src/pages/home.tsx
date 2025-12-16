@@ -2,6 +2,7 @@ import { useState, useCallback, useRef } from "react";
 import { ChatPanel } from "@/components/chat-panel";
 import { DynamicContent } from "@/components/dynamic-content";
 import { HeroBlock } from "@/components/hero-block";
+import { ChatBackground } from "@/components/chat-background";
 import type { Message, StreamEvent } from "@shared/schema";
 
 export default function Home() {
@@ -9,7 +10,7 @@ export default function Home() {
   const [dynamicHtml, setDynamicHtml] = useState<string | null>(null);
   const [streamingHtml, setStreamingHtml] = useState<string | null>(null);
   const [streamingMessage, setStreamingMessage] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isChatTyping, setIsChatTyping] = useState(false);
   const [isHtmlStreaming, setIsHtmlStreaming] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -42,54 +43,60 @@ export default function Home() {
   };
 
   const streamChat = useCallback(async (allMessages: Message[]): Promise<string> => {
-    const response = await fetch("/api/chat/stream", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages: allMessages }),
-      signal: abortControllerRef.current?.signal,
-    });
+    setIsChatTyping(true);
+    
+    try {
+      const response = await fetch("/api/chat/stream", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: allMessages }),
+        signal: abortControllerRef.current?.signal,
+      });
 
-    if (!response.ok) {
-      throw new Error("Chat request failed");
-    }
+      if (!response.ok) {
+        throw new Error("Chat request failed");
+      }
 
-    const reader = response.body?.getReader();
-    if (!reader) throw new Error("No response body");
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error("No response body");
 
-    const decoder = new TextDecoder();
-    let buffer = "";
-    let fullMessage = "";
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let fullMessage = "";
 
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
 
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split("\n");
-      buffer = lines.pop() || "";
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || "";
 
-      for (const line of lines) {
-        if (line.startsWith("data: ")) {
-          try {
-            const event: StreamEvent = JSON.parse(line.slice(6));
-            
-            if (event.type === "chat_chunk") {
-              fullMessage += event.content;
-              setStreamingMessage(fullMessage);
-            } else if (event.type === "chat_end") {
-              fullMessage = event.fullMessage;
-            } else if (event.type === "error") {
-              throw new Error(event.message);
+        for (const line of lines) {
+          if (line.startsWith("data: ")) {
+            try {
+              const event: StreamEvent = JSON.parse(line.slice(6));
+              
+              if (event.type === "chat_chunk") {
+                fullMessage += event.content;
+                setStreamingMessage(fullMessage);
+              } else if (event.type === "chat_end") {
+                fullMessage = event.fullMessage;
+              } else if (event.type === "error") {
+                throw new Error(event.message);
+              }
+            } catch (e) {
+              if (e instanceof SyntaxError) continue;
+              throw e;
             }
-          } catch (e) {
-            if (e instanceof SyntaxError) continue;
-            throw e;
           }
         }
       }
-    }
 
-    return fullMessage;
+      return fullMessage;
+    } finally {
+      setIsChatTyping(false);
+    }
   }, []);
 
   const streamHtml = useCallback(async (
@@ -98,7 +105,6 @@ export default function Home() {
     currentHtml: string | null
   ): Promise<string | null> => {
     setIsHtmlStreaming(true);
-    setStreamingHtml(null);
 
     try {
       const response = await fetch("/api/html/stream", {
@@ -166,6 +172,8 @@ export default function Home() {
     }
   }, []);
 
+  const isLoading = isChatTyping || isHtmlStreaming;
+
   const handleSendMessage = useCallback(
     async (messageText: string) => {
       if (!messageText.trim() || isLoading) return;
@@ -181,7 +189,6 @@ export default function Home() {
 
       const allMessages = [...messages, userMessage];
       setMessages(allMessages);
-      setIsLoading(true);
       setStreamingMessage("");
 
       try {
@@ -203,7 +210,6 @@ export default function Home() {
         };
         setMessages((prev) => [...prev, assistantMessage]);
         setStreamingMessage("");
-        setIsLoading(false);
 
         if (html) {
           setDynamicHtml(html);
@@ -219,12 +225,11 @@ export default function Home() {
           setMessages((prev) => [...prev, errorMessage]);
         }
       } finally {
-        setIsLoading(false);
         setStreamingMessage("");
         abortControllerRef.current = null;
       }
     },
-    [messages, isLoading, streamChat, streamHtml]
+    [messages, isLoading, streamChat, streamHtml, dynamicHtml]
   );
 
   const handleResetChat = useCallback(() => {
@@ -235,23 +240,26 @@ export default function Home() {
     setDynamicHtml(null);
     setStreamingHtml(null);
     setStreamingMessage("");
-    setIsLoading(false);
+    setIsChatTyping(false);
     setIsHtmlStreaming(false);
   }, []);
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen overflow-hidden bg-background">
-      <div className="w-full lg:w-[30%] lg:min-w-[360px] lg:max-w-[480px] h-[50vh] lg:h-full border-b lg:border-b-0 lg:border-r border-border flex-shrink-0">
+    <div className="relative flex flex-col lg:flex-row h-screen overflow-hidden bg-gradient-to-br from-pink-100 via-purple-50 to-blue-100 dark:from-pink-950/30 dark:via-purple-950/20 dark:to-blue-950/30">
+      <ChatBackground />
+      
+      <div className="relative w-full lg:w-[30%] lg:min-w-[360px] lg:max-w-[480px] h-[50vh] lg:h-full border-b lg:border-b-0 lg:border-r border-border/50 flex-shrink-0">
         <ChatPanel
           messages={messages}
           onSendMessage={handleSendMessage}
           onReset={handleResetChat}
           isLoading={isLoading}
+          isChatTyping={isChatTyping}
           streamingMessage={streamingMessage}
         />
       </div>
       
-      <div className="flex-1 overflow-y-auto bg-gradient-to-br from-pink-100 via-purple-50 to-blue-100 dark:from-pink-950/30 dark:via-purple-950/20 dark:to-blue-950/30">
+      <div className="relative flex-1 overflow-y-auto">
         <DynamicContent 
           html={dynamicHtml} 
           streamingHtml={streamingHtml}

@@ -6,20 +6,20 @@ import { cn } from "@/lib/utils";
 
 interface MessageListProps {
   messages: Message[];
-  isLoading: boolean;
+  isChatTyping: boolean;
   streamingMessage?: string;
 }
 
-export function MessageList({ messages, isLoading, streamingMessage = "" }: MessageListProps) {
+export function MessageList({ messages, isChatTyping, streamingMessage = "" }: MessageListProps) {
   return (
     <div className="space-y-4">
       {messages.map((message) => (
         <MessageBubble key={message.id} message={message} />
       ))}
-      {isLoading && streamingMessage && (
+      {isChatTyping && streamingMessage && (
         <StreamingMessageBubble content={streamingMessage} />
       )}
-      {isLoading && !streamingMessage && <TypingIndicator />}
+      {isChatTyping && !streamingMessage && <TypingIndicator />}
     </div>
   );
 }
