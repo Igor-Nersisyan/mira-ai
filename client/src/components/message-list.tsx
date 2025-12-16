@@ -55,7 +55,7 @@ function MessageBubble({ message }: { message: Message }) {
           "prose-ul:my-1 prose-ol:my-1 prose-li:my-0 prose-li:leading-snug",
           "prose-headings:my-1 prose-headings:leading-snug",
           "[&_ul]:pl-4 [&_ol]:pl-4",
-          isUser ? "[&_*]:text-white" : "dark:prose-invert"
+          isUser ? "[&_*]:text-white" : ""
         )}>
           <ReactMarkdown>{message.content}</ReactMarkdown>
         </div>
@@ -92,7 +92,7 @@ function StreamingMessageBubble({ content }: { content: string }) {
         <Sparkles className="w-4 h-4 text-primary animate-pulse" />
       </div>
       <div className="max-w-[85%] rounded-2xl rounded-bl-sm px-4 py-3 text-sm leading-relaxed bg-muted/80 text-foreground shadow-sm backdrop-blur-sm">
-        <div className="whitespace-pre-wrap break-words prose prose-sm max-w-none prose-p:my-0 prose-p:leading-snug prose-ul:my-1 prose-ol:my-1 prose-li:my-0 prose-li:leading-snug prose-headings:my-1 prose-headings:leading-snug [&_ul]:pl-4 [&_ol]:pl-4 dark:prose-invert">
+        <div className="whitespace-pre-wrap break-words prose prose-sm max-w-none prose-p:my-0 prose-p:leading-snug prose-ul:my-1 prose-ol:my-1 prose-li:my-0 prose-li:leading-snug prose-headings:my-1 prose-headings:leading-snug [&_ul]:pl-4 [&_ol]:pl-4">
           <ReactMarkdown>{content}</ReactMarkdown>
           <span className="inline-block w-1.5 h-4 bg-primary/50 animate-pulse ml-0.5" />
         </div>

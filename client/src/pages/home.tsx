@@ -214,7 +214,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="relative flex flex-col lg:flex-row h-screen overflow-hidden bg-gradient-to-br from-pink-100 via-purple-50 to-blue-100 dark:from-pink-950/30 dark:via-purple-950/20 dark:to-blue-950/30">
+    <div className="relative flex flex-col lg:flex-row h-screen overflow-hidden bg-gradient-to-br from-pink-100 via-purple-50 to-blue-100">
       <ChatBackground />
       
       <div className="relative w-full lg:w-[30%] lg:min-w-[360px] lg:max-w-[480px] h-[50vh] lg:h-full border-b lg:border-b-0 lg:border-r border-border/50 flex-shrink-0">
@@ -230,7 +230,7 @@ export default function Home() {
       
       <div className="relative flex-1 overflow-y-auto">
         <div className="relative z-10">
-          <div className="absolute inset-0 backdrop-blur-[2px] bg-white/15 dark:bg-black/10 pointer-events-none" style={{ minHeight: '100%', height: 'auto' }} />
+          <div className="absolute inset-0 backdrop-blur-[2px] bg-white/15 pointer-events-none" style={{ minHeight: '100%', height: 'auto' }} />
           <div className="relative z-20">
             <DynamicContent 
               html={dynamicHtml} 

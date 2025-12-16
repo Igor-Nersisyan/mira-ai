@@ -1,7 +1,6 @@
 import { useRef, useEffect } from "react";
 import { MessageList } from "@/components/message-list";
 import { ChatInput } from "@/components/chat-input";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { RotateCcw, Sparkles } from "lucide-react";
 import type { Message } from "@shared/schema";
@@ -38,13 +37,13 @@ export function ChatPanel({
     >
       
       {/* Sticky Header */}
-      <div className="sticky top-0 z-20 flex items-center justify-between gap-4 px-4 py-3 border-b border-pink-200/50 dark:border-white/10 backdrop-blur-xl bg-white/40 dark:bg-black/30 shadow-[0_4px_30px_rgba(0,0,0,0.08)]">
+      <div className="sticky top-0 z-20 flex items-center justify-between gap-4 px-4 py-3 border-b border-pink-200/50 backdrop-blur-xl bg-white/40 shadow-[0_4px_30px_rgba(0,0,0,0.08)]">
         <div className="flex items-center gap-3">
           <div className="relative">
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shadow-sm backdrop-blur-sm">
               <Sparkles className="w-5 h-5 text-primary" />
             </div>
-            <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white/80 dark:border-black/50 animate-pulse" />
+            <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white/80 animate-pulse" />
           </div>
           <div>
             <h2 className="font-semibold text-card-foreground text-sm">Mira</h2>
@@ -65,7 +64,6 @@ export function ChatPanel({
               Сбросить
             </Button>
           )}
-          <ThemeToggle />
         </div>
       </div>
 
@@ -96,7 +94,7 @@ export function ChatPanel({
       </div>
 
       {/* Sticky Footer */}
-      <div className="sticky bottom-0 z-20 border-t border-pink-200/50 dark:border-white/10 backdrop-blur-xl bg-white/40 dark:bg-black/30 p-4 shadow-[0_-4px_30px_rgba(0,0,0,0.08)]">
+      <div className="sticky bottom-0 z-20 border-t border-pink-200/50 backdrop-blur-xl bg-white/40 p-4 shadow-[0_-4px_30px_rgba(0,0,0,0.08)]">
         <ChatInput
           onSend={onSendMessage}
           disabled={isLoading}

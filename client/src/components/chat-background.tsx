@@ -1,6 +1,6 @@
 export function ChatBackground() {
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-25 dark:opacity-15">
+    <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-25">
       <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <pattern id="hr-pattern" x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse">
