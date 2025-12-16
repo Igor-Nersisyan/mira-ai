@@ -135,8 +135,13 @@ function buildHtmlSystemPrompt(): string {
   - Чёрный: #111827, #1f2937
   - Белый: #ffffff, #f9fafb, #f3f4f6
   
-  ❌ ЗАПРЕЩЕНО: linear-gradient, градиенты любого типа!
-  Используй ТОЛЬКО сплошные цвета.
+  ❌ СТРОГО ЗАПРЕЩЕНО:
+  - linear-gradient, radial-gradient, градиенты ЛЮБОГО типа!
+  - Полупрозрачные фоны (rgba с alpha < 1, opacity < 1)
+  - backdrop-filter, filter: blur
+  - background-image с градиентами
+  
+  ✅ Используй ТОЛЬКО сплошные непрозрачные цвета для фонов!
 
   🚨 КОНТРАСТ ТЕКСТА:
   
@@ -164,7 +169,7 @@ function buildHtmlSystemPrompt(): string {
     .img-card { transition: transform 0.4s ease; }
     .img-card:hover { transform: scale(1.02); }
     .feature { transition: all 0.3s ease; border-left: 4px solid transparent; }
-    .feature:hover { border-left-color: #FF8B36; padding-left: 20px; background: rgba(255,139,54,0.05); }
+    .feature:hover { border-left-color: #FF8B36; padding-left: 20px; background: #fff7ed; }
     .step-item { position: relative; }
     .step-item::before { content: ''; position: absolute; left: 24px; top: 60px; width: 2px; height: calc(100% - 60px); background: #2D8CFF; }
     @media (prefers-color-scheme: dark) {
@@ -239,9 +244,9 @@ function buildHtmlSystemPrompt(): string {
     </div>
   </div>
 
-  5. BADGES/ТЕГИ:
-  <span style="display: inline-block; padding: 6px 14px; background: rgba(45,140,255,0.1); color: #2D8CFF; border-radius: 100px; font-size: 13px; font-weight: 500;">Тег</span>
-  <span style="display: inline-block; padding: 6px 14px; background: rgba(255,139,54,0.1); color: #FF8B36; border-radius: 100px; font-size: 13px; font-weight: 500;">Новое</span>
+  5. BADGES/ТЕГИ (сплошные цвета!):
+  <span style="display: inline-block; padding: 6px 14px; background: #e0f2fe; color: #2D8CFF; border-radius: 100px; font-size: 13px; font-weight: 500;">Тег</span>
+  <span style="display: inline-block; padding: 6px 14px; background: #ffedd5; color: #FF8B36; border-radius: 100px; font-size: 13px; font-weight: 500;">Новое</span>
 
   🚨 ПРАВИЛА КАЧЕСТВА:
 
@@ -252,11 +257,15 @@ function buildHtmlSystemPrompt(): string {
   5. ИСПОЛЬЗУЙ СКРИНШОТЫ из списка ниже
   6. Если тема та же — возвращай ПУСТУЮ СТРОКУ
   
-  ЗАПРЕЩЕНО:
+  СТРОГО ЗАПРЕЩЕНО:
   - Розовые, фиолетовые, зелёные цвета (не в бренде!)
   - Статичные блоки без hover
   - Примитивные секции с 1-2 элементами
   - Серый текст на тёмном фоне
+  - Полупрозрачные фоны (rgba с opacity < 1, например rgba(255,255,255,0.5))
+  - Градиенты (linear-gradient, radial-gradient)
+  - Случайные изображения не из списка ДОСТУПНЫЕ ИЗОБРАЖЕНИЯ
+  - Аватар Миры (/assets/avatar_mira.png) без контекста — используй ТОЛЬКО когда говоришь про AI-аватар или интервью!
 
   ДОСТУПНЫЕ ИЗОБРАЖЕНИЯ:
 

@@ -47,6 +47,49 @@ function getEffectiveBackground(element: HTMLElement): { r: number; g: number; b
   return null;
 }
 
+function sanitizeStyles(container: HTMLElement) {
+  const allElements = container.querySelectorAll('*');
+  
+  allElements.forEach((el) => {
+    const element = el as HTMLElement;
+    const style = element.getAttribute('style');
+    
+    if (style) {
+      let newStyle = style;
+      
+      if (style.includes('linear-gradient') || style.includes('radial-gradient')) {
+        newStyle = newStyle.replace(/background[^;]*gradient[^;]*;?/gi, 'background: #ffffff;');
+      }
+      
+      const rgbaMatch = style.match(/rgba\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*([\d.]+)\s*\)/gi);
+      if (rgbaMatch) {
+        rgbaMatch.forEach(rgba => {
+          const parts = rgba.match(/rgba\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*([\d.]+)\s*\)/i);
+          if (parts) {
+            const alpha = parseFloat(parts[4]);
+            if (alpha < 0.9 && style.includes('background')) {
+              const r = parseInt(parts[1]);
+              const g = parseInt(parts[2]);
+              const b = parseInt(parts[3]);
+              const solidColor = `rgb(${r}, ${g}, ${b})`;
+              newStyle = newStyle.replace(rgba, solidColor);
+            }
+          }
+        });
+      }
+      
+      if (style.includes('backdrop-filter') || style.includes('filter: blur')) {
+        newStyle = newStyle.replace(/backdrop-filter[^;]*;?/gi, '');
+        newStyle = newStyle.replace(/filter:\s*blur[^;]*;?/gi, '');
+      }
+      
+      if (newStyle !== style) {
+        element.setAttribute('style', newStyle);
+      }
+    }
+  });
+}
+
 function applyContrastColors(container: HTMLElement) {
   const textElements = container.querySelectorAll('h1, h2, h3, h4, h5, h6, p, span, li, a, div, td, th, label, strong, em, b, i');
   
@@ -80,6 +123,7 @@ export function DynamicContent({
     if (contentRef.current && displayHtml) {
       const timeoutId = setTimeout(() => {
         if (contentRef.current) {
+          sanitizeStyles(contentRef.current);
           applyContrastColors(contentRef.current);
         }
       }, 50);
