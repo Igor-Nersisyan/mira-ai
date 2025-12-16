@@ -67,7 +67,8 @@ export default function Home() {
   const streamHtml = useCallback(async (
     conversationContext: string, 
     lastUserMessage: string, 
-    lastAssistantMessage: string
+    lastAssistantMessage: string,
+    currentHtml: string | null
   ): Promise<string | null> => {
     setIsHtmlStreaming(true);
     setStreamingHtml("");
@@ -79,7 +80,8 @@ export default function Home() {
         body: JSON.stringify({ 
           conversationContext, 
           lastUserMessage, 
-          lastAssistantMessage 
+          lastAssistantMessage,
+          currentHtml 
         }),
         signal: abortControllerRef.current?.signal,
       });
@@ -168,7 +170,7 @@ export default function Home() {
           .map((m) => `${m.role}: ${m.content}`)
           .join("\n");
 
-        const html = await streamHtml(context, messageText.trim(), assistantResponse);
+        const html = await streamHtml(context, messageText.trim(), assistantResponse, dynamicHtml);
         if (html) {
           setDynamicHtml(html);
         }

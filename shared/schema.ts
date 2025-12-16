@@ -19,6 +19,7 @@ export const htmlRequestSchema = z.object({
   conversationContext: z.string(),
   lastUserMessage: z.string(),
   lastAssistantMessage: z.string(),
+  currentHtml: z.string().nullable().optional(),
 });
 
 export type HtmlRequest = z.infer<typeof htmlRequestSchema>;

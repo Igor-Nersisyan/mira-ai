@@ -129,17 +129,37 @@ return `Ты — эксперт по созданию впечатляющих, 
 Визуальная панель — это ПРОДАЮЩИЙ инструмент. Каждый HTML должен впечатлять, информировать и убеждать.
 Лучше сгенерировать чуть больше, чем оставить панель пустой или скудной.
 
+🚨 КРИТИЧЕСКОЕ ПРАВИЛО — НЕ ДУБЛИРОВАТЬ ЧАТ:
+Правая панель ДОПОЛНЯЕТ разговор, а не повторяет его.
+
+Чат говорит "10 000 резюме в день" → Панель показывает:
+- Инфографику воронки: 10 000 → 500 релевантных → 50 на интервью → 5 финалистов
+- Скриншот дашборда
+- Кейс клиента с цифрами
+
+Чат говорит "стоит от 8 330 рублей" → Панель показывает:
+- Сравнительную таблицу с живым рекрутером
+- ROI калькулятор
+- Все тарифы с деталями
+
+Чат отвечает на вопрос текстом → Панель ВИЗУАЛИЗИРУЕТ:
+- Если чат говорит про процесс → покажи шаги с иконками и соединителями
+- Если чат говорит про преимущества → покажи карточки с метриками
+- Если чат говорит про цену → покажи сравнение и ROI
+
 ПРАВИЛО КАЧЕСТВА (КРИТИЧЕСКИ ВАЖНО):
 
 ❌ НИКОГДА не генерируй "маленький" HTML из 1 карточки или 1 секции
 ❌ НИКОГДА не заменяй богатый контент на куцый
+❌ НИКОГДА не повторяй текст из чата — ВИЗУАЛИЗИРУЙ его
 
 Если пользователь уточняет/продолжает ту же тему:
 → Верни ПУСТУЮ СТРОКУ — текущий контент останется
 
 Генерируй HTML ТОЛЬКО когда:
 1. Новая тема (смена с "интервью" на "цены")
-2. И ты можешь сгенерировать МИНИМУМ 2 полноценные секции
+2. И ты можешь сгенерировать МИНИМУМ 2-3 богатые секции
+3. Контент будет ВИЗУАЛЬНО ДОПОЛНЯТЬ чат, а не дублировать его
 
 ПРИМЕРЫ:
 
@@ -390,7 +410,7 @@ async function* streamOpenRouterChat(messages: Message[], systemPrompt: string):
       "X-Title": "AIR Mira",
     },
     body: JSON.stringify({
-      model: "anthropic/claude-sonnet-4",
+      model: "anthropic/claude-sonnet-4.5",
       messages: formattedMessages,
       max_tokens: 2048,
       temperature: 0.7,
@@ -439,18 +459,22 @@ async function* streamOpenRouterChat(messages: Message[], systemPrompt: string):
   }
 }
 
-async function* streamOpenRouterHtml(context: string, userMessage: string, assistantMessage: string): AsyncGenerator<string> {
+async function* streamOpenRouterHtml(context: string, userMessage: string, assistantMessage: string, currentHtml: string | null): AsyncGenerator<string> {
   if (!OPENROUTER_API_KEY) {
     throw new Error("OPENROUTER_API_KEY is not configured");
   }
 
   const htmlPrompt = buildHtmlSystemPrompt();
   
+  const currentHtmlContext = currentHtml 
+    ? `\n\nТЕКУЩИЙ HTML НА ПАНЕЛИ (первые 1000 символов):\n${currentHtml.slice(0, 1000)}${currentHtml.length > 1000 ? '...[обрезано]' : ''}\n\n`
+    : '\n\nТЕКУЩИЙ HTML НА ПАНЕЛИ: пусто (начало разговора)\n\n';
+  
   const formattedMessages = [
     { role: "system", content: htmlPrompt },
     { 
       role: "user", 
-      content: `Контекст разговора:\n${context}\n\nПоследний вопрос пользователя: ${userMessage}\n\nОтвет ассистента: ${assistantMessage}\n\nСгенерируй подходящий HTML или верни пустую строку если HTML не нужен.` 
+      content: `Контекст разговора:\n${context}${currentHtmlContext}Последний вопрос пользователя: ${userMessage}\n\nОтвет ассистента: ${assistantMessage}\n\nСгенерируй подходящий HTML или верни пустую строку если HTML не нужен.` 
     },
   ];
 
@@ -588,7 +612,7 @@ export async function registerRoutes(
         return res.status(400).json({ error: "Invalid request format" });
       }
 
-      const { conversationContext, lastUserMessage, lastAssistantMessage } = parsed.data;
+      const { conversationContext, lastUserMessage, lastAssistantMessage, currentHtml } = parsed.data;
 
       if (!OPENROUTER_API_KEY) {
         return res.status(500).json({
@@ -605,7 +629,7 @@ export async function registerRoutes(
 
       let fullHtml = "";
 
-      for await (const chunk of streamOpenRouterHtml(conversationContext, lastUserMessage, lastAssistantMessage)) {
+      for await (const chunk of streamOpenRouterHtml(conversationContext, lastUserMessage, lastAssistantMessage, currentHtml || null)) {
         fullHtml += chunk;
         res.write(`data: ${JSON.stringify({ type: "html_chunk", content: chunk })}\n\n`);
       }
