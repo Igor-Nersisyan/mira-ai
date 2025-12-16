@@ -310,49 +310,71 @@
   color: hsl(var(--foreground));
 }
 
-/* Card elements: always white background with dark text for readability */
+/* CARDS: Always white background with dark text */
 .dynamic-html-content .card,
 .dynamic-html-content .metric,
 .dynamic-html-content .step,
 .dynamic-html-content .feature,
 .dynamic-html-content .feature-card,
 .dynamic-html-content .pricing-card {
-  background-color: hsl(var(--card));
-  color: hsl(var(--card-foreground));
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+  color: #111827 !important;
 }
 
-/* All text inside cards inherits card foreground */
+/* All text inside cards is dark */
 .dynamic-html-content .card *,
 .dynamic-html-content .metric *,
 .dynamic-html-content .step *,
 .dynamic-html-content .feature *,
 .dynamic-html-content .feature-card *,
 .dynamic-html-content .pricing-card * {
-  color: inherit;
+  color: #111827 !important;
+}
+
+/* Elements with inline white background also get dark text */
+.dynamic-html-content [style*="background: #fff"],
+.dynamic-html-content [style*="background:#fff"],
+.dynamic-html-content [style*="background: #ffffff"],
+.dynamic-html-content [style*="background:#ffffff"],
+.dynamic-html-content [style*="background: white"],
+.dynamic-html-content [style*="background:white"],
+.dynamic-html-content [style*="background-color: #fff"],
+.dynamic-html-content [style*="background-color:#fff"],
+.dynamic-html-content [style*="background-color: #ffffff"],
+.dynamic-html-content [style*="background-color:#ffffff"],
+.dynamic-html-content [style*="background-color: white"],
+.dynamic-html-content [style*="background-color:white"],
+.dynamic-html-content [style*="background: rgb(255"],
+.dynamic-html-content [style*="background:rgb(255"],
+.dynamic-html-content [style*="background: rgba(255"],
+.dynamic-html-content [style*="background:rgba(255"] {
+  color: #111827 !important;
+}
+
+.dynamic-html-content [style*="background: #fff"] *,
+.dynamic-html-content [style*="background:#fff"] *,
+.dynamic-html-content [style*="background: #ffffff"] *,
+.dynamic-html-content [style*="background:#ffffff"] *,
+.dynamic-html-content [style*="background: white"] *,
+.dynamic-html-content [style*="background:white"] *,
+.dynamic-html-content [style*="background-color: #fff"] *,
+.dynamic-html-content [style*="background-color:#fff"] *,
+.dynamic-html-content [style*="background-color: #ffffff"] *,
+.dynamic-html-content [style*="background-color:#ffffff"] *,
+.dynamic-html-content [style*="background-color: white"] *,
+.dynamic-html-content [style*="background-color:white"] *,
+.dynamic-html-content [style*="background: rgb(255"] *,
+.dynamic-html-content [style*="background:rgb(255"] *,
+.dynamic-html-content [style*="background: rgba(255"] *,
+.dynamic-html-content [style*="background:rgba(255"] * {
+  color: #111827 !important;
 }
 
 /* Brand buttons get white text */
 .dynamic-html-content .btn,
 .dynamic-html-content .cta-button {
-  color: hsl(var(--primary-foreground));
-}
-
-/* Force dark text on light backgrounds (theme-independent) */
-.dynamic-html-content .light-bg-forced {
-  color: #1a1a1a !important;
-}
-
-.dynamic-html-content .light-bg-forced * {
-  color: inherit !important;
-}
-
-/* Force light text on dark backgrounds (theme-independent) */
-.dynamic-html-content .dark-bg-forced {
   color: #ffffff !important;
-}
-
-.dynamic-html-content .dark-bg-forced * {
-  color: inherit !important;
 }
 
 
