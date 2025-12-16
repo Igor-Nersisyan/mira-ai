@@ -379,6 +379,17 @@ Hero с аватаром → Процесс интервью (4 шага) → Г
 /assets/briefing_chat.png — чат брифинга
 /assets/briefing_checklist.png — чеклист
 /assets/vacancies_list.png — список вакансий
+/assets/ai_cold_search_status.jpeg — статус холодного поиска AI (обработка резюме, найденные релевантные)
+/assets/candidate_detailed_analysis.jpg — детальный анализ кандидата с оценками по навыкам
+/assets/candidate_motivation_report.jpg — отчет по мотивации и типологии кандидата (PAEI, 5 типов)
+/assets/candidate_skills_table.jpg — таблица оценки навыков кандидата (резюме + собеседование)
+/assets/economic_efficiency.jpeg — экономическая эффективность AIR Mira (120 часов, 85 000 ₽, 5 дней)
+/assets/hiring_funnel_stats.jpg — статистика воронки найма (отклики → отбор → интервью → рекомендованные)
+/assets/hiring_speed_comparison.jpeg — сравнение скорости этапов найма (классический HR vs AIR Mira)
+/assets/interview_scores_chart.jpg — распределение баллов за собеседование (гистограмма)
+/assets/job_criteria_form.jpg — форма редактирования критериев вакансии
+/assets/resume_scores_chart.jpg — распределение баллов за резюме (гистограмма)
+/assets/resume_search_form.jpg — форма параметров поиска резюме (ключевые слова, география, возраст)
 
 Все изображения кроме аватара: style="max-width: 680px; border-radius: 8px;"
 
