@@ -183,10 +183,6 @@ export function DynamicContent({
       
       sanitizeStyles(contentRef.current);
       
-      if (!isStreaming) {
-        applyContrastColors(contentRef.current);
-      }
-      
       const images = contentRef.current.querySelectorAll('img');
       images.forEach((img) => {
         if (!img.dataset.lightboxBound) {
@@ -200,7 +196,7 @@ export function DynamicContent({
         }
       });
     }
-  }, [streamingHtml, html, contentRef, isStreaming]);
+  }, [streamingHtml, html, contentRef]);
   
   return (
     <>
