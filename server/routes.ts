@@ -4,54 +4,16 @@ import { chatRequestSchema, htmlRequestSchema, type AIResponse, type Message } f
 import fs from "fs";
 import path from "path";
 import multer from "multer";
-import { JSDOM } from "jsdom";
 
-// Brand colors that are allowed to have white text
-const BRAND_COLORS = ['#FF8B36', '#ff8b36', '#2D8CFF', '#2d8cff'];
-
+// Simple sanitization - just remove gradients, let CSS handle colors
 function sanitizeHtmlColors(html: string): string {
-  // Quick check - if no style attributes, return as is
-  if (!html.includes('style=')) {
-    return html;
-  }
+  let result = html;
   
-  try {
-    const dom = new JSDOM(`<body>${html}</body>`, { contentType: "text/html" });
-    const document = dom.window.document;
-    
-    // Process all elements with style attributes
-    const elements = document.body.querySelectorAll('[style]');
-    
-    elements.forEach((element) => {
-      const style = (element as HTMLElement).style;
-      const bgColor = style.background || style.backgroundColor || '';
-      
-      // Check if this is a button with brand color
-      const isBrandButton = BRAND_COLORS.some(color => 
-        bgColor.toLowerCase().includes(color.toLowerCase())
-      );
-      
-      if (isBrandButton) {
-        // Force white text on brand-colored buttons
-        style.color = '#ffffff';
-      } else {
-        // Remove ALL color declarations - let CSS handle it
-        style.removeProperty('color');
-      }
-      
-      // Remove gradients
-      if (bgColor.includes('gradient')) {
-        style.background = '#ffffff';
-        style.backgroundImage = '';
-      }
-    });
-    
-    return document.body.innerHTML;
-  } catch (error) {
-    console.error('JSDOM sanitization error:', error);
-    // Fallback: just return original HTML
-    return html;
-  }
+  // Remove gradients only
+  result = result.replace(/linear-gradient\s*\([^)]+\)/gi, '#ffffff');
+  result = result.replace(/radial-gradient\s*\([^)]+\)/gi, '#ffffff');
+  
+  return result;
 }
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;

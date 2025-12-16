@@ -325,21 +325,20 @@
 
 /* 
   FUNDAMENTAL COLOR SYSTEM:
-  Server strips ALL inline color declarations.
-  CSS controls colors based on context:
-  - Outside cards: uses theme-aware --dynamic-text (dark in light mode, light in dark mode)
-  - Inside cards: ALWAYS dark text because cards are white
+  CSS controls ALL text colors. Inline styles are overridden with !important.
   
-  Using :where() for LOW specificity base rules, regular selectors for card overrides.
+  RULE 1: All text outside cards adapts to theme (dark in light mode, light in dark mode)
+  RULE 2: All text inside cards is ALWAYS dark (cards are always white)
+  RULE 3: Text on brand-colored backgrounds (orange/blue) is ALWAYS white
 */
 
-/* Base text color - LOW specificity with :where() */
-.dynamic-html-content :where(h1, h2, h3, h4, h5, h6, p, span, div, li, td, th, label) {
-  color: var(--dynamic-text);
+/* DEFAULT: All text uses theme-aware color */
+.dynamic-html-content,
+.dynamic-html-content * {
+  color: var(--dynamic-text) !important;
 }
 
-/* CARD CONTEXT - HIGH specificity, overrides base rules */
-/* Cards always have white background, so text must ALWAYS be dark */
+/* CARDS: Always dark text because cards are always white */
 .dynamic-html-content .card,
 .dynamic-html-content .card *,
 .dynamic-html-content .metric,
@@ -351,23 +350,17 @@
 .dynamic-html-content .feature-card,
 .dynamic-html-content .feature-card *,
 .dynamic-html-content .pricing-card,
-.dynamic-html-content .pricing-card *,
-.dynamic-html-content [style*="background: var(--dynamic-card-bg)"],
-.dynamic-html-content [style*="background: var(--dynamic-card-bg)"] * {
+.dynamic-html-content .pricing-card * {
   color: #111827 !important;
 }
 
-/* Buttons with brand colors ALWAYS have white text */
+/* BRAND BUTTONS: White text on orange/blue backgrounds */
 .dynamic-html-content .btn,
-.dynamic-html-content a.btn,
-.dynamic-html-content [style*="background: #FF8B36"],
-.dynamic-html-content [style*="background:#FF8B36"],
-.dynamic-html-content [style*="background: #2D8CFF"],
-.dynamic-html-content [style*="background:#2D8CFF"],
-.dynamic-html-content [style*="background:#FF"],
+.dynamic-html-content [class*="btn"],
 .dynamic-html-content [style*="background: #FF"],
-.dynamic-html-content [style*="background:#2D"],
-.dynamic-html-content [style*="background: #2D"] {
+.dynamic-html-content [style*="background:#FF"],
+.dynamic-html-content [style*="background: #2D"],
+.dynamic-html-content [style*="background:#2D"] {
   color: #ffffff !important;
 }
 
