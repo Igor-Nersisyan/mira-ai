@@ -5,8 +5,8 @@ import fs from "fs";
 import path from "path";
 import multer from "multer";
 
-// Sanitize HTML: remove gradients AND all inline color declarations
-// This lets CSS fully control text colors based on context
+// Sanitize HTML: remove gradients, normalize colors
+// Keep white text (#fff, #ffffff, white) for buttons, remove problematic colors
 function sanitizeHtmlColors(html: string): string {
   let result = html;
   
@@ -14,19 +14,40 @@ function sanitizeHtmlColors(html: string): string {
   result = result.replace(/linear-gradient\s*\([^)]+\)/gi, '#ffffff');
   result = result.replace(/radial-gradient\s*\([^)]+\)/gi, '#ffffff');
   
-  // Remove ALL inline color declarations (including !important)
-  // This regex matches: color: <value>; or color: <value> !important; or color: <value>"
-  // But NOT background-color or border-color
+  // Allowlist of colors to KEEP (for buttons, CTAs)
+  const allowedColors = [
+    '#fff', '#ffffff', '#FFF', '#FFFFFF', 'white',  // White text for buttons
+    '#111827', '#1f2937', '#374151',  // Dark text
+    '#FF8B36', '#ff8b36',  // Brand orange
+    '#2D8CFF', '#2d8cff',  // Brand blue
+  ];
   
-  // Pattern: find style="..." and remove color properties inside
+  // Process style attributes
   result = result.replace(/style="([^"]*)"/gi, (match, styleContent) => {
-    // Remove color declarations but keep background-color and border-color
-    let cleaned = styleContent
-      // Remove color with !important
-      .replace(/(?<!background-)(?<!border-)color\s*:\s*[^;]+\s*!important\s*;?/gi, '')
-      // Remove color without !important  
-      .replace(/(?<!background-)(?<!border-)color\s*:\s*[^;]+;?/gi, '')
-      // Clean up double semicolons and trailing semicolons
+    // Find and process color declarations
+    let cleaned = styleContent.replace(
+      /(?<!background-)(?<!border-)color\s*:\s*([^;!]+)(\s*!important)?;?/gi,
+      (colorMatch: string, colorValue: string, important: string) => {
+        const trimmedValue = colorValue.trim().toLowerCase();
+        
+        // Check if color is in allowlist
+        const isAllowed = allowedColors.some(allowed => 
+          trimmedValue === allowed.toLowerCase() ||
+          trimmedValue.includes(allowed.toLowerCase())
+        );
+        
+        if (isAllowed) {
+          // Keep allowed colors but remove !important
+          return `color: ${colorValue.trim()};`;
+        } else {
+          // Remove non-allowed colors (let CSS handle it)
+          return '';
+        }
+      }
+    );
+    
+    // Clean up
+    cleaned = cleaned
       .replace(/;\s*;/g, ';')
       .replace(/;\s*$/g, '')
       .replace(/^\s*;/g, '')
