@@ -198,7 +198,7 @@ export default function Home() {
           .join("\n");
 
         const chatPromise = streamChat(allMessages);
-        const htmlPromise = streamHtml(context, messageText.trim(), dynamicHtml);
+        const htmlPromise = streamHtml(context, messageText.trim(), dynamicHtml).catch(() => null);
 
         const [assistantResponse, html] = await Promise.all([chatPromise, htmlPromise]);
 
@@ -216,6 +216,7 @@ export default function Home() {
         }
       } catch (error) {
         if ((error as Error).name !== "AbortError") {
+          console.error("Chat error:", error);
           const errorMessage: Message = {
             id: crypto.randomUUID(),
             role: "assistant",
@@ -260,13 +261,16 @@ export default function Home() {
       </div>
       
       <div className="relative flex-1 overflow-y-auto">
-        <DynamicContent 
-          html={dynamicHtml} 
-          streamingHtml={streamingHtml}
-          isStreaming={isHtmlStreaming}
-        >
-          <HeroBlock />
-        </DynamicContent>
+        <div className="absolute inset-0 backdrop-blur-sm bg-white/30 dark:bg-black/20 pointer-events-none z-0" />
+        <div className="relative z-10">
+          <DynamicContent 
+            html={dynamicHtml} 
+            streamingHtml={streamingHtml}
+            isStreaming={isHtmlStreaming}
+          >
+            <HeroBlock />
+          </DynamicContent>
+        </div>
       </div>
     </div>
   );

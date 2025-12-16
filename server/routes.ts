@@ -154,12 +154,12 @@ function buildHtmlSystemPrompt(): string {
   ✨ ИНТЕРАКТИВНОСТЬ — ОБЯЗАТЕЛЬНО ДОБАВЛЯЙ <style> В НАЧАЛЕ:
   
   <style>
-    .card { transition: all 0.3s ease; }
+    .card { transition: all 0.3s ease; background: #ffffff; }
     .card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px -12px rgba(45,140,255,0.3); }
     .btn { transition: all 0.2s ease; }
     .btn:hover { transform: scale(1.05); filter: brightness(1.1); }
     .btn:active { transform: scale(0.98); }
-    .metric { transition: all 0.3s ease; }
+    .metric { transition: all 0.3s ease; background: #f3f4f6; }
     .metric:hover { background: #FF8B36; color: white; }
     .img-card { transition: transform 0.4s ease; }
     .img-card:hover { transform: scale(1.02); }
@@ -167,7 +167,25 @@ function buildHtmlSystemPrompt(): string {
     .feature:hover { border-left-color: #FF8B36; padding-left: 20px; background: rgba(255,139,54,0.05); }
     .step-item { position: relative; }
     .step-item::before { content: ''; position: absolute; left: 24px; top: 60px; width: 2px; height: calc(100% - 60px); background: #2D8CFF; }
+    @media (prefers-color-scheme: dark) {
+      .dark-text { color: #f3f4f6 !important; }
+      .dark-text-secondary { color: #d1d5db !important; }
+      .dark-text-muted { color: #9ca3af !important; }
+    }
   </style>
+  
+  🌙 ТЁМНАЯ ТЕМА — ТЕКСТ БЕЗ ФОНА:
+  
+  Для одиночного текста БЕЗ фонового блока добавляй класс dark-text:
+  - Заголовки вне карточек: class="dark-text" style="color: #111827; ..."
+  - Подзаголовки вне карточек: class="dark-text-secondary" style="color: #374151; ..."  
+  - Описания вне карточек: class="dark-text-muted" style="color: #6b7280; ..."
+  
+  ❌ НЕ добавляй dark-text для текста ВНУТРИ:
+  - Карточек (class="card") — там всегда белый фон
+  - Метрик (class="metric") — там светлый фон
+  - Тёмных секций — там всегда белый текст
+  - Кнопок — там всегда белый текст
 
   📐 СТРУКТУРА:
 
