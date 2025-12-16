@@ -14,15 +14,20 @@ function sanitizeHtmlColors(html: string): string {
   
   // FUNDAMENTAL FIX: Remove ALL inline text color declarations
   // CSS will handle colors based on context (card vs non-card)
-  // This prevents AI-generated colors from breaking theme contrast
   
-  // Remove color declarations (but keep background colors for buttons)
-  // Pattern: color: #xxx or color: rgb(...) or color: white etc
-  // But NOT background-color or background
-  result = result.replace(/(?<!background-)color\s*:\s*(?:#[0-9a-fA-F]{3,8}|rgb\([^)]+\)|rgba\([^)]+\)|white|black|inherit)\s*;?/gi, '');
+  // More aggressive approach: match "color:" that is NOT preceded by "background-" or "border-"
+  // Using simple string replacement without lookbehind (better compatibility)
   
-  // Also remove var(--dynamic-...) color declarations - let CSS handle it
-  result = result.replace(/(?<!background-)color\s*:\s*var\([^)]+\)\s*;?/gi, '');
+  // Step 1: Temporarily replace background-color and border-color
+  result = result.replace(/background-color\s*:/gi, '___BG_COLOR___:');
+  result = result.replace(/border-color\s*:/gi, '___BORDER_COLOR___:');
+  
+  // Step 2: Remove ALL remaining color: declarations
+  result = result.replace(/color\s*:\s*[^;"}]+[;]?/gi, '');
+  
+  // Step 3: Restore background-color and border-color
+  result = result.replace(/___BG_COLOR___:/gi, 'background-color:');
+  result = result.replace(/___BORDER_COLOR___:/gi, 'border-color:');
   
   return result;
 }
