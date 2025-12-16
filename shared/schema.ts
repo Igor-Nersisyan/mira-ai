@@ -18,7 +18,6 @@ export type ChatRequest = z.infer<typeof chatRequestSchema>;
 export const htmlRequestSchema = z.object({
   conversationContext: z.string(),
   lastUserMessage: z.string(),
-  lastAssistantMessage: z.string(),
   currentHtml: z.string().nullable().optional(),
 });
 

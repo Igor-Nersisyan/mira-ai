@@ -459,22 +459,27 @@ async function* streamOpenRouterChat(messages: Message[], systemPrompt: string):
   }
 }
 
-async function* streamOpenRouterHtml(context: string, userMessage: string, assistantMessage: string, currentHtml: string | null): AsyncGenerator<string> {
+async function* streamOpenRouterHtml(context: string, userMessage: string, currentHtml: string | null): AsyncGenerator<string> {
   if (!OPENROUTER_API_KEY) {
     throw new Error("OPENROUTER_API_KEY is not configured");
   }
 
+  const knowledgeBase = getKnowledgeBase();
   const htmlPrompt = buildHtmlSystemPrompt();
   
   const currentHtmlContext = currentHtml 
     ? `\n\nТЕКУЩИЙ HTML НА ПАНЕЛИ (первые 1000 символов):\n${currentHtml.slice(0, 1000)}${currentHtml.length > 1000 ? '...[обрезано]' : ''}\n\n`
     : '\n\nТЕКУЩИЙ HTML НА ПАНЕЛИ: пусто (начало разговора)\n\n';
   
+  const knowledgeContext = knowledgeBase 
+    ? `\n\nБАЗА ЗНАНИЙ О ПРОДУКТЕ:\n${knowledgeBase}\n\n` 
+    : '';
+  
   const formattedMessages = [
     { role: "system", content: htmlPrompt },
     { 
       role: "user", 
-      content: `Контекст разговора:\n${context}${currentHtmlContext}Последний вопрос пользователя: ${userMessage}\n\nОтвет ассистента: ${assistantMessage}\n\nСгенерируй подходящий HTML или верни пустую строку если HTML не нужен.` 
+      content: `${knowledgeContext}Контекст разговора:\n${context}${currentHtmlContext}Вопрос пользователя: ${userMessage}\n\nНа основе базы знаний и вопроса пользователя, сгенерируй подходящий HTML или верни пустую строку если HTML не нужен.` 
     },
   ];
 
@@ -612,7 +617,7 @@ export async function registerRoutes(
         return res.status(400).json({ error: "Invalid request format" });
       }
 
-      const { conversationContext, lastUserMessage, lastAssistantMessage, currentHtml } = parsed.data;
+      const { conversationContext, lastUserMessage, currentHtml } = parsed.data;
 
       if (!OPENROUTER_API_KEY) {
         return res.status(500).json({
@@ -629,7 +634,7 @@ export async function registerRoutes(
 
       let fullHtml = "";
 
-      for await (const chunk of streamOpenRouterHtml(conversationContext, lastUserMessage, lastAssistantMessage, currentHtml || null)) {
+      for await (const chunk of streamOpenRouterHtml(conversationContext, lastUserMessage, currentHtml || null)) {
         fullHtml += chunk;
         res.write(`data: ${JSON.stringify({ type: "html_chunk", content: chunk })}\n\n`);
       }

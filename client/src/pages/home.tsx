@@ -66,7 +66,6 @@ export default function Home() {
   const streamHtml = useCallback(async (
     conversationContext: string, 
     lastUserMessage: string, 
-    lastAssistantMessage: string,
     currentHtml: string | null
   ): Promise<string | null> => {
     setIsHtmlStreaming(true);
@@ -78,7 +77,6 @@ export default function Home() {
         body: JSON.stringify({ 
           conversationContext, 
           lastUserMessage, 
-          lastAssistantMessage,
           currentHtml 
         }),
         signal: abortControllerRef.current?.signal,
@@ -148,9 +146,15 @@ export default function Home() {
       setStreamingMessage("");
 
       try {
-        const chatPromise = streamChat(allMessages);
+        const context = allMessages
+          .slice(-6)
+          .map((m) => `${m.role}: ${m.content}`)
+          .join("\n");
 
-        const assistantResponse = await chatPromise;
+        const chatPromise = streamChat(allMessages);
+        const htmlPromise = streamHtml(context, messageText.trim(), dynamicHtml);
+
+        const [assistantResponse, html] = await Promise.all([chatPromise, htmlPromise]);
 
         const assistantMessage: Message = {
           id: crypto.randomUUID(),
@@ -162,12 +166,6 @@ export default function Home() {
         setStreamingMessage("");
         setIsLoading(false);
 
-        const context = allMessages
-          .slice(-6)
-          .map((m) => `${m.role}: ${m.content}`)
-          .join("\n");
-
-        const html = await streamHtml(context, messageText.trim(), assistantResponse, dynamicHtml);
         if (html) {
           setDynamicHtml(html);
         }
