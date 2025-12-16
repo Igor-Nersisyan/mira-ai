@@ -204,9 +204,9 @@ function buildHtmlSystemPrompt(): string {
     .btn:active { transform: scale(0.98); }
     .metric { transition: all 0.3s ease; text-align: center; }
     .metric:hover { opacity: 0.95; }
-    .step-item { position: relative; }
-    .step-item::before { content: ''; position: absolute; left: 24px; top: 60px; width: 2px; height: calc(100% - 60px); background: #2D8CFF; }
   </style>
+  
+  ❌ НЕ добавляй ::before, ::after или любые соединительные линии между шагами!
 
   📐 СТРУКТУРА:
 
@@ -245,14 +245,16 @@ function buildHtmlSystemPrompt(): string {
     <div style="width: 75%; height: 100%; background: #FF8B36; border-radius: 100px;"></div>
   </div>
 
-  3. ШАГИ/TIMELINE (внутри .step-item — тёмный текст, так как это "карточка"):
-  <div class="step-item" style="display: flex; gap: 16px; padding: 16px; border-radius: 12px; background: var(--dynamic-card-bg);">
+  3. ШАГИ (простые карточки БЕЗ соединительных линий!):
+  <div class="card" style="display: flex; gap: 16px; padding: 16px; border-radius: 12px; background: var(--dynamic-card-bg);">
     <div style="width: 40px; height: 40px; background: #FF8B36; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ffffff; font-weight: 700; font-size: 16px; flex-shrink: 0;">1</div>
     <div>
       <h4 style="font-size: 16px; font-weight: 600; color: var(--dynamic-card-text); margin-bottom: 4px;">Название шага</h4>
       <p style="font-size: 14px; color: var(--dynamic-card-text); opacity: 0.7; margin: 0;">Описание шага</p>
     </div>
   </div>
+  
+  ❌ НЕ используй .step-item — этот класс добавляет линии!
 
   4. КАРТОЧКИ С ИЗОБРАЖЕНИЯМИ:
   <div class="img-card card" style="overflow: hidden; padding: 0; background: var(--dynamic-card-bg);">
