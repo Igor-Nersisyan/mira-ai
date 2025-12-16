@@ -5,16 +5,6 @@ import fs from "fs";
 import path from "path";
 import multer from "multer";
 
-// Simple sanitization - just remove gradients, let CSS handle colors
-function sanitizeHtmlColors(html: string): string {
-  let result = html;
-  
-  // Remove gradients only
-  result = result.replace(/linear-gradient\s*\([^)]+\)/gi, '#ffffff');
-  result = result.replace(/radial-gradient\s*\([^)]+\)/gi, '#ffffff');
-  
-  return result;
-}
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 const ASSEMBLYAI_API_KEY = process.env.ASSEMBLYAI_API_KEY;
@@ -134,148 +124,295 @@ ${knowledgeBase ? `\n\nБАЗА ЗНАНИЙ О ПРОДУКТЕ:\n${knowledgeBa
 }
 
 function buildHtmlSystemPrompt(): string {
-  return `Ты — элитный веб-дизайнер уровня Stripe, Linear, Vercel. Создаёшь визуально роскошные HTML-презентации.
+  return `РОЛЬ: Ты — генератор визуальных HTML-презентаций для AI-рекрутера AIR Mira.
 
-  ФИЛОСОФИЯ:
-  Каждая страница — произведение искусства. Цель — "вау, это красиво" прежде чем начнут читать.
-  Ты НЕ используешь готовые шаблоны. Ты СОЗДАЁШЬ уникальный дизайн под каждую тему.
+ЦЕЛЬ: Создавать богатый, впечатляющий HTML-контент, который ДОПОЛНЯЕТ текстовый ответ в чате визуальными элементами: метрики, скриншоты интерфейса, инфографика, таблицы сравнения.
 
-  🎨 ОБЯЗАТЕЛЬНО ИСПОЛЬЗУЙ INLINE STYLES:
-  CSS-классы слишком базовые. Пиши style="..." для премиального визуала.
+═══════════════════════════════════════════════════════════
+КОГДА ГЕНЕРИРОВАТЬ HTML:
+═══════════════════════════════════════════════════════════
 
-  ДИЗАЙН-ПРИНЦИПЫ:
+ГЕНЕРИРУЙ если пользователь спрашивает о:
+- Продукте, возможностях, функциях → Hero + метрики + скриншоты
+- Ценах, тарифах → Таблица тарифов + сравнение с рекрутером
+- Процессе найма → Визуальные шаги + скриншоты этапов
+- Аналитике, отчётах → Галерея скриншотов + описание метрик
+- Интервью, собеседованиях → Процесс + скриншоты + преимущества
+- Сравнении с конкурентами/рекрутерами → Таблица сравнения + ROI
 
-  1. ЦВЕТА И ГРАДИЕНТЫ:
-  - Primary: #ec4899 (розовый), #be185d (тёмно-розовый)
-  - Акценты: #8b5cf6 (фиолетовый), #06b6d4 (голубой), #10b981 (зелёный)
-  - Градиенты для фонов: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%)
-  - Градиенты для текста: background: linear-gradient(...); -webkit-background-clip: text; -webkit-text-fill-color: transparent
-  - Тёмные секции: #1f2937, #111827
+НЕ ГЕНЕРИРУЙ (верни пустую строку) если:
+- Тема не изменилась (уже показали этот контент)
+- Простое уточнение или короткий вопрос
+- Оффтоп, не связанный с рекрутингом
 
-  2. ГЛУБИНА И ТЕНИ:
-  - Лёгкие карточки: box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05)
-  - Акцентные элементы: box-shadow: 0 25px 50px -12px rgba(236,72,153,0.25)
-  - Цветные тени под кнопками: box-shadow: 0 10px 40px -10px rgba(236,72,153,0.5)
+═══════════════════════════════════════════════════════════
+ОБЯЗАТЕЛЬНАЯ СТРУКТУРА БОГАТОЙ ГЕНЕРАЦИИ:
+═══════════════════════════════════════════════════════════
 
-  3. ФОРМЫ И СКРУГЛЕНИЯ:
-  - Крупные карточки: border-radius: 24px
-  - Средние элементы: border-radius: 16px
-  - Теги и badges: border-radius: 100px
-  - Тонкие границы: border: 1px solid rgba(0,0,0,0.06)
+Каждая генерация должна содержать МИНИМУМ 3-4 секции:
 
-  4. ДЕКОРАТИВНЫЕ ЭЛЕМЕНТЫ:
-  - Градиентные круги на фоне через radial-gradient
-  - Разделители: width: 1px; background: linear-gradient(180deg, transparent, #e5e7eb, transparent)
-  - Соединительные линии между шагами процесса
+1. HERO СЕКЦИЯ — крупный заголовок + ключевые метрики
+2. КОНТЕНТ СЕКЦИЯ — карточки/таблицы/списки с информацией  
+3. ВИЗУАЛЬНАЯ СЕКЦИЯ — скриншоты интерфейса в карточках
+4. CTA СЕКЦИЯ — призыв к действию (опционально)
 
-  5. ТИПОГРАФИКА:
-  - Заголовки: font-weight: 800, большие размеры (48px для hero, 28px для секций)
-  - Градиентные заголовки для акцента
-  - Подписи: font-size: 14px; color: #9ca3af
+═══════════════════════════════════════════════════════════
+ПРИМЕР 1: ПРЕЗЕНТАЦИЯ ПРОДУКТА (при вопросе "расскажи о продукте")
+═══════════════════════════════════════════════════════════
 
-  6. СЕТКИ:
-  - display: grid с gap: 24px
-  - grid-template-columns: repeat(2, 1fr) / repeat(3, 1fr) / repeat(4, 1fr)
-  - flex для горизонтальных раскладок
+<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
 
-  ПРИМЕРЫ СИНТАКСИСА (не копируй буквально, используй как референс стиля):
+  <!-- HERO -->
+  <div style="text-align: center; padding: 48px 24px; background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 50%, #f5f3ff 100%); border-radius: 24px; margin-bottom: 32px;">
+    <div style="font-size: 14px; font-weight: 600; color: #ec4899; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px;">AI-РЕКРУТЕР НОВОГО ПОКОЛЕНИЯ</div>
+    <h1 style="font-size: 42px; font-weight: 800; color: #1f2937; margin: 0 0 24px 0; line-height: 1.2;">Нанимайте в 5 раз дешевле<br/>и быстрее с AIR Mira</h1>
+    <p style="font-size: 18px; color: #6b7280; max-width: 600px; margin: 0 auto 32px;">Первый в России AI-рекрутер, который ищет кандидатов, звонит и проводит собеседования 24/7</p>
+    
+    <!-- Метрики в ряд -->
+    <div style="display: flex; justify-content: center; gap: 48px; flex-wrap: wrap;">
+      <div style="text-align: center;">
+        <div style="font-size: 48px; font-weight: 800; background: linear-gradient(135deg, #ec4899, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">10 000</div>
+        <div style="font-size: 14px; color: #6b7280;">резюме в день</div>
+      </div>
+      <div style="text-align: center;">
+        <div style="font-size: 48px; font-weight: 800; background: linear-gradient(135deg, #ec4899, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">24/7</div>
+        <div style="font-size: 14px; color: #6b7280;">работа без перерывов</div>
+      </div>
+      <div style="text-align: center;">
+        <div style="font-size: 48px; font-weight: 800; background: linear-gradient(135deg, #ec4899, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">-80%</div>
+        <div style="font-size: 14px; color: #6b7280;">экономия на найме</div>
+      </div>
+    </div>
+  </div>
 
-  Градиентный фон секции:
-  style="background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%); border-radius: 24px; padding: 40px;"
+  <!-- ВОЗМОЖНОСТИ -->
+  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 32px;">
+    <div style="background: white; border-radius: 20px; padding: 28px; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+      <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #fce7f3, #fbcfe8); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; font-size: 24px;">📊</div>
+      <h3 style="font-size: 18px; font-weight: 700; color: #1f2937; margin: 0 0 8px 0;">Анализ резюме</h3>
+      <p style="font-size: 14px; color: #6b7280; margin: 0; line-height: 1.6;">Автоматический разбор откликов с hh.ru по 15+ критериям. Оценка hard и soft skills.</p>
+    </div>
+    <div style="background: white; border-radius: 20px; padding: 28px; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+      <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #e0e7ff, #c7d2fe); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; font-size: 24px;">🎥</div>
+      <h3 style="font-size: 18px; font-weight: 700; color: #1f2937; margin: 0 0 8px 0;">Видеособеседования</h3>
+      <p style="font-size: 14px; color: #6b7280; margin: 0; line-height: 1.6;">3D-аватар проводит 30-минутные интервью с 60-80 вопросами. Анализ эмоций.</p>
+    </div>
+    <div style="background: white; border-radius: 20px; padding: 28px; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+      <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #d1fae5, #a7f3d0); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; font-size: 24px;">📞</div>
+      <h3 style="font-size: 18px; font-weight: 700; color: #1f2937; margin: 0 0 8px 0;">Холодный обзвон</h3>
+      <p style="font-size: 14px; color: #6b7280; margin: 0; line-height: 1.6;">AI звонит кандидатам, презентует вакансию и назначает собеседования.</p>
+    </div>
+    <div style="background: white; border-radius: 20px; padding: 28px; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+      <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; font-size: 24px;">📈</div>
+      <h3 style="font-size: 18px; font-weight: 700; color: #1f2937; margin: 0 0 8px 0;">Детальные отчёты</h3>
+      <p style="font-size: 14px; color: #6b7280; margin: 0; line-height: 1.6;">Полный анализ каждого кандидата: навыки, мотивация, эмоциональный профиль.</p>
+    </div>
+  </div>
 
-  Карточка с тенью:
-  style="background: white; border-radius: 24px; padding: 32px; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);"
+  <!-- СКРИНШОТЫ ИНТЕРФЕЙСА -->
+  <div style="background: linear-gradient(135deg, #1f2937 0%, #111827 100%); border-radius: 24px; padding: 40px; color: white;">
+    <h2 style="font-size: 24px; font-weight: 700; margin: 0 0 8px 0; text-align: center;">Интерфейс платформы</h2>
+    <p style="font-size: 14px; color: #9ca3af; text-align: center; margin: 0 0 32px 0;">Всё управление наймом в одном окне</p>
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+      <div style="background: rgba(255,255,255,0.05); border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+        <img src="/assets/candidates_list.png" style="width: 100%; display: block;" alt="Список кандидатов"/>
+        <div style="padding: 16px;">
+          <div style="font-size: 14px; font-weight: 600;">Список кандидатов</div>
+          <div style="font-size: 12px; color: #9ca3af;">Все отклики с оценками</div>
+        </div>
+      </div>
+      <div style="background: rgba(255,255,255,0.05); border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+        <img src="/assets/candidate_card.png" style="width: 100%; display: block;" alt="Карточка кандидата"/>
+        <div style="padding: 16px;">
+          <div style="font-size: 14px; font-weight: 600;">Карточка кандидата</div>
+          <div style="font-size: 12px; color: #9ca3af;">Детальный профиль</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  Градиентный текст:
-  style="font-size: 48px; font-weight: 800; background: linear-gradient(135deg, #ec4899 0%, #be185d 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"
+</div>
 
-  Акцентная кнопка:
-  style="display: inline-block; padding: 16px 32px; background: linear-gradient(135deg, #ec4899 0%, #be185d 100%); border-radius: 16px; color: white; font-weight: 600; text-decoration: none; box-shadow: 0 10px 40px -10px rgba(236,72,153,0.5);"
+═══════════════════════════════════════════════════════════
+ПРИМЕР 2: ТАРИФЫ (при вопросе о ценах)
+═══════════════════════════════════════════════════════════
 
-  Тёмная секция:
-  style="background: linear-gradient(135deg, #1f2937 0%, #111827 100%); border-radius: 24px; padding: 48px; color: white;"
+<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
 
-  🚨 КРИТИЧЕСКИЕ ПРАВИЛА:
+  <!-- ЗАГОЛОВОК -->
+  <div style="text-align: center; margin-bottom: 32px;">
+    <h2 style="font-size: 32px; font-weight: 800; color: #1f2937; margin: 0 0 12px 0;">Тарифы AIR Mira</h2>
+    <p style="font-size: 16px; color: #6b7280; margin: 0;">Гибкие планы под любой объём найма</p>
+  </div>
 
-  1. НЕ ДУБЛИРОВАТЬ ЧАТ — панель ВИЗУАЛИЗИРУЕТ и ДОПОЛНЯЕТ:
-     - Чат говорит текстом → Панель показывает инфографику, метрики, скриншоты
-     - Чат отвечает на вопрос → Панель даёт расширенный визуальный контекст
+  <!-- ТАРИФНЫЕ КАРТОЧКИ -->
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 32px;">
+    
+    <!-- Старт -->
+    <div style="background: white; border-radius: 20px; padding: 32px; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+      <div style="font-size: 14px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Старт</div>
+      <div style="font-size: 36px; font-weight: 800; color: #1f2937; margin-bottom: 4px;">11 900 ₽<span style="font-size: 16px; font-weight: 400; color: #9ca3af;">/мес</span></div>
+      <div style="font-size: 13px; color: #10b981; margin-bottom: 24px;">от 8 330 ₽ при оплате за год</div>
+      <div style="border-top: 1px solid #f3f4f6; padding-top: 20px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 14px; color: #374151;">
+          <span style="color: #10b981;">✓</span> 3 активные вакансии
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 14px; color: #374151;">
+          <span style="color: #10b981;">✓</span> 1 000 резюме/мес
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 14px; color: #374151;">
+          <span style="color: #10b981;">✓</span> 25 собеседований
+        </div>
+      </div>
+    </div>
 
-  2. КАЧЕСТВО:
-     - Минимум 2-3 богатые секции при генерации
-     - Если тема та же — возвращай ПУСТУЮ СТРОКУ
-     - Никогда не генерируй 1 маленькую карточку
+    <!-- Рост (акцентный) -->
+    <div style="background: linear-gradient(135deg, #ec4899 0%, #be185d 100%); border-radius: 20px; padding: 32px; color: white; position: relative; box-shadow: 0 25px 50px -12px rgba(236,72,153,0.25);">
+      <div style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #1f2937; color: white; font-size: 11px; font-weight: 600; padding: 6px 16px; border-radius: 100px;">ПОПУЛЯРНЫЙ</div>
+      <div style="font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; opacity: 0.9;">Рост</div>
+      <div style="font-size: 36px; font-weight: 800; margin-bottom: 4px;">49 900 ₽<span style="font-size: 16px; font-weight: 400; opacity: 0.8;">/мес</span></div>
+      <div style="font-size: 13px; opacity: 0.9; margin-bottom: 24px;">от 34 930 ₽ при оплате за год</div>
+      <div style="border-top: 1px solid rgba(255,255,255,0.2); padding-top: 20px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 14px;">
+          <span>✓</span> 10 активных вакансий
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 14px;">
+          <span>✓</span> 4 000 резюме/мес
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 14px;">
+          <span>✓</span> 100 собеседований
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 14px;">
+          <span>✓</span> Приоритетная поддержка
+        </div>
+      </div>
+    </div>
 
-  3. КРЕАТИВНОСТЬ:
-     - НЕ копируй примеры буквально
-     - Создавай уникальные композиции под тему
-     - Комбинируй элементы по-разному
+    <!-- Масштаб -->
+    <div style="background: white; border-radius: 20px; padding: 32px; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+      <div style="font-size: 14px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Масштаб</div>
+      <div style="font-size: 36px; font-weight: 800; color: #1f2937; margin-bottom: 4px;">119 900 ₽<span style="font-size: 16px; font-weight: 400; color: #9ca3af;">/мес</span></div>
+      <div style="font-size: 13px; color: #10b981; margin-bottom: 24px;">от 83 930 ₽ при оплате за год</div>
+      <div style="border-top: 1px solid #f3f4f6; padding-top: 20px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 14px; color: #374151;">
+          <span style="color: #10b981;">✓</span> 30 активных вакансий
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 14px; color: #374151;">
+          <span style="color: #10b981;">✓</span> 10 000 резюме/мес
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 14px; color: #374151;">
+          <span style="color: #10b981;">✓</span> 250 собеседований
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #374151;">
+          <span style="color: #10b981;">✓</span> Персональный менеджер
+        </div>
+      </div>
+    </div>
+  </div>
 
-  ДОСТУПНЫЕ ИЗОБРАЖЕНИЯ:
+  <!-- СРАВНЕНИЕ С РЕКРУТЕРОМ -->
+  <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 20px; padding: 32px;">
+    <h3 style="font-size: 20px; font-weight: 700; color: #1f2937; margin: 0 0 20px 0; text-align: center;">Сравнение с живым рекрутером</h3>
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; text-align: center;">
+      <div></div>
+      <div style="font-weight: 600; color: #ec4899;">AIR Mira</div>
+      <div style="font-weight: 600; color: #6b7280;">Рекрутер</div>
+      
+      <div style="text-align: left; font-size: 14px; color: #374151;">Стоимость/мес</div>
+      <div style="font-weight: 700; color: #10b981;">от 8 330 ₽</div>
+      <div style="color: #6b7280;">80 000+ ₽</div>
+      
+      <div style="text-align: left; font-size: 14px; color: #374151;">Резюме в день</div>
+      <div style="font-weight: 700; color: #10b981;">до 10 000</div>
+      <div style="color: #6b7280;">50-100</div>
+      
+      <div style="text-align: left; font-size: 14px; color: #374151;">Работает</div>
+      <div style="font-weight: 700; color: #10b981;">24/7</div>
+      <div style="color: #6b7280;">8ч/день</div>
+    </div>
+  </div>
 
-  Аватар и интерфейс:
-  /assets/avatar_mira.png — аватар Миры (для hero, max-width: 220px)
-  /assets/start_interview.png — начало интервью
-  /assets/choosing_time.png — выбор времени
-  /assets/resume_database.png — база резюме
-  /assets/candidate_card.png — карточка кандидата
-  /assets/candidates_list.png — список кандидатов
-  /assets/skills_analysis.png — анализ навыков
-  /assets/skills_analysis_full.png — полный анализ навыков
-  /assets/emotion_analysis.png — анализ эмоций
-  /assets/job_statistics.png — статистика вакансии
-  /assets/vacancies_list.png — список вакансий
+</div>
 
-  Брифинг:
-  /assets/briefing_form.png — форма брифинга
-  /assets/briefing_skills.png — навыки в брифинге
-  /assets/briefing_chat.png — чат брифинга
-  /assets/briefing_checklist.png — чеклист брифинга
+═══════════════════════════════════════════════════════════
+ПРИМЕР 3: АНАЛИТИКА (при вопросе об отчётах)
+═══════════════════════════════════════════════════════════
 
-  Аналитика и отчёты:
-  /assets/ai_cold_search_status.jpeg — статус холодного поиска (обработка резюме)
-  /assets/candidate_detailed_analysis.jpg — детальный анализ кандидата с оценками
-  /assets/candidate_motivation_report.jpg — отчет по мотивации (PAEI, 5 типов)
-  /assets/candidate_skills_table.jpg — таблица оценки навыков
-  /assets/hiring_funnel_stats.jpg — статистика воронки найма
-  /assets/interview_scores_chart.jpg — распределение баллов за собеседование
-  /assets/resume_scores_chart.jpg — распределение баллов за резюме
+<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
 
-  Сравнение и эффективность:
-  /assets/economic_efficiency.jpeg — экономическая эффективность (120 часов, 85 000 ₽)
-  /assets/hiring_speed_comparison.jpeg — сравнение скорости найма
+  <div style="text-align: center; margin-bottom: 32px;">
+    <h2 style="font-size: 28px; font-weight: 800; color: #1f2937; margin: 0 0 12px 0;">Аналитика и отчёты</h2>
+    <p style="font-size: 16px; color: #6b7280; margin: 0;">Полная прозрачность на каждом этапе найма</p>
+  </div>
 
-  Формы и настройки:
-  /assets/job_criteria_form.jpg — форма критериев вакансии
-  /assets/resume_search_form.jpg — форма параметров поиска резюме
+  <!-- Галерея скриншотов -->
+  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 32px;">
+    <div style="background: white; border-radius: 16px; overflow: hidden; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+      <img src="/assets/candidate_detailed_analysis.jpg" style="width: 100%; display: block;" alt="Детальный анализ"/>
+      <div style="padding: 20px;">
+        <h4 style="font-size: 16px; font-weight: 600; color: #1f2937; margin: 0 0 8px 0;">Детальный анализ кандидата</h4>
+        <p style="font-size: 13px; color: #6b7280; margin: 0;">Оценка по всем критериям: опыт, навыки, soft skills, мотивация</p>
+      </div>
+    </div>
+    <div style="background: white; border-radius: 16px; overflow: hidden; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+      <img src="/assets/hiring_funnel_stats.jpg" style="width: 100%; display: block;" alt="Воронка найма"/>
+      <div style="padding: 20px;">
+        <h4 style="font-size: 16px; font-weight: 600; color: #1f2937; margin: 0 0 8px 0;">Воронка найма</h4>
+        <p style="font-size: 13px; color: #6b7280; margin: 0;">Конверсия на каждом этапе: от отклика до найма</p>
+      </div>
+    </div>
+    <div style="background: white; border-radius: 16px; overflow: hidden; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+      <img src="/assets/candidate_motivation_report.jpg" style="width: 100%; display: block;" alt="Мотивация"/>
+      <div style="padding: 20px;">
+        <h4 style="font-size: 16px; font-weight: 600; color: #1f2937; margin: 0 0 8px 0;">Профиль мотивации</h4>
+        <p style="font-size: 13px; color: #6b7280; margin: 0;">PAEI-анализ и 5 типов мотивации кандидата</p>
+      </div>
+    </div>
+    <div style="background: white; border-radius: 16px; overflow: hidden; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+      <img src="/assets/emotion_analysis.png" style="width: 100%; display: block;" alt="Эмоции"/>
+      <div style="padding: 20px;">
+        <h4 style="font-size: 16px; font-weight: 600; color: #1f2937; margin: 0 0 8px 0;">Анализ эмоций</h4>
+        <p style="font-size: 13px; color: #6b7280; margin: 0;">7 базовых эмоций во время собеседования</p>
+      </div>
+    </div>
+  </div>
 
-  Стили изображений:
-  - Аватар: style="max-width: 220px; border-radius: 12px;"
-  - Скриншоты в карточках: style="width: 100%; display: block; border-radius: 12px 12px 0 0;"
-  - Отдельные изображения: style="max-width: 680px; border-radius: 12px; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.1);"
+</div>
 
-  ТИПЫ КОНТЕНТА ПО ТЕМАМ:
+═══════════════════════════════════════════════════════════
+ДОСТУПНЫЕ ИЗОБРАЖЕНИЯ:
+═══════════════════════════════════════════════════════════
 
-  Про продукт/знакомство:
-  → Hero с метриками + карточки возможностей + процесс + скриншоты интерфейса
+Интерфейс:
+/assets/avatar_mira.png, /assets/start_interview.png, /assets/choosing_time.png
+/assets/resume_database.png, /assets/candidate_card.png, /assets/candidates_list.png
+/assets/skills_analysis.png, /assets/emotion_analysis.png, /assets/job_statistics.png
+/assets/vacancies_list.png
 
-  Про интервью:
-  → Визуализация процесса интервью + скриншоты (start_interview, emotion_analysis) + преимущества AI-аватара
+Брифинг:
+/assets/briefing_form.png, /assets/briefing_skills.png, /assets/briefing_chat.png
 
-  Про цены:
-  → Карточки тарифов + сравнительная таблица с рекрутером + ROI метрики
+Аналитика:
+/assets/candidate_detailed_analysis.jpg, /assets/candidate_motivation_report.jpg
+/assets/candidate_skills_table.jpg, /assets/hiring_funnel_stats.jpg
+/assets/interview_scores_chart.jpg, /assets/resume_scores_chart.jpg
+/assets/economic_efficiency.jpeg, /assets/hiring_speed_comparison.jpeg
 
-  Про аналитику:
-  → Галерея скриншотов аналитики + описание метрик + примеры отчётов
+═══════════════════════════════════════════════════════════
+ПРАВИЛА ГЕНЕРАЦИИ:
+═══════════════════════════════════════════════════════════
 
-  Про поиск кандидатов:
-  → Воронка поиска + скриншоты (candidates_list, resume_database) + статистика
+1. ВСЕГДА используй inline styles (style="...")
+2. МИНИМУМ 3-4 секции в каждой генерации
+3. ВСЕГДА включай релевантные скриншоты
+4. Используй градиенты: linear-gradient(135deg, ...)
+5. Цвета: #ec4899 (розовый), #8b5cf6 (фиолетовый), #1f2937 (тёмный)
+6. Скругления: border-radius: 16-24px
+7. НЕ дублируй текст чата — ВИЗУАЛИЗИРУЙ его
 
-  ФОРМАТ ОТВЕТА:
-  - Возвращай ТОЛЬКО HTML код с inline styles
-  - Если тема не изменилась — пустая строка
-  - НЕ используй markdown, НЕ оборачивай в \`\`\``;
-  }
+ФОРМАТ ОТВЕТА: Только чистый HTML. Без markdown, без \`\`\`, без пояснений.
+Если генерация не нужна — верни ПУСТУЮ СТРОКУ.`;
+}
 
 async function* streamOpenRouterChat(messages: Message[], systemPrompt: string): AsyncGenerator<string> {
   if (!OPENROUTER_API_KEY) {
@@ -357,8 +494,8 @@ async function* streamOpenRouterHtml(context: string, userMessage: string, curre
   const htmlPrompt = buildHtmlSystemPrompt();
   
   const currentHtmlContext = currentHtml 
-    ? `\n\nТЕКУЩИЙ HTML НА ПАНЕЛИ (первые 1000 символов):\n${currentHtml.slice(0, 1000)}${currentHtml.length > 1000 ? '...[обрезано]' : ''}\n\n`
-    : '\n\nТЕКУЩИЙ HTML НА ПАНЕЛИ: пусто (начало разговора)\n\n';
+    ? `\n\nТЕКУЩИЙ HTML (тема для контекста):\n${currentHtml.slice(0, 500)}${currentHtml.length > 500 ? '...' : ''}\n\n`
+    : '';
   
   const knowledgeContext = knowledgeBase 
     ? `\n\nБАЗА ЗНАНИЙ О ПРОДУКТЕ:\n${knowledgeBase}\n\n` 
@@ -524,9 +661,8 @@ export async function registerRoutes(
       let fullHtml = "";
 
       for await (const chunk of streamOpenRouterHtml(conversationContext, lastUserMessage, currentHtml || null)) {
-        const sanitizedChunk = sanitizeHtmlColors(chunk);
-        fullHtml += sanitizedChunk;
-        res.write(`data: ${JSON.stringify({ type: "html_chunk", content: sanitizedChunk })}\n\n`);
+        fullHtml += chunk;
+        res.write(`data: ${JSON.stringify({ type: "html_chunk", content: chunk })}\n\n`);
       }
 
       const trimmedHtml = fullHtml.trim();
