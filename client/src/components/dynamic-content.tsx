@@ -163,10 +163,6 @@ export function DynamicContent({
         if (contentRef.current) {
           sanitizeStyles(contentRef.current);
           
-          if (!isStreaming) {
-            applyContrastColors(contentRef.current);
-          }
-          
           const images = contentRef.current.querySelectorAll('img');
           images.forEach((img) => {
             img.style.cursor = 'zoom-in';
@@ -180,7 +176,7 @@ export function DynamicContent({
       }, 50);
       return () => clearTimeout(timeoutId);
     }
-  }, [displayHtml, isStreaming]);
+  }, [displayHtml]);
   
   return (
     <>

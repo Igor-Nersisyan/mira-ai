@@ -5,6 +5,23 @@ import fs from "fs";
 import path from "path";
 import multer from "multer";
 
+function sanitizeHtmlColors(html: string): string {
+  let result = html;
+  
+  result = result.replace(/color:\s*#fff(?:fff)?(?![0-9a-f])/gi, 'color: #111827');
+  result = result.replace(/color:\s*white(?![a-z])/gi, 'color: #111827');
+  result = result.replace(/color:\s*rgb\s*\(\s*255\s*,\s*255\s*,\s*255\s*\)/gi, 'color: #111827');
+  
+  result = result.replace(/linear-gradient\s*\([^)]+\)/gi, '#ffffff');
+  result = result.replace(/radial-gradient\s*\([^)]+\)/gi, '#ffffff');
+  
+  result = result.replace(/rgba\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*0?\.?\d*\s*\)/gi, (match, r, g, b) => {
+    return `rgb(${r}, ${g}, ${b})`;
+  });
+  
+  return result;
+}
+
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 const ASSEMBLYAI_API_KEY = process.env.ASSEMBLYAI_API_KEY;
 
@@ -586,8 +603,9 @@ export async function registerRoutes(
       let fullHtml = "";
 
       for await (const chunk of streamOpenRouterHtml(conversationContext, lastUserMessage, currentHtml || null)) {
-        fullHtml += chunk;
-        res.write(`data: ${JSON.stringify({ type: "html_chunk", content: chunk })}\n\n`);
+        const sanitizedChunk = sanitizeHtmlColors(chunk);
+        fullHtml += sanitizedChunk;
+        res.write(`data: ${JSON.stringify({ type: "html_chunk", content: sanitizedChunk })}\n\n`);
       }
 
       const trimmedHtml = fullHtml.trim();
