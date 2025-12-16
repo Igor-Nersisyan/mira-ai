@@ -15,44 +15,30 @@ export default function Home() {
 
   const extractCompleteBlocks = (html: string): string => {
     const styleMatch = html.match(/^(\s*<style[^>]*>[\s\S]*?<\/style>\s*)/i);
-    const styleBlock = styleMatch ? styleMatch[1] : "";
-    const afterStyle = styleMatch ? html.slice(styleMatch[0].length) : html;
+    if (!styleMatch) return "";
     
-    let completeHtml = styleBlock;
+    const styleBlock = styleMatch[1];
+    const afterStyle = html.slice(styleMatch[0].length);
+    
+    const lastClosingDiv = afterStyle.lastIndexOf('</div>');
+    if (lastClosingDiv === -1) return styleBlock;
+    
     let depth = 0;
-    let blockStart = 0;
-    let i = 0;
+    let validEnd = -1;
     
-    while (i < afterStyle.length) {
-      if (afterStyle[i] === '<') {
-        const isClosing = afterStyle[i + 1] === '/';
-        const tagEnd = afterStyle.indexOf('>', i);
-        if (tagEnd === -1) break;
-        
-        const tagContent = afterStyle.slice(i + (isClosing ? 2 : 1), tagEnd);
-        const tagName = tagContent.split(/[\s\/]/)[0].toLowerCase();
-        const selfClosing = ['img', 'br', 'hr', 'input', 'meta', 'link'].includes(tagName) || 
-                           afterStyle[tagEnd - 1] === '/';
-        
-        if (!selfClosing) {
-          if (isClosing) {
-            depth--;
-            if (depth === 0) {
-              completeHtml += afterStyle.slice(blockStart, tagEnd + 1);
-              blockStart = tagEnd + 1;
-            }
-          } else {
-            if (depth === 0) blockStart = i;
-            depth++;
-          }
+    for (let i = 0; i <= lastClosingDiv; i++) {
+      if (afterStyle.slice(i, i + 4) === '<div') {
+        depth++;
+      } else if (afterStyle.slice(i, i + 6) === '</div>') {
+        depth--;
+        if (depth === 0) {
+          validEnd = i + 6;
         }
-        i = tagEnd + 1;
-      } else {
-        i++;
       }
     }
     
-    return completeHtml;
+    if (validEnd === -1) return styleBlock;
+    return styleBlock + afterStyle.slice(0, validEnd);
   };
 
   const streamChat = useCallback(async (allMessages: Message[]): Promise<string> => {

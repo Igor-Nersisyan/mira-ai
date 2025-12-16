@@ -129,17 +129,14 @@ function buildHtmlSystemPrompt(): string {
 
   🎨 БРЕНДОВАЯ ПАЛИТРА AIR MIRA (ТОЛЬКО ЭТИ ЦВЕТА!):
   
-  ОСНОВНЫЕ ЦВЕТА:
-  - Оранжевый (primary): #FF8B36, светлее: #FFa55a, темнее: #e67a2e
-  - Синий (accent): #2D8CFF, светлее: #5aa3ff, темнее: #1a6fd9
-  - Чёрный: #111827, #1f2937, #0f172a
+  ОСНОВНЫЕ ЦВЕТА (БЕЗ ГРАДИЕНТОВ!):
+  - Оранжевый (primary): #FF8B36
+  - Синий (accent): #2D8CFF
+  - Чёрный: #111827, #1f2937
   - Белый: #ffffff, #f9fafb, #f3f4f6
   
-  ГРАДИЕНТЫ:
-  - Оранжевый: linear-gradient(135deg, #FF8B36 0%, #e67a2e 100%)
-  - Синий: linear-gradient(135deg, #2D8CFF 0%, #1a6fd9 100%)
-  - Оранж-Синий: linear-gradient(135deg, #FF8B36 0%, #2D8CFF 100%)
-  - Тёмный: linear-gradient(135deg, #1f2937 0%, #111827 100%)
+  ❌ ЗАПРЕЩЕНО: linear-gradient, градиенты любого типа!
+  Используй ТОЛЬКО сплошные цвета.
 
   🚨 КОНТРАСТ ТЕКСТА:
   
@@ -156,7 +153,6 @@ function buildHtmlSystemPrompt(): string {
 
   ✨ ИНТЕРАКТИВНОСТЬ — ОБЯЗАТЕЛЬНО ДОБАВЛЯЙ <style> В НАЧАЛЕ:
   
-  Пример структуры HTML:
   <style>
     .card { transition: all 0.3s ease; }
     .card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px -12px rgba(45,140,255,0.3); }
@@ -169,18 +165,9 @@ function buildHtmlSystemPrompt(): string {
     .img-card:hover { transform: scale(1.02); }
     .feature { transition: all 0.3s ease; border-left: 4px solid transparent; }
     .feature:hover { border-left-color: #FF8B36; padding-left: 20px; background: rgba(255,139,54,0.05); }
-    .accordion-header { cursor: pointer; }
-    .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
     .step-item { position: relative; }
-    .step-item::before { content: ''; position: absolute; left: 24px; top: 60px; width: 2px; height: calc(100% - 60px); background: linear-gradient(180deg, #2D8CFF, transparent); }
-    /* Эмодзи не должны быть в градиенте */
-    .gradient-text .emoji, .gradient-text span[role="img"] { -webkit-text-fill-color: initial; background: none; }
+    .step-item::before { content: ''; position: absolute; left: 24px; top: 60px; width: 2px; height: calc(100% - 60px); background: #2D8CFF; }
   </style>
-  
-  ВАЖНО ПРО ЭМОДЗИ В ГРАДИЕНТНЫХ ЗАГОЛОВКАХ:
-  Если используешь эмодзи в градиентном заголовке, оберни текст в span, а эмодзи оставь снаружи:
-  <h1 class="gradient-text" style="...градиент..."><span class="emoji">🚀</span> <span>Текст заголовка</span></h1>
-  Или НЕ используй эмодзи в градиентных заголовках вообще — лучше используй иконки.
 
   📐 СТРУКТУРА:
 
@@ -188,21 +175,22 @@ function buildHtmlSystemPrompt(): string {
   class="card" style="background: #ffffff; border-radius: 20px; padding: 32px; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.07);"
 
   КНОПКИ ОРАНЖЕВЫЕ:
-  class="btn" style="display: inline-block; padding: 14px 28px; background: linear-gradient(135deg, #FF8B36 0%, #e67a2e 100%); border-radius: 12px; color: white; font-weight: 600; text-decoration: none; box-shadow: 0 8px 24px -8px rgba(255,139,54,0.5);"
+  class="btn" style="display: inline-block; padding: 14px 28px; background: #FF8B36; border-radius: 12px; color: white; font-weight: 600; text-decoration: none; box-shadow: 0 8px 24px -8px rgba(255,139,54,0.5);"
 
   КНОПКИ СИНИЕ:
-  class="btn" style="display: inline-block; padding: 14px 28px; background: linear-gradient(135deg, #2D8CFF 0%, #1a6fd9 100%); border-radius: 12px; color: white; font-weight: 600; text-decoration: none; box-shadow: 0 8px 24px -8px rgba(45,140,255,0.5);"
+  class="btn" style="display: inline-block; padding: 14px 28px; background: #2D8CFF; border-radius: 12px; color: white; font-weight: 600; text-decoration: none; box-shadow: 0 8px 24px -8px rgba(45,140,255,0.5);"
 
   МЕТРИКИ:
   class="metric" style="background: #f3f4f6; border-radius: 16px; padding: 24px; text-align: center; cursor: pointer;"
   
   ТЁМНЫЕ СЕКЦИИ:
-  style="background: linear-gradient(135deg, #1f2937 0%, #111827 100%); border-radius: 24px; padding: 48px; color: white;"
+  style="background: #1f2937; border-radius: 24px; padding: 48px; color: white;"
 
-  ГРАДИЕНТНЫЙ ЗАГОЛОВОК:
-  style="background: linear-gradient(135deg, #FF8B36 0%, #2D8CFF 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 42px; font-weight: 800;"
+  ЗАГОЛОВКИ (без градиентов!):
+  style="font-size: 42px; font-weight: 800; color: #111827;"
+  или оранжевый: style="font-size: 42px; font-weight: 800; color: #FF8B36;"
 
-  🎯 СЛОЖНЫЕ КОМПОНЕНТЫ (используй для вложенности):
+  🎯 СЛОЖНЫЕ КОМПОНЕНТЫ:
 
   1. ТАБЫ/ПЕРЕКЛЮЧАТЕЛИ:
   <div style="display: flex; gap: 8px; background: #f3f4f6; padding: 6px; border-radius: 12px; width: fit-content;">
@@ -212,12 +200,12 @@ function buildHtmlSystemPrompt(): string {
 
   2. ПРОГРЕСС-БАР:
   <div style="background: #e5e7eb; border-radius: 100px; height: 8px; overflow: hidden;">
-    <div style="width: 75%; height: 100%; background: linear-gradient(90deg, #FF8B36, #2D8CFF); border-radius: 100px;"></div>
+    <div style="width: 75%; height: 100%; background: #FF8B36; border-radius: 100px;"></div>
   </div>
 
   3. ШАГИ/TIMELINE:
   <div class="step-item" style="display: flex; gap: 20px; padding-bottom: 32px;">
-    <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #2D8CFF 0%, #1a6fd9 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; flex-shrink: 0;">1</div>
+    <div style="width: 48px; height: 48px; background: #2D8CFF; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; flex-shrink: 0;">1</div>
     <div>
       <h4 style="font-size: 18px; font-weight: 600; color: #111827; margin-bottom: 8px;">Название шага</h4>
       <p style="color: #6b7280;">Описание шага</p>
@@ -228,8 +216,8 @@ function buildHtmlSystemPrompt(): string {
   <div class="img-card card" style="overflow: hidden; padding: 0;">
     <img src="/assets/..." style="width: 100%; display: block;">
     <div style="padding: 24px;">
-      <h4>Заголовок</h4>
-      <p>Описание</p>
+      <h4 style="color: #111827;">Заголовок</h4>
+      <p style="color: #6b7280;">Описание</p>
     </div>
   </div>
 
