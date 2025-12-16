@@ -7,10 +7,53 @@ import type { Message, StreamEvent } from "@shared/schema";
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [dynamicHtml, setDynamicHtml] = useState<string | null>(null);
+  const [streamingHtml, setStreamingHtml] = useState<string | null>(null);
   const [streamingMessage, setStreamingMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [isHtmlStreaming, setIsHtmlStreaming] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
+
+  const extractCompleteBlocks = (html: string): string => {
+    const styleMatch = html.match(/^(\s*<style[^>]*>[\s\S]*?<\/style>\s*)/i);
+    const styleBlock = styleMatch ? styleMatch[1] : "";
+    const afterStyle = styleMatch ? html.slice(styleMatch[0].length) : html;
+    
+    let completeHtml = styleBlock;
+    let depth = 0;
+    let blockStart = 0;
+    let i = 0;
+    
+    while (i < afterStyle.length) {
+      if (afterStyle[i] === '<') {
+        const isClosing = afterStyle[i + 1] === '/';
+        const tagEnd = afterStyle.indexOf('>', i);
+        if (tagEnd === -1) break;
+        
+        const tagContent = afterStyle.slice(i + (isClosing ? 2 : 1), tagEnd);
+        const tagName = tagContent.split(/[\s\/]/)[0].toLowerCase();
+        const selfClosing = ['img', 'br', 'hr', 'input', 'meta', 'link'].includes(tagName) || 
+                           afterStyle[tagEnd - 1] === '/';
+        
+        if (!selfClosing) {
+          if (isClosing) {
+            depth--;
+            if (depth === 0) {
+              completeHtml += afterStyle.slice(blockStart, tagEnd + 1);
+              blockStart = tagEnd + 1;
+            }
+          } else {
+            if (depth === 0) blockStart = i;
+            depth++;
+          }
+        }
+        i = tagEnd + 1;
+      } else {
+        i++;
+      }
+    }
+    
+    return completeHtml;
+  };
 
   const streamChat = useCallback(async (allMessages: Message[]): Promise<string> => {
     const response = await fetch("/api/chat/stream", {
@@ -69,6 +112,7 @@ export default function Home() {
     currentHtml: string | null
   ): Promise<string | null> => {
     setIsHtmlStreaming(true);
+    setStreamingHtml(null);
 
     try {
       const response = await fetch("/api/html/stream", {
@@ -92,6 +136,7 @@ export default function Home() {
       const decoder = new TextDecoder();
       let buffer = "";
       let fullHtml = "";
+      let lastShownHtml = "";
 
       while (true) {
         const { done, value } = await reader.read();
@@ -108,7 +153,13 @@ export default function Home() {
               
               if (event.type === "html_chunk") {
                 fullHtml += event.content;
+                const completeBlocks = extractCompleteBlocks(fullHtml);
+                if (completeBlocks.length > lastShownHtml.length) {
+                  lastShownHtml = completeBlocks;
+                  setStreamingHtml(completeBlocks);
+                }
               } else if (event.type === "html_end") {
+                setStreamingHtml(null);
                 return event.fullHtml;
               } else if (event.type === "error") {
                 throw new Error(event.message);
@@ -121,9 +172,11 @@ export default function Home() {
         }
       }
 
+      setStreamingHtml(null);
       return fullHtml.trim() || null;
     } finally {
       setIsHtmlStreaming(false);
+      setStreamingHtml(null);
     }
   }, []);
 
@@ -194,6 +247,7 @@ export default function Home() {
     }
     setMessages([]);
     setDynamicHtml(null);
+    setStreamingHtml(null);
     setStreamingMessage("");
     setIsLoading(false);
     setIsHtmlStreaming(false);
@@ -214,6 +268,7 @@ export default function Home() {
       <div className="flex-1 overflow-y-auto bg-gradient-to-br from-pink-100 via-purple-50 to-blue-100 dark:from-pink-950/30 dark:via-purple-950/20 dark:to-blue-950/30">
         <DynamicContent 
           html={dynamicHtml} 
+          streamingHtml={streamingHtml}
           isStreaming={isHtmlStreaming}
         >
           <HeroBlock />

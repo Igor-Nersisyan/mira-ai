@@ -3,15 +3,19 @@ import { Loader2 } from "lucide-react";
 
 interface DynamicContentProps {
   html: string | null;
+  streamingHtml?: string | null;
   isStreaming?: boolean;
   children: ReactNode;
 }
 
 export function DynamicContent({ 
   html, 
+  streamingHtml = null,
   isStreaming = false,
   children 
 }: DynamicContentProps) {
+  const displayHtml = streamingHtml || html;
+  
   return (
     <div className="min-h-screen p-6 lg:p-8 xl:p-12">
       {isStreaming && (
@@ -23,10 +27,10 @@ export function DynamicContent({
         </div>
       )}
       <div data-testid="dynamic-content-container">
-        {html ? (
+        {displayHtml ? (
           <div
             className="dynamic-html-content prose prose-slate dark:prose-invert max-w-none"
-            dangerouslySetInnerHTML={{ __html: html }}
+            dangerouslySetInnerHTML={{ __html: displayHtml }}
           />
         ) : (
           children
