@@ -8,15 +8,12 @@ import multer from "multer";
 function sanitizeHtmlColors(html: string): string {
   let result = html;
   
-  // Only remove gradients and semi-transparent backgrounds - DO NOT touch text colors!
-  // AI is responsible for choosing correct text colors based on background
+  // Only remove gradients - keep rgba for subtle overlays
   result = result.replace(/linear-gradient\s*\([^)]+\)/gi, '#ffffff');
   result = result.replace(/radial-gradient\s*\([^)]+\)/gi, '#ffffff');
   
-  // Convert semi-transparent backgrounds to solid (but not text colors)
-  result = result.replace(/background[^:]*:\s*rgba\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*0?\.?\d*\s*\)/gi, (match, r, g, b) => {
-    return `background: rgb(${r}, ${g}, ${b})`;
-  });
+  // DO NOT convert rgba to rgb - this was causing solid stripes
+  // rgba transparency is needed for progress bars, overlays, etc.
   
   return result;
 }
