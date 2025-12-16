@@ -339,7 +339,7 @@
 }
 
 /* CARDS: Always dark text because cards are always white */
-/* Match by class OR by inline white background styles */
+/* Match by class OR by inline white background styles - comprehensive list */
 .dynamic-html-content .card,
 .dynamic-html-content .card *,
 .dynamic-html-content .metric,
@@ -352,28 +352,58 @@
 .dynamic-html-content .feature-card *,
 .dynamic-html-content .pricing-card,
 .dynamic-html-content .pricing-card *,
-/* Match elements with white background in inline styles */
+/* #fff variants */
 .dynamic-html-content [style*="background: #fff"],
 .dynamic-html-content [style*="background:#fff"],
-.dynamic-html-content [style*="background: #FFF"],
-.dynamic-html-content [style*="background:#FFF"],
-.dynamic-html-content [style*="background: white"],
-.dynamic-html-content [style*="background:white"],
-.dynamic-html-content [style*="background-color: #fff"],
-.dynamic-html-content [style*="background-color:#fff"],
-.dynamic-html-content [style*="background: var(--dynamic-card-bg)"],
-.dynamic-html-content [style*="background:var(--dynamic-card-bg)"],
-/* And their children */
 .dynamic-html-content [style*="background: #fff"] *,
 .dynamic-html-content [style*="background:#fff"] *,
+/* #ffffff variants (6 chars) */
+.dynamic-html-content [style*="background: #ffffff"],
+.dynamic-html-content [style*="background:#ffffff"],
+.dynamic-html-content [style*="background: #ffffff"] *,
+.dynamic-html-content [style*="background:#ffffff"] *,
+/* Uppercase variants */
+.dynamic-html-content [style*="background: #FFF"],
+.dynamic-html-content [style*="background:#FFF"],
+.dynamic-html-content [style*="background: #FFFFFF"],
+.dynamic-html-content [style*="background:#FFFFFF"],
 .dynamic-html-content [style*="background: #FFF"] *,
 .dynamic-html-content [style*="background:#FFF"] *,
+.dynamic-html-content [style*="background: #FFFFFF"] *,
+.dynamic-html-content [style*="background:#FFFFFF"] *,
+/* white keyword */
+.dynamic-html-content [style*="background: white"],
+.dynamic-html-content [style*="background:white"],
 .dynamic-html-content [style*="background: white"] *,
 .dynamic-html-content [style*="background:white"] *,
+/* background-color variants */
+.dynamic-html-content [style*="background-color: #fff"],
+.dynamic-html-content [style*="background-color:#fff"],
+.dynamic-html-content [style*="background-color: #ffffff"],
+.dynamic-html-content [style*="background-color:#ffffff"],
+.dynamic-html-content [style*="background-color: white"],
+.dynamic-html-content [style*="background-color:white"],
 .dynamic-html-content [style*="background-color: #fff"] *,
 .dynamic-html-content [style*="background-color:#fff"] *,
+.dynamic-html-content [style*="background-color: #ffffff"] *,
+.dynamic-html-content [style*="background-color:#ffffff"] *,
+.dynamic-html-content [style*="background-color: white"] *,
+.dynamic-html-content [style*="background-color:white"] *,
+/* CSS variable */
+.dynamic-html-content [style*="background: var(--dynamic-card-bg)"],
+.dynamic-html-content [style*="background:var(--dynamic-card-bg)"],
 .dynamic-html-content [style*="background: var(--dynamic-card-bg)"] *,
-.dynamic-html-content [style*="background:var(--dynamic-card-bg)"] * {
+.dynamic-html-content [style*="background:var(--dynamic-card-bg)"] *,
+/* rgb variants */
+.dynamic-html-content [style*="background: rgb(255"],
+.dynamic-html-content [style*="background:rgb(255"],
+.dynamic-html-content [style*="background: rgb(255"] *,
+.dynamic-html-content [style*="background:rgb(255"] *,
+/* rgba variants */
+.dynamic-html-content [style*="background: rgba(255"],
+.dynamic-html-content [style*="background:rgba(255"],
+.dynamic-html-content [style*="background: rgba(255"] *,
+.dynamic-html-content [style*="background:rgba(255"] * {
   color: #111827 !important;
 }
 
