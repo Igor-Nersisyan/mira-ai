@@ -4,92 +4,16 @@ import { chatRequestSchema, htmlRequestSchema, type AIResponse, type Message } f
 import fs from "fs";
 import path from "path";
 import multer from "multer";
-import { parse } from "node-html-parser";
 
-// Card background patterns that indicate white/light background
-const CARD_BG_PATTERNS = [
-  'background: #fff',
-  'background:#fff',
-  'background: #FFF',
-  'background:#FFF',
-  'background: white',
-  'background:white',
-  'background: var(--dynamic-card-bg)',
-  'background:var(--dynamic-card-bg)',
-  'background-color: #fff',
-  'background-color:#fff',
-  'background: #ffffff',
-  'background:#ffffff',
-];
-
+// Simple sanitization - just remove gradients, let CSS handle colors
 function sanitizeHtmlColors(html: string): string {
-  // Quick check - if no style, return as is
-  if (!html.includes('style=')) {
-    return html;
-  }
+  let result = html;
   
-  try {
-    const root = parse(html, { 
-      comment: true,
-      blockTextElements: { script: true, style: true }
-    });
-    
-    // Find all elements with style attribute
-    const elementsWithStyle = root.querySelectorAll('[style]');
-    
-    elementsWithStyle.forEach((el) => {
-      const style = el.getAttribute('style') || '';
-      const styleLower = style.toLowerCase();
-      
-      // Check if this element has a white/card background
-      const hasWhiteBg = CARD_BG_PATTERNS.some(pattern => 
-        styleLower.includes(pattern.toLowerCase())
-      );
-      
-      if (hasWhiteBg) {
-        // Force dark text color for this element
-        let newStyle = style;
-        // Remove any existing color declaration
-        newStyle = newStyle.replace(/(?:^|;)\s*color\s*:[^;]+/gi, '');
-        // Add dark text color
-        newStyle = newStyle.trim();
-        if (newStyle && !newStyle.endsWith(';')) {
-          newStyle += ';';
-        }
-        newStyle += ' color: #111827;';
-        el.setAttribute('style', newStyle);
-        
-        // Also force dark text on all children
-        const children = el.querySelectorAll('*');
-        children.forEach((child) => {
-          const childStyle = child.getAttribute('style') || '';
-          let newChildStyle = childStyle;
-          // Remove any existing color declaration
-          newChildStyle = newChildStyle.replace(/(?:^|;)\s*color\s*:[^;]+/gi, '');
-          newChildStyle = newChildStyle.trim();
-          if (newChildStyle && !newChildStyle.endsWith(';')) {
-            newChildStyle += ';';
-          }
-          newChildStyle += ' color: #111827;';
-          child.setAttribute('style', newChildStyle);
-        });
-      }
-      
-      // Remove gradients
-      if (styleLower.includes('gradient')) {
-        const newStyle = style.replace(/linear-gradient\s*\([^)]+\)/gi, '#ffffff')
-                              .replace(/radial-gradient\s*\([^)]+\)/gi, '#ffffff');
-        el.setAttribute('style', newStyle);
-      }
-    });
-    
-    return root.toString();
-  } catch (error) {
-    console.error('HTML sanitization error:', error);
-    // Fallback: just remove gradients
-    return html.replace(/linear-gradient\s*\([^)]+\)/gi, '#ffffff')
-               .replace(/radial-gradient\s*\([^)]+\)/gi, '#ffffff');
-  }
+  // Remove gradients only
+  result = result.replace(/linear-gradient\s*\([^)]+\)/gi, '#ffffff');
+  result = result.replace(/radial-gradient\s*\([^)]+\)/gi, '#ffffff');
+  
+  return result;
 }
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
