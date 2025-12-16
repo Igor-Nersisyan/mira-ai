@@ -822,19 +822,33 @@
   color: #ffffff !important;
 }
 
-/* Card classes always use card-foreground (dark in light mode, light in dark mode) */
+/* Card/block elements with visible background - ALWAYS dark text regardless of theme */
 .dynamic-html-content .card,
 .dynamic-html-content .feature-card,
 .dynamic-html-content .pricing-card,
-.dynamic-html-content .metric {
-  color: hsl(var(--card-foreground));
+.dynamic-html-content .metric,
+.dynamic-html-content [class*="card"],
+.dynamic-html-content [class*="block"],
+.dynamic-html-content [class*="box"],
+.dynamic-html-content [class*="panel"],
+.dynamic-html-content [class*="item"],
+.dynamic-html-content [style*="border-radius"],
+.dynamic-html-content [style*="box-shadow"] {
+  color: #1a1a1a !important;
 }
 
 .dynamic-html-content .card *,
 .dynamic-html-content .feature-card *,
 .dynamic-html-content .pricing-card *,
-.dynamic-html-content .metric * {
-  color: inherit;
+.dynamic-html-content .metric *,
+.dynamic-html-content [class*="card"] *,
+.dynamic-html-content [class*="block"] *,
+.dynamic-html-content [class*="box"] *,
+.dynamic-html-content [class*="panel"] *,
+.dynamic-html-content [class*="item"] *,
+.dynamic-html-content [style*="border-radius"] *,
+.dynamic-html-content [style*="box-shadow"] * {
+  color: #1a1a1a !important;
 }
 
 .scrollbar-none {
