@@ -295,9 +295,9 @@
 }
 
 /* Dynamic HTML Content Styles - Smart Contrast */
-/* Base colors inherit from theme, but inline styles from AI take precedence */
+/* Base: dark text in light mode, light text in dark mode */
 .dynamic-html-content {
-  color: #1a1a1a;
+  color: #111827;
 }
 
 .dark .dynamic-html-content {
@@ -305,12 +305,12 @@
 }
 
 /* 
-  CARD CONTRAST SYSTEM:
-  Elements with .card class or white/light backgrounds ALWAYS have dark text.
-  This works in both light AND dark mode because cards are always light-colored.
+  UNIVERSAL CARD CONTRAST SYSTEM:
+  Any element with .card class ALWAYS has dark text - even in dark mode.
+  This is because cards always have white/light backgrounds.
 */
 
-/* Cards always have dark text (regardless of light/dark mode) */
+/* Cards and components with light backgrounds - ALWAYS dark text */
 .dynamic-html-content .card,
 .dynamic-html-content .card *,
 .dynamic-html-content .metric,
@@ -322,46 +322,35 @@
 .dynamic-html-content .step-item,
 .dynamic-html-content .step-item *,
 .dynamic-html-content .gallery-item,
-.dynamic-html-content .gallery-item * {
-  color: #111827;
+.dynamic-html-content .gallery-item *,
+.dynamic-html-content .feature,
+.dynamic-html-content .feature * {
+  color: #111827 !important;
 }
 
-/* Headings in cards - darker for better hierarchy */
-.dynamic-html-content .card h1,
-.dynamic-html-content .card h2,
-.dynamic-html-content .card h3,
-.dynamic-html-content .card h4,
-.dynamic-html-content .card h5,
-.dynamic-html-content .card h6,
-.dynamic-html-content .metric h1,
-.dynamic-html-content .metric h2,
-.dynamic-html-content .metric h3,
-.dynamic-html-content .feature-card h1,
-.dynamic-html-content .feature-card h2,
-.dynamic-html-content .feature-card h3,
-.dynamic-html-content .pricing-card h1,
-.dynamic-html-content .pricing-card h2,
-.dynamic-html-content .pricing-card h3,
-.dynamic-html-content .step-item h1,
-.dynamic-html-content .step-item h2,
-.dynamic-html-content .step-item h3,
-.dynamic-html-content .step-item h4 {
-  color: #111827;
+/* Ensure background for card classes */
+.dynamic-html-content .card,
+.dynamic-html-content .metric,
+.dynamic-html-content .step-item,
+.dynamic-html-content .feature,
+.dynamic-html-content .feature-card,
+.dynamic-html-content .pricing-card {
+  background-color: #ffffff;
 }
 
-/* Secondary text in cards - slightly lighter */
+/* Secondary text in cards */
 .dynamic-html-content .card p,
-.dynamic-html-content .card span:not(.badge),
 .dynamic-html-content .feature-card p,
 .dynamic-html-content .pricing-card p,
-.dynamic-html-content .step-item p {
-  color: #374151;
+.dynamic-html-content .step-item p,
+.dynamic-html-content .feature p {
+  color: #374151 !important;
 }
 
-/* Muted/tertiary text in cards */
-.dynamic-html-content .card .text-muted,
-.dynamic-html-content .metric > div:last-child {
-  color: #6b7280;
+/* Muted text in metrics */
+.dynamic-html-content .metric > div:last-child,
+.dynamic-html-content .card .text-muted {
+  color: #6b7280 !important;
 }
 
 
