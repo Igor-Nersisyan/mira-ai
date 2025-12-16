@@ -380,23 +380,56 @@ function buildHtmlSystemPrompt(): string {
 </div>
 
 ═══════════════════════════════════════════════════════════
-ДОСТУПНЫЕ ИЗОБРАЖЕНИЯ:
+ДОСТУПНЫЕ ИЗОБРАЖЕНИЯ (ПОЛНЫЙ СПИСОК):
 ═══════════════════════════════════════════════════════════
 
-Интерфейс:
-/assets/avatar_mira.png, /assets/start_interview.png, /assets/choosing_time.png
-/assets/resume_database.png, /assets/candidate_card.png, /assets/candidates_list.png
-/assets/skills_analysis.png, /assets/emotion_analysis.png, /assets/job_statistics.png
-/assets/vacancies_list.png
+АВАТАР И БРЕНДИНГ:
+- /assets/avatar_mira.png — аватар Миры (для hero-секций, max-width: 220px)
 
-Брифинг:
-/assets/briefing_form.png, /assets/briefing_skills.png, /assets/briefing_chat.png
+ИНТЕРФЕЙС ПЛАТФОРМЫ:
+- /assets/resume_database.png — база резюме
+- /assets/candidate_card.png — карточка кандидата с детальной информацией
+- /assets/candidates_list.png — список кандидатов с оценками резюме
+- /assets/vacancies_list.png — список вакансий
+- /assets/job_statistics.png — общая статистика по вакансии
+- /assets/choosing_time.png — выбор времени для собеседования
+- /assets/start_interview.png — начало интервью
 
-Аналитика:
-/assets/candidate_detailed_analysis.jpg, /assets/candidate_motivation_report.jpg
-/assets/candidate_skills_table.jpg, /assets/hiring_funnel_stats.jpg
-/assets/interview_scores_chart.jpg, /assets/resume_scores_chart.jpg
-/assets/economic_efficiency.jpeg, /assets/hiring_speed_comparison.jpeg
+АНАЛИЗ КАНДИДАТОВ:
+- /assets/skills_analysis.png — краткий анализ навыков
+- /assets/skills_analysis_full.png — полный анализ навыков (развёрнутый)
+- /assets/emotion_analysis.png — анализ эмоций во время собеседования (7 базовых эмоций)
+- /assets/candidate_detailed_analysis.jpg — детальный дашборд анализа кандидата с оценками
+- /assets/candidate_motivation_report.jpg — отчёт по мотивации и типологии (PAEI, 5 типов)
+- /assets/candidate_skills_table.jpg — таблица оценки навыков с баллами
+
+БРИФИНГ ВАКАНСИИ:
+- /assets/briefing_form.png — форма заполнения брифинга
+- /assets/briefing_skills.png — настройка навыков в брифинге
+- /assets/briefing_chat.png — чат-интерфейс брифинга
+- /assets/briefing_checklist.png — чеклист готовности брифинга
+
+СТАТИСТИКА И ВОРОНКА:
+- /assets/hiring_funnel_stats.jpg — статистика воронки найма (конверсия по этапам)
+- /assets/interview_scores_chart.jpg — распределение баллов за собеседование (гистограмма)
+- /assets/resume_scores_chart.jpg — распределение баллов за скрининг резюме
+
+СРАВНЕНИЕ И ЭКОНОМИКА:
+- /assets/economic_efficiency.jpeg — экономическая эффективность (120 часов, 85 000 ₽ экономии)
+- /assets/hiring_speed_comparison.jpeg — сравнение скорости найма (AIR vs рекрутер)
+
+ХОЛОДНЫЙ ПОИСК:
+- /assets/ai_cold_search_status.jpeg — статус холодного поиска AI (обработка резюме)
+
+ФОРМЫ НАСТРОЙКИ:
+- /assets/job_criteria_form.jpg — форма редактирования критериев вакансии
+- /assets/resume_search_form.jpg — форма параметров поиска резюме
+
+СТИЛИ ИЗОБРАЖЕНИЙ:
+- Аватар: style="max-width: 220px; border-radius: 50%;"
+- Скриншоты в карточках: style="width: 100%; display: block; border-radius: 12px 12px 0 0;"
+- Отдельные большие: style="max-width: 100%; border-radius: 16px; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.15);"
+- В тёмных секциях: style="width: 100%; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);"
 
 ═══════════════════════════════════════════════════════════
 ПРАВИЛА ГЕНЕРАЦИИ:
