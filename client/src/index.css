@@ -296,15 +296,7 @@
 
 /* Dynamic HTML Content Styles */
 .dynamic-html-content {
-  color: #1a1a1a !important;
-}
-
-.dark .dynamic-html-content {
-  color: #f5f5f5 !important;
-}
-
-.dynamic-html-content * {
-  color: inherit;
+  @apply text-foreground;
 }
 
 .dynamic-html-content img {
@@ -314,39 +306,19 @@
 }
 
 .dynamic-html-content h1 {
-  @apply text-3xl lg:text-4xl font-bold tracking-tight mb-6;
-  color: #1a1a1a !important;
-}
-
-.dark .dynamic-html-content h1 {
-  color: #ffffff !important;
+  @apply text-3xl lg:text-4xl font-bold tracking-tight mb-6 text-foreground;
 }
 
 .dynamic-html-content h2 {
-  @apply text-2xl lg:text-3xl font-semibold mb-4 mt-8;
-  color: #1a1a1a !important;
-}
-
-.dark .dynamic-html-content h2 {
-  color: #ffffff !important;
+  @apply text-2xl lg:text-3xl font-semibold mb-4 mt-8 text-foreground;
 }
 
 .dynamic-html-content h3 {
-  @apply text-xl lg:text-2xl font-semibold mb-3 mt-6;
-  color: #1a1a1a !important;
-}
-
-.dark .dynamic-html-content h3 {
-  color: #ffffff !important;
+  @apply text-xl lg:text-2xl font-semibold mb-3 mt-6 text-foreground;
 }
 
 .dynamic-html-content p {
-  @apply leading-relaxed mb-4;
-  color: #1a1a1a !important;
-}
-
-.dark .dynamic-html-content p {
-  color: #f5f5f5 !important;
+  @apply leading-relaxed mb-4 text-foreground;
 }
 
 .dynamic-html-content ul,
@@ -355,11 +327,7 @@
 }
 
 .dynamic-html-content li {
-  color: #1a1a1a !important;
-}
-
-.dark .dynamic-html-content li {
-  color: #f5f5f5 !important;
+  @apply text-foreground;
 }
 
 .dynamic-html-content table {
@@ -700,31 +668,129 @@
 .dynamic-html-content .grid-2 > *:nth-child(2) { animation-delay: 0.2s; }
 .dynamic-html-content .grid-3 > *:nth-child(3) { animation-delay: 0.3s; }
 
-/* Dark background cards need light text */
-.dynamic-html-content [style*="background"][style*="#1"] *,
-.dynamic-html-content [style*="background"][style*="#2"] *,
-.dynamic-html-content [style*="background"][style*="#3"] *,
-.dynamic-html-content [style*="background"][style*="#4"] *,
-.dynamic-html-content [style*="background"][style*="#5"] *,
-.dynamic-html-content [style*="background-color"][style*="#1"] *,
-.dynamic-html-content [style*="background-color"][style*="#2"] *,
-.dynamic-html-content [style*="background-color"][style*="#3"] *,
-.dynamic-html-content [style*="background-color"][style*="#4"] *,
-.dynamic-html-content [style*="background-color"][style*="#5"] *,
-.dynamic-html-content [style*="background: #1"] *,
-.dynamic-html-content [style*="background: #2"] *,
-.dynamic-html-content [style*="background: #3"] *,
-.dynamic-html-content [style*="background: #4"] *,
-.dynamic-html-content [style*="background: #5"] *,
-.dynamic-html-content [style*="background:#1"] *,
-.dynamic-html-content [style*="background:#2"] *,
-.dynamic-html-content [style*="background:#3"] *,
-.dynamic-html-content [style*="background:#4"] *,
-.dynamic-html-content [style*="background:#5"] * {
-  color: white !important;
+/* Light background elements - always dark text */
+.dynamic-html-content [style*="background:#f"],
+.dynamic-html-content [style*="background: #f"],
+.dynamic-html-content [style*="background:#e"],
+.dynamic-html-content [style*="background: #e"],
+.dynamic-html-content [style*="background:#d"],
+.dynamic-html-content [style*="background: #d"],
+.dynamic-html-content [style*="background:#c"],
+.dynamic-html-content [style*="background: #c"],
+.dynamic-html-content [style*="background:#b"],
+.dynamic-html-content [style*="background: #b"],
+.dynamic-html-content [style*="background:#a"],
+.dynamic-html-content [style*="background: #a"],
+.dynamic-html-content [style*="background:#9"],
+.dynamic-html-content [style*="background: #9"],
+.dynamic-html-content [style*="background:#8"],
+.dynamic-html-content [style*="background: #8"],
+.dynamic-html-content [style*="background:#7"],
+.dynamic-html-content [style*="background: #7"],
+.dynamic-html-content [style*="background:white"],
+.dynamic-html-content [style*="background: white"],
+.dynamic-html-content [style*="background-color:#f"],
+.dynamic-html-content [style*="background-color: #f"],
+.dynamic-html-content [style*="background-color:#e"],
+.dynamic-html-content [style*="background-color: #e"],
+.dynamic-html-content [style*="background-color:#d"],
+.dynamic-html-content [style*="background-color: #d"],
+.dynamic-html-content [style*="background-color:white"],
+.dynamic-html-content [style*="background-color: white"] {
+  color: #1a1a1a !important;
 }
 
-/* Ensure cards inherit proper text color */
+.dynamic-html-content [style*="background:#f"] *,
+.dynamic-html-content [style*="background: #f"] *,
+.dynamic-html-content [style*="background:#e"] *,
+.dynamic-html-content [style*="background: #e"] *,
+.dynamic-html-content [style*="background:#d"] *,
+.dynamic-html-content [style*="background: #d"] *,
+.dynamic-html-content [style*="background:#c"] *,
+.dynamic-html-content [style*="background: #c"] *,
+.dynamic-html-content [style*="background:#b"] *,
+.dynamic-html-content [style*="background: #b"] *,
+.dynamic-html-content [style*="background:#a"] *,
+.dynamic-html-content [style*="background: #a"] *,
+.dynamic-html-content [style*="background:#9"] *,
+.dynamic-html-content [style*="background: #9"] *,
+.dynamic-html-content [style*="background:#8"] *,
+.dynamic-html-content [style*="background: #8"] *,
+.dynamic-html-content [style*="background:#7"] *,
+.dynamic-html-content [style*="background: #7"] *,
+.dynamic-html-content [style*="background:white"] *,
+.dynamic-html-content [style*="background: white"] *,
+.dynamic-html-content [style*="background-color:#f"] *,
+.dynamic-html-content [style*="background-color: #f"] *,
+.dynamic-html-content [style*="background-color:#e"] *,
+.dynamic-html-content [style*="background-color: #e"] *,
+.dynamic-html-content [style*="background-color:#d"] *,
+.dynamic-html-content [style*="background-color: #d"] *,
+.dynamic-html-content [style*="background-color:white"] *,
+.dynamic-html-content [style*="background-color: white"] * {
+  color: #1a1a1a !important;
+}
+
+/* Dark background elements - always light text */
+.dynamic-html-content [style*="background:#0"],
+.dynamic-html-content [style*="background: #0"],
+.dynamic-html-content [style*="background:#1"],
+.dynamic-html-content [style*="background: #1"],
+.dynamic-html-content [style*="background:#2"],
+.dynamic-html-content [style*="background: #2"],
+.dynamic-html-content [style*="background:#3"],
+.dynamic-html-content [style*="background: #3"],
+.dynamic-html-content [style*="background:#4"],
+.dynamic-html-content [style*="background: #4"],
+.dynamic-html-content [style*="background:#5"],
+.dynamic-html-content [style*="background: #5"],
+.dynamic-html-content [style*="background:#6"],
+.dynamic-html-content [style*="background: #6"],
+.dynamic-html-content [style*="background:black"],
+.dynamic-html-content [style*="background: black"],
+.dynamic-html-content [style*="background-color:#0"],
+.dynamic-html-content [style*="background-color: #0"],
+.dynamic-html-content [style*="background-color:#1"],
+.dynamic-html-content [style*="background-color: #1"],
+.dynamic-html-content [style*="background-color:#2"],
+.dynamic-html-content [style*="background-color: #2"],
+.dynamic-html-content [style*="background-color:#3"],
+.dynamic-html-content [style*="background-color: #3"],
+.dynamic-html-content [style*="background-color:black"],
+.dynamic-html-content [style*="background-color: black"] {
+  color: #ffffff !important;
+}
+
+.dynamic-html-content [style*="background:#0"] *,
+.dynamic-html-content [style*="background: #0"] *,
+.dynamic-html-content [style*="background:#1"] *,
+.dynamic-html-content [style*="background: #1"] *,
+.dynamic-html-content [style*="background:#2"] *,
+.dynamic-html-content [style*="background: #2"] *,
+.dynamic-html-content [style*="background:#3"] *,
+.dynamic-html-content [style*="background: #3"] *,
+.dynamic-html-content [style*="background:#4"] *,
+.dynamic-html-content [style*="background: #4"] *,
+.dynamic-html-content [style*="background:#5"] *,
+.dynamic-html-content [style*="background: #5"] *,
+.dynamic-html-content [style*="background:#6"] *,
+.dynamic-html-content [style*="background: #6"] *,
+.dynamic-html-content [style*="background:black"] *,
+.dynamic-html-content [style*="background: black"] *,
+.dynamic-html-content [style*="background-color:#0"] *,
+.dynamic-html-content [style*="background-color: #0"] *,
+.dynamic-html-content [style*="background-color:#1"] *,
+.dynamic-html-content [style*="background-color: #1"] *,
+.dynamic-html-content [style*="background-color:#2"] *,
+.dynamic-html-content [style*="background-color: #2"] *,
+.dynamic-html-content [style*="background-color:#3"] *,
+.dynamic-html-content [style*="background-color: #3"] *,
+.dynamic-html-content [style*="background-color:black"] *,
+.dynamic-html-content [style*="background-color: black"] * {
+  color: #ffffff !important;
+}
+
+/* Card classes always use card-foreground (dark in light mode, light in dark mode) */
 .dynamic-html-content .card,
 .dynamic-html-content .feature-card,
 .dynamic-html-content .pricing-card,
@@ -737,18 +803,6 @@
 .dynamic-html-content .pricing-card *,
 .dynamic-html-content .metric * {
   color: inherit;
-}
-
-.dynamic-html-content .card h1,
-.dynamic-html-content .card h2,
-.dynamic-html-content .card h3,
-.dynamic-html-content .feature-card h1,
-.dynamic-html-content .feature-card h2,
-.dynamic-html-content .feature-card h3,
-.dynamic-html-content .pricing-card h1,
-.dynamic-html-content .pricing-card h2,
-.dynamic-html-content .pricing-card h3 {
-  color: hsl(var(--card-foreground));
 }
 
 .scrollbar-none {
