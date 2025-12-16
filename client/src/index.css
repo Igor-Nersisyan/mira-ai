@@ -323,7 +323,10 @@
   color: var(--dynamic-text);
 }
 
-/* All text elements inherit from CSS variables */
+/* 
+  FORCE all text elements to use CSS variables with !important
+  This overrides ANY inline styles from AI-generated content
+*/
 .dynamic-html-content h1,
 .dynamic-html-content h2,
 .dynamic-html-content h3,
@@ -331,9 +334,19 @@
 .dynamic-html-content h5,
 .dynamic-html-content h6,
 .dynamic-html-content p,
-.dynamic-html-content span,
-.dynamic-html-content div {
-  color: var(--dynamic-text);
+.dynamic-html-content span:not(.btn):not([style*="background"]),
+.dynamic-html-content div:not(.card):not(.metric):not(.btn):not([style*="background: #FF"]):not([style*="background: #2D"]) {
+  color: var(--dynamic-text) !important;
+}
+
+/* Buttons with brand colors ALWAYS have white text */
+.dynamic-html-content .btn,
+.dynamic-html-content a.btn,
+.dynamic-html-content [style*="background: #FF8B36"],
+.dynamic-html-content [style*="background:#FF8B36"],
+.dynamic-html-content [style*="background: #2D8CFF"],
+.dynamic-html-content [style*="background:#2D8CFF"] {
+  color: #ffffff !important;
 }
 
 /* 
@@ -398,26 +411,17 @@
   object-fit: contain;
 }
 
-/* Headings - inherit color from parent or theme */
+/* Headings - typography only, color controlled by card/non-card rules above */
 .dynamic-html-content h1 {
   @apply text-3xl lg:text-4xl font-bold tracking-tight mb-6;
-  color: inherit;
 }
 
 .dynamic-html-content h2 {
   @apply text-2xl lg:text-3xl font-semibold mb-4 mt-8;
-  color: inherit;
 }
 
 .dynamic-html-content h3 {
   @apply text-xl lg:text-2xl font-semibold mb-3 mt-6;
-  color: inherit;
-}
-
-.dynamic-html-content h4,
-.dynamic-html-content h5,
-.dynamic-html-content h6 {
-  color: inherit;
 }
 
 /* Headings inside cards - ALWAYS dark */
