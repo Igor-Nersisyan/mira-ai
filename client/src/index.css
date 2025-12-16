@@ -58,6 +58,13 @@
   --tracking-normal: 0em;
   --spacing: 0.25rem;
 
+  /* Dynamic content text colors - AI uses these via var() */
+  --dynamic-text: #111827;
+  --dynamic-text-secondary: #374151;
+  --dynamic-text-muted: #6b7280;
+  --dynamic-card-bg: #ffffff;
+  --dynamic-card-text: #111827;
+
 /* Fallback for older browsers */
   --sidebar-primary-border: hsl(var(--sidebar-primary));
   --sidebar-primary-border: hsl(from hsl(var(--sidebar-primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
@@ -136,6 +143,13 @@
   --shadow-lg: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 4px 6px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
   --shadow-xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 8px 10px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
   --shadow-2xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
+
+  /* Dynamic content text colors - LIGHT text for dark mode */
+  --dynamic-text: #f5f5f5;
+  --dynamic-text-secondary: #d1d5db;
+  --dynamic-text-muted: #9ca3af;
+  --dynamic-card-bg: #ffffff;
+  --dynamic-card-text: #111827;
 
 /* Fallback for older browsers */
   --sidebar-primary-border: hsl(var(--sidebar-primary));
@@ -304,39 +318,22 @@
   AI generates inline styles, CSS provides fallbacks and card overrides.
 */
 
-/* Base fallback colors (when AI doesn't specify) */
+/* Base fallback colors using CSS variables */
 .dynamic-html-content {
-  color: #111827;
+  color: var(--dynamic-text);
 }
 
-.dark .dynamic-html-content {
-  color: #f5f5f5;
-}
-
-/* Theme-aware text classes - adapt to light/dark mode */
-.dynamic-html-content .theme-text {
-  color: #111827;
-}
-
-.dynamic-html-content .theme-text-secondary {
-  color: #374151;
-}
-
-.dynamic-html-content .theme-text-muted {
-  color: #6b7280;
-}
-
-/* Dark mode overrides for theme-text classes */
-.dark .dynamic-html-content .theme-text {
-  color: #f5f5f5 !important;
-}
-
-.dark .dynamic-html-content .theme-text-secondary {
-  color: #d1d5db !important;
-}
-
-.dark .dynamic-html-content .theme-text-muted {
-  color: #9ca3af !important;
+/* All text elements inherit from CSS variables */
+.dynamic-html-content h1,
+.dynamic-html-content h2,
+.dynamic-html-content h3,
+.dynamic-html-content h4,
+.dynamic-html-content h5,
+.dynamic-html-content h6,
+.dynamic-html-content p,
+.dynamic-html-content span,
+.dynamic-html-content div {
+  color: var(--dynamic-text);
 }
 
 /* 
@@ -346,21 +343,12 @@
 */
 
 /* 
-  UNIVERSAL CARD TEXT RULE:
-  ANY element inside a card-like component gets dark text.
-  This includes inline styles with color:white - we override them!
+  CARD SYSTEM:
+  Cards use CSS variables that ALWAYS resolve to white background + dark text.
+  This works in both light and dark modes.
 */
 .dynamic-html-content .card,
 .dynamic-html-content .card *,
-.dynamic-html-content .card h1,
-.dynamic-html-content .card h2,
-.dynamic-html-content .card h3,
-.dynamic-html-content .card h4,
-.dynamic-html-content .card h5,
-.dynamic-html-content .card h6,
-.dynamic-html-content .card p,
-.dynamic-html-content .card span,
-.dynamic-html-content .card div,
 .dynamic-html-content .metric,
 .dynamic-html-content .metric *,
 .dynamic-html-content .feature-card,
@@ -369,16 +357,14 @@
 .dynamic-html-content .pricing-card *,
 .dynamic-html-content .step-item,
 .dynamic-html-content .step-item *,
-.dynamic-html-content .gallery-item,
-.dynamic-html-content .gallery-item *,
-.dynamic-html-content .feature,
-.dynamic-html-content .feature *,
 .dynamic-html-content .step,
-.dynamic-html-content .step * {
-  color: #111827 !important;
+.dynamic-html-content .step *,
+.dynamic-html-content .feature,
+.dynamic-html-content .feature * {
+  color: var(--dynamic-card-text) !important;
 }
 
-/* FORCE white background for all card-like elements - override any inline styles */
+/* Card backgrounds - always white */
 .dynamic-html-content .card,
 .dynamic-html-content .metric,
 .dynamic-html-content .step-item,
@@ -386,8 +372,8 @@
 .dynamic-html-content .feature,
 .dynamic-html-content .feature-card,
 .dynamic-html-content .pricing-card {
-  background-color: #ffffff !important;
-  background: #ffffff !important;
+  background-color: var(--dynamic-card-bg) !important;
+  background: var(--dynamic-card-bg) !important;
 }
 
 /* Secondary text in cards */
