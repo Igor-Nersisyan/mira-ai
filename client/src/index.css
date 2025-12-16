@@ -310,9 +310,22 @@
   This is because cards always have white/light backgrounds.
 */
 
-/* Cards and components with light backgrounds - ALWAYS dark text */
+/* 
+  UNIVERSAL CARD TEXT RULE:
+  ANY element inside a card-like component gets dark text.
+  This includes inline styles with color:white - we override them!
+*/
 .dynamic-html-content .card,
 .dynamic-html-content .card *,
+.dynamic-html-content .card h1,
+.dynamic-html-content .card h2,
+.dynamic-html-content .card h3,
+.dynamic-html-content .card h4,
+.dynamic-html-content .card h5,
+.dynamic-html-content .card h6,
+.dynamic-html-content .card p,
+.dynamic-html-content .card span,
+.dynamic-html-content .card div,
 .dynamic-html-content .metric,
 .dynamic-html-content .metric *,
 .dynamic-html-content .feature-card,
@@ -324,7 +337,9 @@
 .dynamic-html-content .gallery-item,
 .dynamic-html-content .gallery-item *,
 .dynamic-html-content .feature,
-.dynamic-html-content .feature * {
+.dynamic-html-content .feature *,
+.dynamic-html-content .step,
+.dynamic-html-content .step * {
   color: #111827 !important;
 }
 
@@ -360,16 +375,45 @@
   object-fit: contain;
 }
 
+/* Headings - inherit color from parent or theme */
 .dynamic-html-content h1 {
   @apply text-3xl lg:text-4xl font-bold tracking-tight mb-6;
+  color: inherit;
 }
 
 .dynamic-html-content h2 {
   @apply text-2xl lg:text-3xl font-semibold mb-4 mt-8;
+  color: inherit;
 }
 
 .dynamic-html-content h3 {
   @apply text-xl lg:text-2xl font-semibold mb-3 mt-6;
+  color: inherit;
+}
+
+.dynamic-html-content h4,
+.dynamic-html-content h5,
+.dynamic-html-content h6 {
+  color: inherit;
+}
+
+/* Headings inside cards - ALWAYS dark */
+.dynamic-html-content .card h1,
+.dynamic-html-content .card h2,
+.dynamic-html-content .card h3,
+.dynamic-html-content .card h4,
+.dynamic-html-content .card h5,
+.dynamic-html-content .card h6,
+.dynamic-html-content .metric h1,
+.dynamic-html-content .metric h2,
+.dynamic-html-content .metric h3,
+.dynamic-html-content .step-item h3,
+.dynamic-html-content .step-item h4,
+.dynamic-html-content .feature h3,
+.dynamic-html-content .feature h4,
+.dynamic-html-content .feature-card h3,
+.dynamic-html-content .pricing-card h3 {
+  color: #111827 !important;
 }
 
 .dynamic-html-content p {
