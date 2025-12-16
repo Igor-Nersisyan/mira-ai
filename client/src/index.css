@@ -318,7 +318,7 @@
 }
 
 .dynamic-html-content p {
-  @apply text-muted-foreground leading-relaxed mb-4;
+  @apply text-foreground/80 leading-relaxed mb-4;
 }
 
 .dynamic-html-content ul,
@@ -327,7 +327,7 @@
 }
 
 .dynamic-html-content li {
-  @apply text-muted-foreground;
+  @apply text-foreground/80;
 }
 
 .dynamic-html-content table {
@@ -339,7 +339,7 @@
 }
 
 .dynamic-html-content td {
-  @apply p-3 border border-border text-muted-foreground;
+  @apply p-3 border border-border text-foreground/80;
 }
 
 .dynamic-html-content .card {
@@ -399,7 +399,7 @@
 }
 
 .dynamic-html-content .feature-item {
-  @apply flex items-center gap-2 text-sm text-muted-foreground;
+  @apply flex items-center gap-2 text-sm text-foreground/80;
 }
 
 .dynamic-html-content .icon-check {
@@ -415,7 +415,7 @@
 }
 
 .dynamic-html-content .faq-answer {
-  @apply text-sm text-muted-foreground;
+  @apply text-sm text-foreground/75;
 }
 
 .dynamic-html-content .process-step {
@@ -435,7 +435,7 @@
 }
 
 .dynamic-html-content .step-description {
-  @apply text-sm text-muted-foreground;
+  @apply text-sm text-foreground/75;
 }
 
 /* Hero Section Styles */
@@ -504,7 +504,7 @@
 }
 
 .dynamic-html-content .feature-card p {
-  @apply text-sm text-muted-foreground mb-3;
+  @apply text-sm text-foreground/75 mb-3;
 }
 
 .dynamic-html-content .tag {
@@ -539,7 +539,7 @@
 }
 
 .dynamic-html-content .comparison-cell {
-  @apply py-4 px-4 text-sm text-muted-foreground;
+  @apply py-4 px-4 text-sm text-foreground/80;
 }
 
 .dynamic-html-content .comparison-cell.highlight {

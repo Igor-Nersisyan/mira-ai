@@ -197,11 +197,10 @@ export default function Home() {
           .map((m) => `${m.role}: ${m.content}`)
           .join("\n");
 
-        const chatPromise = streamChat(allMessages);
         const htmlPromise = streamHtml(context, messageText.trim(), dynamicHtml).catch(() => null);
-
-        const [assistantResponse, html] = await Promise.all([chatPromise, htmlPromise]);
-
+        
+        const assistantResponse = await streamChat(allMessages);
+        
         const assistantMessage: Message = {
           id: crypto.randomUUID(),
           role: "assistant",
@@ -211,6 +210,7 @@ export default function Home() {
         setMessages((prev) => [...prev, assistantMessage]);
         setStreamingMessage("");
 
+        const html = await htmlPromise;
         if (html) {
           setDynamicHtml(html);
         }
@@ -261,7 +261,7 @@ export default function Home() {
       </div>
       
       <div className="relative flex-1 overflow-y-auto">
-        <div className="absolute inset-0 backdrop-blur-sm bg-white/30 dark:bg-black/20 pointer-events-none z-0" />
+        <div className="sticky top-0 left-0 right-0 h-full backdrop-blur-[2px] bg-white/15 dark:bg-black/10 pointer-events-none z-0" style={{ position: 'fixed', width: '100%', height: '100%' }} />
         <div className="relative z-10">
           <DynamicContent 
             html={dynamicHtml} 
