@@ -379,10 +379,10 @@ async function* streamOpenRouterHtml(context: string, userMessage: string, curre
       "X-Title": "AIR Mira HTML",
     },
     body: JSON.stringify({
-      model: "anthropic/claude-sonnet-4.5",
+      model: "anthropic/claude-sonnet-4",
       messages: formattedMessages,
-      max_tokens: 8192,
-      temperature: 0.9,
+      max_tokens: 16384,
+      temperature: 0.5,
       stream: true,
     }),
   });
