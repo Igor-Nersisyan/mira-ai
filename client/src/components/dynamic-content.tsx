@@ -247,12 +247,6 @@ function sanitizeStyles(container: HTMLElement) {
     if (style) {
       let newStyle = style;
       
-      if (style.includes('linear-gradient') || style.includes('radial-gradient')) {
-        const isDarkMode = document.documentElement.classList.contains('dark');
-        const replacementColor = isDarkMode ? '#2a2a2a' : '#f8f9fa';
-        newStyle = newStyle.replace(/background[^;]*gradient[^;]*;?/gi, `background: ${replacementColor};`);
-      }
-      
       if (style.includes('backdrop-filter') || style.includes('filter: blur')) {
         newStyle = newStyle.replace(/backdrop-filter[^;]*;?/gi, '');
         newStyle = newStyle.replace(/filter:\s*blur[^;]*;?/gi, '');
