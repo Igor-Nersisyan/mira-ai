@@ -1,4 +1,5 @@
 import { type ReactNode, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Loader2, X } from "lucide-react";
 
 interface DynamicContentProps {
@@ -202,11 +203,12 @@ export function DynamicContent({
         </div>
       </div>
       
-      {lightboxImage && (
+      {lightboxImage && createPortal(
         <ImageLightbox 
           src={lightboxImage} 
           onClose={() => setLightboxImage(null)} 
-        />
+        />,
+        document.body
       )}
     </>
   );
