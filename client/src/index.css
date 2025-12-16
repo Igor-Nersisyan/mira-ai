@@ -58,12 +58,6 @@
   --tracking-normal: 0em;
   --spacing: 0.25rem;
 
-  /* Dynamic content text colors - AI uses these via var() */
-  --dynamic-text: #111827;
-  --dynamic-text-secondary: #374151;
-  --dynamic-text-muted: #6b7280;
-  --dynamic-card-bg: #ffffff;
-  --dynamic-card-text: #111827;
 
 /* Fallback for older browsers */
   --sidebar-primary-border: hsl(var(--sidebar-primary));
@@ -144,12 +138,6 @@
   --shadow-xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 8px 10px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
   --shadow-2xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
 
-  /* Dynamic content text colors - LIGHT text for dark mode */
-  --dynamic-text: #f5f5f5;
-  --dynamic-text-secondary: #d1d5db;
-  --dynamic-text-muted: #9ca3af;
-  --dynamic-card-bg: #ffffff;
-  --dynamic-card-text: #111827;
 
 /* Fallback for older browsers */
   --sidebar-primary-border: hsl(var(--sidebar-primary));
@@ -308,124 +296,63 @@
   }
 }
 
-/* Dynamic HTML Content Styles - Smart Contrast */
+/* Dynamic HTML Content Styles - Clean Contrast System */
 /* 
-  CONTRAST SYSTEM:
-  - Light mode: dark text (#111827) on light backgrounds
-  - Dark mode: light text (#f5f5f5) on dark backgrounds
-  - Cards: ALWAYS dark text because cards are always white
-  
-  AI generates inline styles, CSS provides fallbacks and card overrides.
+  SIMPLE CONTRAST RULES:
+  1. Base content inherits foreground color from theme
+  2. Cards (.card, .feature-card, etc.) get explicit white bg + dark text
+  3. Brand-colored elements (buttons, badges) get white text
+  4. No inline style parsing - rely on semantic classes
 */
 
-/* Base fallback colors using CSS variables */
+/* Base: inherit theme colors */
 .dynamic-html-content {
-  color: var(--dynamic-text);
+  color: hsl(var(--foreground));
 }
 
-/* 
-  FUNDAMENTAL COLOR SYSTEM:
-  CSS controls ALL text colors. Inline styles are overridden with !important.
-  
-  RULE 1: All text outside cards adapts to theme (dark in light mode, light in dark mode)
-  RULE 2: All text inside cards is ALWAYS dark (cards are always white)
-  RULE 3: Text on brand-colored backgrounds (orange/blue) is ALWAYS white
-*/
-
-/* DEFAULT: All text uses theme-aware color */
-.dynamic-html-content,
-.dynamic-html-content * {
-  color: var(--dynamic-text) !important;
-}
-
-/* CARDS: Always dark text because cards are always white */
-/* Match by class OR by inline white background styles - comprehensive list */
-.dynamic-html-content .card,
-.dynamic-html-content .card *,
-.dynamic-html-content .metric,
-.dynamic-html-content .metric *,
-.dynamic-html-content .step,
-.dynamic-html-content .step *,
-.dynamic-html-content .feature,
-.dynamic-html-content .feature *,
-.dynamic-html-content .feature-card,
-.dynamic-html-content .feature-card *,
-.dynamic-html-content .pricing-card,
-.dynamic-html-content .pricing-card *,
-/* #fff variants */
-.dynamic-html-content [style*="background: #fff"],
-.dynamic-html-content [style*="background:#fff"],
-.dynamic-html-content [style*="background: #fff"] *,
-.dynamic-html-content [style*="background:#fff"] *,
-/* #ffffff variants (6 chars) */
-.dynamic-html-content [style*="background: #ffffff"],
-.dynamic-html-content [style*="background:#ffffff"],
-.dynamic-html-content [style*="background: #ffffff"] *,
-.dynamic-html-content [style*="background:#ffffff"] *,
-/* Uppercase variants */
-.dynamic-html-content [style*="background: #FFF"],
-.dynamic-html-content [style*="background:#FFF"],
-.dynamic-html-content [style*="background: #FFFFFF"],
-.dynamic-html-content [style*="background:#FFFFFF"],
-.dynamic-html-content [style*="background: #FFF"] *,
-.dynamic-html-content [style*="background:#FFF"] *,
-.dynamic-html-content [style*="background: #FFFFFF"] *,
-.dynamic-html-content [style*="background:#FFFFFF"] *,
-/* white keyword */
-.dynamic-html-content [style*="background: white"],
-.dynamic-html-content [style*="background:white"],
-.dynamic-html-content [style*="background: white"] *,
-.dynamic-html-content [style*="background:white"] *,
-/* background-color variants */
-.dynamic-html-content [style*="background-color: #fff"],
-.dynamic-html-content [style*="background-color:#fff"],
-.dynamic-html-content [style*="background-color: #ffffff"],
-.dynamic-html-content [style*="background-color:#ffffff"],
-.dynamic-html-content [style*="background-color: white"],
-.dynamic-html-content [style*="background-color:white"],
-.dynamic-html-content [style*="background-color: #fff"] *,
-.dynamic-html-content [style*="background-color:#fff"] *,
-.dynamic-html-content [style*="background-color: #ffffff"] *,
-.dynamic-html-content [style*="background-color:#ffffff"] *,
-.dynamic-html-content [style*="background-color: white"] *,
-.dynamic-html-content [style*="background-color:white"] *,
-/* CSS variable */
-.dynamic-html-content [style*="background: var(--dynamic-card-bg)"],
-.dynamic-html-content [style*="background:var(--dynamic-card-bg)"],
-.dynamic-html-content [style*="background: var(--dynamic-card-bg)"] *,
-.dynamic-html-content [style*="background:var(--dynamic-card-bg)"] *,
-/* rgb variants */
-.dynamic-html-content [style*="background: rgb(255"],
-.dynamic-html-content [style*="background:rgb(255"],
-.dynamic-html-content [style*="background: rgb(255"] *,
-.dynamic-html-content [style*="background:rgb(255"] *,
-/* rgba variants */
-.dynamic-html-content [style*="background: rgba(255"],
-.dynamic-html-content [style*="background:rgba(255"],
-.dynamic-html-content [style*="background: rgba(255"] *,
-.dynamic-html-content [style*="background:rgba(255"] * {
-  color: #111827 !important;
-}
-
-/* BRAND BUTTONS: White text on orange/blue backgrounds */
-.dynamic-html-content .btn,
-.dynamic-html-content [class*="btn"],
-.dynamic-html-content [style*="background: #FF"],
-.dynamic-html-content [style*="background:#FF"],
-.dynamic-html-content [style*="background: #2D"],
-.dynamic-html-content [style*="background:#2D"] {
-  color: #ffffff !important;
-}
-
-/* Card backgrounds - always white */
+/* Card elements: always white background with dark text for readability */
 .dynamic-html-content .card,
 .dynamic-html-content .metric,
 .dynamic-html-content .step,
 .dynamic-html-content .feature,
 .dynamic-html-content .feature-card,
 .dynamic-html-content .pricing-card {
-  background-color: #ffffff !important;
-  background: #ffffff !important;
+  background-color: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+}
+
+/* All text inside cards inherits card foreground */
+.dynamic-html-content .card *,
+.dynamic-html-content .metric *,
+.dynamic-html-content .step *,
+.dynamic-html-content .feature *,
+.dynamic-html-content .feature-card *,
+.dynamic-html-content .pricing-card * {
+  color: inherit;
+}
+
+/* Brand buttons get white text */
+.dynamic-html-content .btn,
+.dynamic-html-content .cta-button {
+  color: hsl(var(--primary-foreground));
+}
+
+/* Force dark text on light backgrounds (theme-independent) */
+.dynamic-html-content .light-bg-forced {
+  color: #1a1a1a !important;
+}
+
+.dynamic-html-content .light-bg-forced * {
+  color: inherit !important;
+}
+
+/* Force light text on dark backgrounds (theme-independent) */
+.dynamic-html-content .dark-bg-forced {
+  color: #ffffff !important;
+}
+
+.dynamic-html-content .dark-bg-forced * {
+  color: inherit !important;
 }
 
 
@@ -448,7 +375,7 @@
   @apply text-xl lg:text-2xl font-semibold mb-3 mt-6;
 }
 
-/* Headings inside cards - ALWAYS dark */
+/* Headings inside cards inherit card foreground color */
 .dynamic-html-content .card h1,
 .dynamic-html-content .card h2,
 .dynamic-html-content .card h3,
@@ -464,7 +391,7 @@
 .dynamic-html-content .feature h4,
 .dynamic-html-content .feature-card h3,
 .dynamic-html-content .pricing-card h3 {
-  color: #111827 !important;
+  color: inherit;
 }
 
 .dynamic-html-content p {
@@ -485,11 +412,13 @@
 }
 
 .dynamic-html-content th {
-  @apply bg-muted text-foreground font-semibold text-left p-3 border border-border;
+  @apply bg-muted font-semibold text-left p-3 border border-border;
+  color: hsl(var(--foreground));
 }
 
 .dynamic-html-content td {
-  @apply p-3 border border-border text-foreground;
+  @apply p-3 border border-border;
+  color: hsl(var(--foreground));
 }
 
 .dynamic-html-content .card {
@@ -509,11 +438,13 @@
 }
 
 .dynamic-html-content .metric-value {
-  @apply text-4xl font-black text-foreground mb-1;
+  @apply text-4xl font-black mb-1;
+  color: inherit;
 }
 
 .dynamic-html-content .metric-label {
-  @apply text-sm font-medium text-foreground;
+  @apply text-sm font-medium;
+  color: inherit;
 }
 
 .dynamic-html-content .highlight {
@@ -537,11 +468,13 @@
 }
 
 .dynamic-html-content .pricing-price {
-  @apply text-4xl font-black text-foreground;
+  @apply text-4xl font-black;
+  color: inherit;
 }
 
 .dynamic-html-content .pricing-period {
-  @apply text-sm text-foreground;
+  @apply text-sm;
+  color: inherit;
 }
 
 .dynamic-html-content .feature-list {
@@ -549,7 +482,8 @@
 }
 
 .dynamic-html-content .feature-item {
-  @apply flex items-center gap-2 text-sm text-foreground;
+  @apply flex items-center gap-2 text-sm;
+  color: inherit;
 }
 
 .dynamic-html-content .icon-check {
@@ -561,11 +495,13 @@
 }
 
 .dynamic-html-content .faq-question {
-  @apply font-medium text-foreground mb-2;
+  @apply font-medium mb-2;
+  color: inherit;
 }
 
 .dynamic-html-content .faq-answer {
-  @apply text-sm text-foreground;
+  @apply text-sm;
+  color: inherit;
 }
 
 .dynamic-html-content .process-step {
@@ -581,11 +517,13 @@
 }
 
 .dynamic-html-content .step-title {
-  @apply font-semibold text-foreground mb-1;
+  @apply font-semibold mb-1;
+  color: inherit;
 }
 
 .dynamic-html-content .step-description {
-  @apply text-sm text-foreground;
+  @apply text-sm;
+  color: inherit;
 }
 
 /* Hero Section Styles */
@@ -606,7 +544,8 @@
 }
 
 .dynamic-html-content .hero-subtitle {
-  @apply text-lg text-foreground mb-6;
+  @apply text-lg mb-6;
+  color: inherit;
 }
 
 .dynamic-html-content .hero-metrics {
@@ -634,11 +573,13 @@
 }
 
 .dynamic-html-content .feature-card h3 {
-  @apply text-lg font-semibold text-foreground mb-2 mt-0;
+  @apply text-lg font-semibold mb-2 mt-0;
+  color: inherit;
 }
 
 .dynamic-html-content .feature-card p {
-  @apply text-sm text-foreground mb-3;
+  @apply text-sm mb-3;
+  color: inherit;
 }
 
 .dynamic-html-content .tag {
@@ -661,7 +602,8 @@
 }
 
 .dynamic-html-content .comparison-row.header .comparison-cell {
-  @apply font-semibold text-foreground py-4 px-4;
+  @apply font-semibold py-4 px-4;
+  color: inherit;
 }
 
 .dynamic-html-content .comparison-row:not(.header) {
@@ -673,11 +615,13 @@
 }
 
 .dynamic-html-content .comparison-cell {
-  @apply py-4 px-4 text-sm text-foreground;
+  @apply py-4 px-4 text-sm;
+  color: inherit;
 }
 
 .dynamic-html-content .comparison-cell.highlight {
-  @apply bg-primary/5 text-foreground font-medium;
+  @apply bg-primary/5 font-medium;
+  color: inherit;
 }
 
 /* Gallery with Hover Effects */
@@ -704,7 +648,8 @@
 }
 
 .dynamic-html-content .gallery-caption {
-  @apply px-4 py-3 text-sm text-foreground text-center bg-muted/30;
+  @apply px-4 py-3 text-sm text-center bg-muted/30;
+  color: inherit;
 }
 
 /* Process Steps with Connector Line */
@@ -755,7 +700,8 @@
 }
 
 .dynamic-html-content .pricing-card h3 {
-  @apply text-xl font-semibold text-foreground mb-4 mt-0;
+  @apply text-xl font-semibold mb-4 mt-0;
+  color: inherit;
 }
 
 /* CTA Buttons */
@@ -768,7 +714,8 @@
 }
 
 .dynamic-html-content .cta-button-secondary {
-  @apply inline-flex items-center justify-center px-6 py-3 rounded-lg font-semibold text-sm transition-all duration-300 border border-border text-foreground bg-transparent;
+  @apply inline-flex items-center justify-center px-6 py-3 rounded-lg font-semibold text-sm transition-all duration-300 border border-border bg-transparent;
+  color: hsl(var(--foreground));
 }
 
 .dynamic-html-content .cta-button-secondary:hover {
@@ -817,190 +764,6 @@
 .dynamic-html-content .grid-3 > *:nth-child(2),
 .dynamic-html-content .grid-2 > *:nth-child(2) { animation-delay: 0.2s; }
 .dynamic-html-content .grid-3 > *:nth-child(3) { animation-delay: 0.3s; }
-
-/* ==========================================
-   LIGHT BACKGROUND → DARK TEXT (#1a1a1a)
-   ========================================== */
-.dynamic-html-content [style*="background:#f"],
-.dynamic-html-content [style*="background: #f"],
-.dynamic-html-content [style*="background:#e"],
-.dynamic-html-content [style*="background: #e"],
-.dynamic-html-content [style*="background:#d"],
-.dynamic-html-content [style*="background: #d"],
-.dynamic-html-content [style*="background:#c"],
-.dynamic-html-content [style*="background: #c"],
-.dynamic-html-content [style*="background:#b"],
-.dynamic-html-content [style*="background: #b"],
-.dynamic-html-content [style*="background:#a"],
-.dynamic-html-content [style*="background: #a"],
-.dynamic-html-content [style*="background:#9"],
-.dynamic-html-content [style*="background: #9"],
-.dynamic-html-content [style*="background:#8"],
-.dynamic-html-content [style*="background: #8"],
-.dynamic-html-content [style*="background:#7"],
-.dynamic-html-content [style*="background: #7"],
-.dynamic-html-content [style*="background:white"],
-.dynamic-html-content [style*="background: white"],
-.dynamic-html-content [style*="background-color:#f"],
-.dynamic-html-content [style*="background-color: #f"],
-.dynamic-html-content [style*="background-color:#e"],
-.dynamic-html-content [style*="background-color: #e"],
-.dynamic-html-content [style*="background-color:#d"],
-.dynamic-html-content [style*="background-color: #d"],
-.dynamic-html-content [style*="background-color:white"],
-.dynamic-html-content [style*="background-color: white"],
-.dynamic-html-content [style*="rgb(2"],
-.dynamic-html-content [style*="rgba(2"] {
-  color: #1a1a1a !important;
-}
-
-.dynamic-html-content [style*="background:#f"] *,
-.dynamic-html-content [style*="background: #f"] *,
-.dynamic-html-content [style*="background:#e"] *,
-.dynamic-html-content [style*="background: #e"] *,
-.dynamic-html-content [style*="background:#d"] *,
-.dynamic-html-content [style*="background: #d"] *,
-.dynamic-html-content [style*="background:#c"] *,
-.dynamic-html-content [style*="background: #c"] *,
-.dynamic-html-content [style*="background:#b"] *,
-.dynamic-html-content [style*="background: #b"] *,
-.dynamic-html-content [style*="background:#a"] *,
-.dynamic-html-content [style*="background: #a"] *,
-.dynamic-html-content [style*="background:#9"] *,
-.dynamic-html-content [style*="background: #9"] *,
-.dynamic-html-content [style*="background:#8"] *,
-.dynamic-html-content [style*="background: #8"] *,
-.dynamic-html-content [style*="background:#7"] *,
-.dynamic-html-content [style*="background: #7"] *,
-.dynamic-html-content [style*="background:white"] *,
-.dynamic-html-content [style*="background: white"] *,
-.dynamic-html-content [style*="background-color:#f"] *,
-.dynamic-html-content [style*="background-color: #f"] *,
-.dynamic-html-content [style*="background-color:#e"] *,
-.dynamic-html-content [style*="background-color: #e"] *,
-.dynamic-html-content [style*="background-color:#d"] *,
-.dynamic-html-content [style*="background-color: #d"] *,
-.dynamic-html-content [style*="background-color:white"] *,
-.dynamic-html-content [style*="background-color: white"] *,
-.dynamic-html-content [style*="rgb(2"] *,
-.dynamic-html-content [style*="rgba(2"] * {
-  color: #1a1a1a !important;
-}
-
-/* ==========================================
-   DARK BACKGROUND → WHITE TEXT (#ffffff)
-   ========================================== */
-.dynamic-html-content [style*="background:#0"],
-.dynamic-html-content [style*="background: #0"],
-.dynamic-html-content [style*="background:#1"],
-.dynamic-html-content [style*="background: #1"],
-.dynamic-html-content [style*="background:#2"],
-.dynamic-html-content [style*="background: #2"],
-.dynamic-html-content [style*="background:#3"],
-.dynamic-html-content [style*="background: #3"],
-.dynamic-html-content [style*="background:#4"],
-.dynamic-html-content [style*="background: #4"],
-.dynamic-html-content [style*="background:#5"],
-.dynamic-html-content [style*="background: #5"],
-.dynamic-html-content [style*="background:#6"],
-.dynamic-html-content [style*="background: #6"],
-.dynamic-html-content [style*="background:black"],
-.dynamic-html-content [style*="background: black"],
-.dynamic-html-content [style*="background-color:#0"],
-.dynamic-html-content [style*="background-color: #0"],
-.dynamic-html-content [style*="background-color:#1"],
-.dynamic-html-content [style*="background-color: #1"],
-.dynamic-html-content [style*="background-color:#2"],
-.dynamic-html-content [style*="background-color: #2"],
-.dynamic-html-content [style*="background-color:#3"],
-.dynamic-html-content [style*="background-color: #3"],
-.dynamic-html-content [style*="background-color:#4"],
-.dynamic-html-content [style*="background-color: #4"],
-.dynamic-html-content [style*="background-color:#5"],
-.dynamic-html-content [style*="background-color: #5"],
-.dynamic-html-content [style*="background-color:black"],
-.dynamic-html-content [style*="background-color: black"],
-.dynamic-html-content [style*="rgb(0"],
-.dynamic-html-content [style*="rgb(1"],
-.dynamic-html-content [style*="rgb(2"],
-.dynamic-html-content [style*="rgb(3"],
-.dynamic-html-content [style*="rgb(4"],
-.dynamic-html-content [style*="rgb(5"],
-.dynamic-html-content [style*="rgb(6"],
-.dynamic-html-content [style*="rgb(7"],
-.dynamic-html-content [style*="rgb(8"],
-.dynamic-html-content [style*="rgb(9"],
-.dynamic-html-content [style*="rgba(0"],
-.dynamic-html-content [style*="rgba(1"],
-.dynamic-html-content [style*="rgba(3"],
-.dynamic-html-content [style*="rgba(4"],
-.dynamic-html-content [style*="rgba(5"],
-.dynamic-html-content [style*="rgba(6"],
-.dynamic-html-content [style*="rgba(7"],
-.dynamic-html-content [style*="rgba(8"],
-.dynamic-html-content [style*="rgba(9"] {
-  color: #ffffff !important;
-}
-
-.dynamic-html-content [style*="background:#0"] *,
-.dynamic-html-content [style*="background: #0"] *,
-.dynamic-html-content [style*="background:#1"] *,
-.dynamic-html-content [style*="background: #1"] *,
-.dynamic-html-content [style*="background:#2"] *,
-.dynamic-html-content [style*="background: #2"] *,
-.dynamic-html-content [style*="background:#3"] *,
-.dynamic-html-content [style*="background: #3"] *,
-.dynamic-html-content [style*="background:#4"] *,
-.dynamic-html-content [style*="background: #4"] *,
-.dynamic-html-content [style*="background:#5"] *,
-.dynamic-html-content [style*="background: #5"] *,
-.dynamic-html-content [style*="background:#6"] *,
-.dynamic-html-content [style*="background: #6"] *,
-.dynamic-html-content [style*="background:black"] *,
-.dynamic-html-content [style*="background: black"] *,
-.dynamic-html-content [style*="background-color:#0"] *,
-.dynamic-html-content [style*="background-color: #0"] *,
-.dynamic-html-content [style*="background-color:#1"] *,
-.dynamic-html-content [style*="background-color: #1"] *,
-.dynamic-html-content [style*="background-color:#2"] *,
-.dynamic-html-content [style*="background-color: #2"] *,
-.dynamic-html-content [style*="background-color:#3"] *,
-.dynamic-html-content [style*="background-color: #3"] *,
-.dynamic-html-content [style*="background-color:#4"] *,
-.dynamic-html-content [style*="background-color: #4"] *,
-.dynamic-html-content [style*="background-color:#5"] *,
-.dynamic-html-content [style*="background-color: #5"] *,
-.dynamic-html-content [style*="background-color:black"] *,
-.dynamic-html-content [style*="background-color: black"] *,
-.dynamic-html-content [style*="rgb(0"] *,
-.dynamic-html-content [style*="rgb(1"] *,
-.dynamic-html-content [style*="rgb(2"] *,
-.dynamic-html-content [style*="rgb(3"] *,
-.dynamic-html-content [style*="rgb(4"] *,
-.dynamic-html-content [style*="rgb(5"] *,
-.dynamic-html-content [style*="rgb(6"] *,
-.dynamic-html-content [style*="rgb(7"] *,
-.dynamic-html-content [style*="rgb(8"] *,
-.dynamic-html-content [style*="rgb(9"] *,
-.dynamic-html-content [style*="rgba(0"] *,
-.dynamic-html-content [style*="rgba(1"] *,
-.dynamic-html-content [style*="rgba(3"] *,
-.dynamic-html-content [style*="rgba(4"] *,
-.dynamic-html-content [style*="rgba(5"] *,
-.dynamic-html-content [style*="rgba(6"] *,
-.dynamic-html-content [style*="rgba(7"] *,
-.dynamic-html-content [style*="rgba(8"] *,
-.dynamic-html-content [style*="rgba(9"] * {
-  color: #ffffff !important;
-}
-
-/* 
-  CONTRAST LOGIC:
-  - Light backgrounds (white, #f*, #e*, #d*, etc.) → dark text
-  - Dark backgrounds (#0*, #1*, #2*, #3*, #4*, #5*, #6*, black) → white text
-  
-  This must override theme-based colors for cards.
-*/
 
 .scrollbar-none {
   scrollbar-width: none;

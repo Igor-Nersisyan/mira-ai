@@ -11,6 +11,232 @@ interface DynamicContentProps {
   contentRef?: React.RefObject<HTMLDivElement | null>;
 }
 
+function isLightColor(r: number, g: number, b: number): boolean {
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminance > 0.4;
+}
+
+function hslToRgb(h: number, s: number, l: number): { r: number; g: number; b: number } {
+  s /= 100;
+  l /= 100;
+  const a = s * Math.min(l, 1 - l);
+  const f = (n: number) => {
+    const k = (n + h / 30) % 12;
+    return l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+  };
+  return { r: Math.round(f(0) * 255), g: Math.round(f(8) * 255), b: Math.round(f(4) * 255) };
+}
+
+function parseColorValue(value: string): { r: number; g: number; b: number } | null {
+  const hexMatch = value.match(/#([0-9a-fA-F]{3,8})/);
+  if (hexMatch) {
+    let hex = hexMatch[1];
+    if (hex.length === 3 || hex.length === 4) {
+      hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+    } else if (hex.length === 8) {
+      hex = hex.substring(0, 6);
+    }
+    return {
+      r: parseInt(hex.substring(0, 2), 16),
+      g: parseInt(hex.substring(2, 4), 16),
+      b: parseInt(hex.substring(4, 6), 16)
+    };
+  }
+  
+  const rgbCommaMatch = value.match(/rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
+  if (rgbCommaMatch) {
+    return {
+      r: parseInt(rgbCommaMatch[1]),
+      g: parseInt(rgbCommaMatch[2]),
+      b: parseInt(rgbCommaMatch[3])
+    };
+  }
+  
+  const rgbSpaceMatch = value.match(/rgba?\s*\(\s*(\d+)\s+(\d+)\s+(\d+)/i);
+  if (rgbSpaceMatch) {
+    return {
+      r: parseInt(rgbSpaceMatch[1]),
+      g: parseInt(rgbSpaceMatch[2]),
+      b: parseInt(rgbSpaceMatch[3])
+    };
+  }
+  
+  const hslCommaMatch = value.match(/hsla?\s*\(\s*(\d+)\s*,\s*(\d+)%?\s*,\s*(\d+)%?/i);
+  if (hslCommaMatch) {
+    return hslToRgb(parseInt(hslCommaMatch[1]), parseInt(hslCommaMatch[2]), parseInt(hslCommaMatch[3]));
+  }
+  
+  const hslSpaceMatch = value.match(/hsla?\s*\(\s*(\d+)\s+(\d+)%?\s+(\d+)%?/i);
+  if (hslSpaceMatch) {
+    return hslToRgb(parseInt(hslSpaceMatch[1]), parseInt(hslSpaceMatch[2]), parseInt(hslSpaceMatch[3]));
+  }
+  
+  const namedColors: Record<string, { r: number; g: number; b: number }> = {
+    white: { r: 255, g: 255, b: 255 },
+    black: { r: 0, g: 0, b: 0 },
+    gray: { r: 128, g: 128, b: 128 },
+    grey: { r: 128, g: 128, b: 128 },
+    red: { r: 255, g: 0, b: 0 },
+    blue: { r: 0, g: 0, b: 255 },
+    green: { r: 0, g: 128, b: 0 },
+    yellow: { r: 255, g: 255, b: 0 },
+    orange: { r: 255, g: 165, b: 0 },
+    purple: { r: 128, g: 0, b: 128 },
+    pink: { r: 255, g: 192, b: 203 },
+    lightgray: { r: 211, g: 211, b: 211 },
+    lightgrey: { r: 211, g: 211, b: 211 },
+    darkgray: { r: 169, g: 169, b: 169 },
+    darkgrey: { r: 169, g: 169, b: 169 },
+  };
+  
+  const lowerValue = value.toLowerCase().trim();
+  if (namedColors[lowerValue]) {
+    return namedColors[lowerValue];
+  }
+  
+  return null;
+}
+
+function parseRgba(bgColor: string): { r: number; g: number; b: number; a: number } | null {
+  if (!bgColor || bgColor === 'transparent' || bgColor === 'rgba(0, 0, 0, 0)') {
+    return null;
+  }
+  
+  const hexMatch = bgColor.match(/#([0-9a-fA-F]+)/);
+  if (hexMatch) {
+    const hex = hexMatch[1];
+    if (hex.length === 4) {
+      return {
+        r: parseInt(hex[0] + hex[0], 16),
+        g: parseInt(hex[1] + hex[1], 16),
+        b: parseInt(hex[2] + hex[2], 16),
+        a: parseInt(hex[3] + hex[3], 16) / 255
+      };
+    } else if (hex.length === 8) {
+      return {
+        r: parseInt(hex.substring(0, 2), 16),
+        g: parseInt(hex.substring(2, 4), 16),
+        b: parseInt(hex.substring(4, 6), 16),
+        a: parseInt(hex.substring(6, 8), 16) / 255
+      };
+    } else if (hex.length === 3) {
+      return {
+        r: parseInt(hex[0] + hex[0], 16),
+        g: parseInt(hex[1] + hex[1], 16),
+        b: parseInt(hex[2] + hex[2], 16),
+        a: 1
+      };
+    } else if (hex.length === 6) {
+      return {
+        r: parseInt(hex.substring(0, 2), 16),
+        g: parseInt(hex.substring(2, 4), 16),
+        b: parseInt(hex.substring(4, 6), 16),
+        a: 1
+      };
+    }
+  }
+  
+  const rgbaCommaMatch = bgColor.match(/rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*([\d.]+))?\s*\)/i);
+  if (rgbaCommaMatch) {
+    return {
+      r: parseInt(rgbaCommaMatch[1]),
+      g: parseInt(rgbaCommaMatch[2]),
+      b: parseInt(rgbaCommaMatch[3]),
+      a: rgbaCommaMatch[4] ? parseFloat(rgbaCommaMatch[4]) : 1
+    };
+  }
+  
+  const rgbaSlashMatch = bgColor.match(/rgba?\s*\(\s*(\d+)\s+(\d+)\s+(\d+)\s*(?:\/\s*([\d.]+%?))?\s*\)/i);
+  if (rgbaSlashMatch) {
+    let alpha = 1;
+    if (rgbaSlashMatch[4]) {
+      alpha = rgbaSlashMatch[4].includes('%') 
+        ? parseFloat(rgbaSlashMatch[4]) / 100 
+        : parseFloat(rgbaSlashMatch[4]);
+    }
+    return {
+      r: parseInt(rgbaSlashMatch[1]),
+      g: parseInt(rgbaSlashMatch[2]),
+      b: parseInt(rgbaSlashMatch[3]),
+      a: alpha
+    };
+  }
+  
+  const hslaCommaMatch = bgColor.match(/hsla?\s*\(\s*(\d+)\s*,\s*(\d+)%?\s*,\s*(\d+)%?(?:\s*,\s*([\d.]+))?\s*\)/i);
+  if (hslaCommaMatch) {
+    const rgb = hslToRgb(parseInt(hslaCommaMatch[1]), parseInt(hslaCommaMatch[2]), parseInt(hslaCommaMatch[3]));
+    return { ...rgb, a: hslaCommaMatch[4] ? parseFloat(hslaCommaMatch[4]) : 1 };
+  }
+  
+  const hslaSlashMatch = bgColor.match(/hsla?\s*\(\s*(\d+)\s+(\d+)%?\s+(\d+)%?\s*(?:\/\s*([\d.]+%?))?\s*\)/i);
+  if (hslaSlashMatch) {
+    const rgb = hslToRgb(parseInt(hslaSlashMatch[1]), parseInt(hslaSlashMatch[2]), parseInt(hslaSlashMatch[3]));
+    let alpha = 1;
+    if (hslaSlashMatch[4]) {
+      alpha = hslaSlashMatch[4].includes('%') 
+        ? parseFloat(hslaSlashMatch[4]) / 100 
+        : parseFloat(hslaSlashMatch[4]);
+    }
+    return { ...rgb, a: alpha };
+  }
+  
+  const rgb = parseColorValue(bgColor);
+  if (rgb) {
+    return { ...rgb, a: 1 };
+  }
+  
+  return null;
+}
+
+function compositeColors(
+  fg: { r: number; g: number; b: number; a: number },
+  bg: { r: number; g: number; b: number }
+): { r: number; g: number; b: number } {
+  const a = fg.a;
+  return {
+    r: Math.round(fg.r * a + bg.r * (1 - a)),
+    g: Math.round(fg.g * a + bg.g * (1 - a)),
+    b: Math.round(fg.b * a + bg.b * (1 - a))
+  };
+}
+
+function getEffectiveBackground(element: HTMLElement): { r: number; g: number; b: number } | null {
+  const isDarkMode = document.documentElement.classList.contains('dark');
+  const themeBase = isDarkMode 
+    ? { r: 10, g: 10, b: 10 }
+    : { r: 250, g: 250, b: 250 };
+  
+  const layers: { r: number; g: number; b: number; a: number }[] = [];
+  let current: HTMLElement | null = element;
+  let depth = 0;
+  const maxDepth = 10;
+  
+  while (current && depth < maxDepth) {
+    const computedStyle = window.getComputedStyle(current);
+    const bgColor = computedStyle.backgroundColor;
+    const parsed = parseRgba(bgColor);
+    
+    if (parsed) {
+      layers.unshift(parsed);
+      if (parsed.a >= 1) break;
+    }
+    
+    current = current.parentElement;
+    depth++;
+  }
+  
+  if (layers.length === 0) {
+    return null;
+  }
+  
+  let result = themeBase;
+  for (const layer of layers) {
+    result = compositeColors(layer, result);
+  }
+  
+  return result;
+}
+
 function sanitizeStyles(container: HTMLElement) {
   const allElements = container.querySelectorAll('*');
   
@@ -22,24 +248,9 @@ function sanitizeStyles(container: HTMLElement) {
       let newStyle = style;
       
       if (style.includes('linear-gradient') || style.includes('radial-gradient')) {
-        newStyle = newStyle.replace(/background[^;]*gradient[^;]*;?/gi, 'background: #ffffff;');
-      }
-      
-      const rgbaMatch = style.match(/rgba\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*([\d.]+)\s*\)/gi);
-      if (rgbaMatch) {
-        rgbaMatch.forEach(rgba => {
-          const parts = rgba.match(/rgba\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*([\d.]+)\s*\)/i);
-          if (parts) {
-            const alpha = parseFloat(parts[4]);
-            if (alpha < 0.9 && style.includes('background')) {
-              const r = parseInt(parts[1]);
-              const g = parseInt(parts[2]);
-              const b = parseInt(parts[3]);
-              const solidColor = `rgb(${r}, ${g}, ${b})`;
-              newStyle = newStyle.replace(rgba, solidColor);
-            }
-          }
-        });
+        const isDarkMode = document.documentElement.classList.contains('dark');
+        const replacementColor = isDarkMode ? '#2a2a2a' : '#f8f9fa';
+        newStyle = newStyle.replace(/background[^;]*gradient[^;]*;?/gi, `background: ${replacementColor};`);
       }
       
       if (style.includes('backdrop-filter') || style.includes('filter: blur')) {
@@ -49,6 +260,18 @@ function sanitizeStyles(container: HTMLElement) {
       
       if (newStyle !== style) {
         element.setAttribute('style', newStyle);
+      }
+    }
+    
+    element.classList.remove('light-bg-forced', 'dark-bg-forced');
+    
+    const effectiveBg = getEffectiveBackground(element);
+    if (effectiveBg) {
+      const isLight = isLightColor(effectiveBg.r, effectiveBg.g, effectiveBg.b);
+      if (isLight) {
+        element.classList.add('light-bg-forced');
+      } else {
+        element.classList.add('dark-bg-forced');
       }
     }
   });
@@ -160,7 +383,7 @@ export function DynamicContent({
           ) : (
             <div
               ref={contentRef}
-              className="dynamic-html-content prose prose-slate dark:prose-invert max-w-none"
+              className="dynamic-html-content max-w-none"
               style={{ 
                 contain: 'layout style',
                 willChange: 'contents'
