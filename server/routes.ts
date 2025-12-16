@@ -5,58 +5,55 @@ import fs from "fs";
 import path from "path";
 import multer from "multer";
 
-// Sanitize HTML: remove gradients, normalize colors
-// Keep white text (#fff, #ffffff, white) for buttons, remove problematic colors
+import { parse as parseHtml, HTMLElement as ParsedElement } from 'node-html-parser';
+
+// Sanitize HTML using DOM parser - removes ALL inline color declarations
+// This ensures CSS controls text colors based on context (cards vs buttons)
 function sanitizeHtmlColors(html: string): string {
-  let result = html;
-  
-  // Remove gradients
-  result = result.replace(/linear-gradient\s*\([^)]+\)/gi, '#ffffff');
-  result = result.replace(/radial-gradient\s*\([^)]+\)/gi, '#ffffff');
-  
-  // Allowlist of colors to KEEP (for buttons, CTAs)
-  const allowedColors = [
-    '#fff', '#ffffff', '#FFF', '#FFFFFF', 'white',  // White text for buttons
-    '#111827', '#1f2937', '#374151',  // Dark text
-    '#FF8B36', '#ff8b36',  // Brand orange
-    '#2D8CFF', '#2d8cff',  // Brand blue
-  ];
-  
-  // Process style attributes
-  result = result.replace(/style="([^"]*)"/gi, (match, styleContent) => {
-    // Find and process color declarations
-    let cleaned = styleContent.replace(
-      /(?<!background-)(?<!border-)color\s*:\s*([^;!]+)(\s*!important)?;?/gi,
-      (colorMatch: string, colorValue: string, important: string) => {
-        const trimmedValue = colorValue.trim().toLowerCase();
+  try {
+    // Remove gradients first (before parsing)
+    let cleaned = html
+      .replace(/linear-gradient\s*\([^)]+\)/gi, '#ffffff')
+      .replace(/radial-gradient\s*\([^)]+\)/gi, '#ffffff');
+    
+    // Parse HTML
+    const root = parseHtml(cleaned, { 
+      lowerCaseTagName: false,
+      comment: true 
+    });
+    
+    // Walk all elements and remove inline color declarations
+    const elements = root.querySelectorAll('*');
+    for (const el of elements) {
+      const style = el.getAttribute('style');
+      if (style) {
+        // Parse style string and remove color property (but keep background-color, border-color)
+        const properties = style.split(';').filter(prop => {
+          const trimmed = prop.trim().toLowerCase();
+          // Remove if starts with "color:" but NOT "background-color:" or "border-color:"
+          if (trimmed.startsWith('color:') || trimmed.startsWith('color :')) {
+            return false; // Remove this property
+          }
+          return true; // Keep other properties
+        });
         
-        // Check if color is in allowlist
-        const isAllowed = allowedColors.some(allowed => 
-          trimmedValue === allowed.toLowerCase() ||
-          trimmedValue.includes(allowed.toLowerCase())
-        );
-        
-        if (isAllowed) {
-          // Keep allowed colors but remove !important
-          return `color: ${colorValue.trim()};`;
+        const newStyle = properties.map(p => p.trim()).filter(p => p).join('; ');
+        if (newStyle) {
+          el.setAttribute('style', newStyle);
         } else {
-          // Remove non-allowed colors (let CSS handle it)
-          return '';
+          el.removeAttribute('style');
         }
       }
-    );
+    }
     
-    // Clean up
-    cleaned = cleaned
-      .replace(/;\s*;/g, ';')
-      .replace(/;\s*$/g, '')
-      .replace(/^\s*;/g, '')
-      .trim();
-    
-    return cleaned ? `style="${cleaned}"` : '';
-  });
-  
-  return result;
+    return root.toString();
+  } catch (error) {
+    console.error('Error sanitizing HTML:', error);
+    // Fallback: return original with gradient removal
+    return html
+      .replace(/linear-gradient\s*\([^)]+\)/gi, '#ffffff')
+      .replace(/radial-gradient\s*\([^)]+\)/gi, '#ffffff');
+  }
 }
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
