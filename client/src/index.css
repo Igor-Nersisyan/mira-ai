@@ -661,7 +661,14 @@
   background-clip: text;
 }
 
-/* Fade In Up Animation */
+/* Disable all animations and transitions during streaming */
+.dynamic-html-content[data-streaming="true"],
+.dynamic-html-content[data-streaming="true"] * {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Fade In Up Animation - only for non-streaming content */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -673,31 +680,31 @@
   }
 }
 
-.dynamic-html-content section {
+.dynamic-html-content:not([data-streaming="true"]) section {
   animation: fadeInUp 0.5s ease-out forwards;
 }
 
-.dynamic-html-content section:nth-child(1) { animation-delay: 0s; }
-.dynamic-html-content section:nth-child(2) { animation-delay: 0.1s; }
-.dynamic-html-content section:nth-child(3) { animation-delay: 0.2s; }
-.dynamic-html-content section:nth-child(4) { animation-delay: 0.3s; }
-.dynamic-html-content section:nth-child(5) { animation-delay: 0.4s; }
-.dynamic-html-content section:nth-child(6) { animation-delay: 0.5s; }
+.dynamic-html-content:not([data-streaming="true"]) section:nth-child(1) { animation-delay: 0s; }
+.dynamic-html-content:not([data-streaming="true"]) section:nth-child(2) { animation-delay: 0.1s; }
+.dynamic-html-content:not([data-streaming="true"]) section:nth-child(3) { animation-delay: 0.2s; }
+.dynamic-html-content:not([data-streaming="true"]) section:nth-child(4) { animation-delay: 0.3s; }
+.dynamic-html-content:not([data-streaming="true"]) section:nth-child(5) { animation-delay: 0.4s; }
+.dynamic-html-content:not([data-streaming="true"]) section:nth-child(6) { animation-delay: 0.5s; }
 
-.dynamic-html-content .hero {
+.dynamic-html-content:not([data-streaming="true"]) .hero {
   animation: fadeInUp 0.6s ease-out forwards;
 }
 
-.dynamic-html-content .grid-3 > *,
-.dynamic-html-content .grid-2 > * {
+.dynamic-html-content:not([data-streaming="true"]) .grid-3 > *,
+.dynamic-html-content:not([data-streaming="true"]) .grid-2 > * {
   animation: fadeInUp 0.5s ease-out forwards;
 }
 
-.dynamic-html-content .grid-3 > *:nth-child(1),
-.dynamic-html-content .grid-2 > *:nth-child(1) { animation-delay: 0.1s; }
-.dynamic-html-content .grid-3 > *:nth-child(2),
-.dynamic-html-content .grid-2 > *:nth-child(2) { animation-delay: 0.2s; }
-.dynamic-html-content .grid-3 > *:nth-child(3) { animation-delay: 0.3s; }
+.dynamic-html-content:not([data-streaming="true"]) .grid-3 > *:nth-child(1),
+.dynamic-html-content:not([data-streaming="true"]) .grid-2 > *:nth-child(1) { animation-delay: 0.1s; }
+.dynamic-html-content:not([data-streaming="true"]) .grid-3 > *:nth-child(2),
+.dynamic-html-content:not([data-streaming="true"]) .grid-2 > *:nth-child(2) { animation-delay: 0.2s; }
+.dynamic-html-content:not([data-streaming="true"]) .grid-3 > *:nth-child(3) { animation-delay: 0.3s; }
 
 .scrollbar-none {
   scrollbar-width: none;
