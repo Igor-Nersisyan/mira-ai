@@ -339,6 +339,7 @@
 }
 
 /* CARDS: Always dark text because cards are always white */
+/* Match by class OR by inline white background styles */
 .dynamic-html-content .card,
 .dynamic-html-content .card *,
 .dynamic-html-content .metric,
@@ -350,7 +351,29 @@
 .dynamic-html-content .feature-card,
 .dynamic-html-content .feature-card *,
 .dynamic-html-content .pricing-card,
-.dynamic-html-content .pricing-card * {
+.dynamic-html-content .pricing-card *,
+/* Match elements with white background in inline styles */
+.dynamic-html-content [style*="background: #fff"],
+.dynamic-html-content [style*="background:#fff"],
+.dynamic-html-content [style*="background: #FFF"],
+.dynamic-html-content [style*="background:#FFF"],
+.dynamic-html-content [style*="background: white"],
+.dynamic-html-content [style*="background:white"],
+.dynamic-html-content [style*="background-color: #fff"],
+.dynamic-html-content [style*="background-color:#fff"],
+.dynamic-html-content [style*="background: var(--dynamic-card-bg)"],
+.dynamic-html-content [style*="background:var(--dynamic-card-bg)"],
+/* And their children */
+.dynamic-html-content [style*="background: #fff"] *,
+.dynamic-html-content [style*="background:#fff"] *,
+.dynamic-html-content [style*="background: #FFF"] *,
+.dynamic-html-content [style*="background:#FFF"] *,
+.dynamic-html-content [style*="background: white"] *,
+.dynamic-html-content [style*="background:white"] *,
+.dynamic-html-content [style*="background-color: #fff"] *,
+.dynamic-html-content [style*="background-color:#fff"] *,
+.dynamic-html-content [style*="background: var(--dynamic-card-bg)"] *,
+.dynamic-html-content [style*="background:var(--dynamic-card-bg)"] * {
   color: #111827 !important;
 }
 
