@@ -15,31 +15,72 @@ export default function Home() {
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const extractCompleteBlocks = (html: string): string => {
-    const styleMatch = html.match(/^(\s*<style[^>]*>[\s\S]*?<\/style>\s*)/i);
-    if (!styleMatch) return "";
+    let result = "";
+    let remaining = html;
     
-    const styleBlock = styleMatch[1];
-    const afterStyle = html.slice(styleMatch[0].length);
+    const styleMatch = remaining.match(/^(\s*<style[^>]*>[\s\S]*?<\/style>\s*)/i);
+    if (styleMatch) {
+      result += styleMatch[1];
+      remaining = remaining.slice(styleMatch[0].length);
+    }
     
-    const lastClosingDiv = afterStyle.lastIndexOf('</div>');
-    if (lastClosingDiv === -1) return styleBlock;
+    const blockTags = ['section', 'div', 'article', 'header', 'footer', 'main', 'aside', 'nav'];
     
-    let depth = 0;
-    let validEnd = -1;
+    let lastValidEnd = 0;
+    let i = 0;
     
-    for (let i = 0; i <= lastClosingDiv; i++) {
-      if (afterStyle.slice(i, i + 4) === '<div') {
-        depth++;
-      } else if (afterStyle.slice(i, i + 6) === '</div>') {
-        depth--;
-        if (depth === 0) {
-          validEnd = i + 6;
+    while (i < remaining.length) {
+      let foundTag = null;
+      let tagStart = -1;
+      
+      for (const tag of blockTags) {
+        const openPattern = `<${tag}`;
+        if (remaining.slice(i, i + openPattern.length).toLowerCase() === openPattern) {
+          const nextChar = remaining[i + openPattern.length];
+          if (nextChar === ' ' || nextChar === '>' || nextChar === '\n' || nextChar === '\t') {
+            foundTag = tag;
+            tagStart = i;
+            break;
+          }
         }
+      }
+      
+      if (foundTag && tagStart !== -1) {
+        let depth = 1;
+        let j = tagStart + foundTag.length + 1;
+        
+        while (j < remaining.length && depth > 0) {
+          const openTag = `<${foundTag}`;
+          const closeTag = `</${foundTag}>`;
+          
+          if (remaining.slice(j, j + closeTag.length).toLowerCase() === closeTag) {
+            depth--;
+            if (depth === 0) {
+              lastValidEnd = j + closeTag.length;
+            }
+            j += closeTag.length;
+          } else if (remaining.slice(j, j + openTag.length).toLowerCase() === openTag) {
+            const nextChar = remaining[j + openTag.length];
+            if (nextChar === ' ' || nextChar === '>' || nextChar === '\n' || nextChar === '\t') {
+              depth++;
+            }
+            j++;
+          } else {
+            j++;
+          }
+        }
+        
+        i = j;
+      } else {
+        i++;
       }
     }
     
-    if (validEnd === -1) return styleBlock;
-    return styleBlock + afterStyle.slice(0, validEnd);
+    if (lastValidEnd > 0) {
+      return result + remaining.slice(0, lastValidEnd);
+    }
+    
+    return result;
   };
 
   const streamChat = useCallback(async (allMessages: Message[]): Promise<string> => {
