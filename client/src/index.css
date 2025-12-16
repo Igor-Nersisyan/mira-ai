@@ -700,7 +700,9 @@
 .dynamic-html-content .grid-2 > *:nth-child(2) { animation-delay: 0.2s; }
 .dynamic-html-content .grid-3 > *:nth-child(3) { animation-delay: 0.3s; }
 
-/* Light background elements - always dark text */
+/* ==========================================
+   LIGHT BACKGROUND → DARK TEXT (#1a1a1a)
+   ========================================== */
 .dynamic-html-content [style*="background:#f"],
 .dynamic-html-content [style*="background: #f"],
 .dynamic-html-content [style*="background:#e"],
@@ -728,7 +730,9 @@
 .dynamic-html-content [style*="background-color:#d"],
 .dynamic-html-content [style*="background-color: #d"],
 .dynamic-html-content [style*="background-color:white"],
-.dynamic-html-content [style*="background-color: white"] {
+.dynamic-html-content [style*="background-color: white"],
+.dynamic-html-content [style*="rgb(2"],
+.dynamic-html-content [style*="rgba(2"] {
   color: #1a1a1a !important;
 }
 
@@ -759,11 +763,15 @@
 .dynamic-html-content [style*="background-color:#d"] *,
 .dynamic-html-content [style*="background-color: #d"] *,
 .dynamic-html-content [style*="background-color:white"] *,
-.dynamic-html-content [style*="background-color: white"] * {
+.dynamic-html-content [style*="background-color: white"] *,
+.dynamic-html-content [style*="rgb(2"] *,
+.dynamic-html-content [style*="rgba(2"] * {
   color: #1a1a1a !important;
 }
 
-/* Dark background elements - always light text */
+/* ==========================================
+   DARK BACKGROUND → WHITE TEXT (#ffffff)
+   ========================================== */
 .dynamic-html-content [style*="background:#0"],
 .dynamic-html-content [style*="background: #0"],
 .dynamic-html-content [style*="background:#1"],
@@ -788,8 +796,31 @@
 .dynamic-html-content [style*="background-color: #2"],
 .dynamic-html-content [style*="background-color:#3"],
 .dynamic-html-content [style*="background-color: #3"],
+.dynamic-html-content [style*="background-color:#4"],
+.dynamic-html-content [style*="background-color: #4"],
+.dynamic-html-content [style*="background-color:#5"],
+.dynamic-html-content [style*="background-color: #5"],
 .dynamic-html-content [style*="background-color:black"],
-.dynamic-html-content [style*="background-color: black"] {
+.dynamic-html-content [style*="background-color: black"],
+.dynamic-html-content [style*="rgb(0"],
+.dynamic-html-content [style*="rgb(1"],
+.dynamic-html-content [style*="rgb(2"],
+.dynamic-html-content [style*="rgb(3"],
+.dynamic-html-content [style*="rgb(4"],
+.dynamic-html-content [style*="rgb(5"],
+.dynamic-html-content [style*="rgb(6"],
+.dynamic-html-content [style*="rgb(7"],
+.dynamic-html-content [style*="rgb(8"],
+.dynamic-html-content [style*="rgb(9"],
+.dynamic-html-content [style*="rgba(0"],
+.dynamic-html-content [style*="rgba(1"],
+.dynamic-html-content [style*="rgba(3"],
+.dynamic-html-content [style*="rgba(4"],
+.dynamic-html-content [style*="rgba(5"],
+.dynamic-html-content [style*="rgba(6"],
+.dynamic-html-content [style*="rgba(7"],
+.dynamic-html-content [style*="rgba(8"],
+.dynamic-html-content [style*="rgba(9"] {
   color: #ffffff !important;
 }
 
@@ -817,39 +848,41 @@
 .dynamic-html-content [style*="background-color: #2"] *,
 .dynamic-html-content [style*="background-color:#3"] *,
 .dynamic-html-content [style*="background-color: #3"] *,
+.dynamic-html-content [style*="background-color:#4"] *,
+.dynamic-html-content [style*="background-color: #4"] *,
+.dynamic-html-content [style*="background-color:#5"] *,
+.dynamic-html-content [style*="background-color: #5"] *,
 .dynamic-html-content [style*="background-color:black"] *,
-.dynamic-html-content [style*="background-color: black"] * {
+.dynamic-html-content [style*="background-color: black"] *,
+.dynamic-html-content [style*="rgb(0"] *,
+.dynamic-html-content [style*="rgb(1"] *,
+.dynamic-html-content [style*="rgb(2"] *,
+.dynamic-html-content [style*="rgb(3"] *,
+.dynamic-html-content [style*="rgb(4"] *,
+.dynamic-html-content [style*="rgb(5"] *,
+.dynamic-html-content [style*="rgb(6"] *,
+.dynamic-html-content [style*="rgb(7"] *,
+.dynamic-html-content [style*="rgb(8"] *,
+.dynamic-html-content [style*="rgb(9"] *,
+.dynamic-html-content [style*="rgba(0"] *,
+.dynamic-html-content [style*="rgba(1"] *,
+.dynamic-html-content [style*="rgba(3"] *,
+.dynamic-html-content [style*="rgba(4"] *,
+.dynamic-html-content [style*="rgba(5"] *,
+.dynamic-html-content [style*="rgba(6"] *,
+.dynamic-html-content [style*="rgba(7"] *,
+.dynamic-html-content [style*="rgba(8"] *,
+.dynamic-html-content [style*="rgba(9"] * {
   color: #ffffff !important;
 }
 
-/* Card/block elements with visible background - ALWAYS dark text regardless of theme */
-.dynamic-html-content .card,
-.dynamic-html-content .feature-card,
-.dynamic-html-content .pricing-card,
-.dynamic-html-content .metric,
-.dynamic-html-content [class*="card"],
-.dynamic-html-content [class*="block"],
-.dynamic-html-content [class*="box"],
-.dynamic-html-content [class*="panel"],
-.dynamic-html-content [class*="item"],
-.dynamic-html-content [style*="border-radius"],
-.dynamic-html-content [style*="box-shadow"] {
-  color: #1a1a1a !important;
-}
-
-.dynamic-html-content .card *,
-.dynamic-html-content .feature-card *,
-.dynamic-html-content .pricing-card *,
-.dynamic-html-content .metric *,
-.dynamic-html-content [class*="card"] *,
-.dynamic-html-content [class*="block"] *,
-.dynamic-html-content [class*="box"] *,
-.dynamic-html-content [class*="panel"] *,
-.dynamic-html-content [class*="item"] *,
-.dynamic-html-content [style*="border-radius"] *,
-.dynamic-html-content [style*="box-shadow"] * {
-  color: #1a1a1a !important;
-}
+/* 
+  CONTRAST LOGIC:
+  - Light backgrounds (white, #f*, #e*, #d*, etc.) → dark text
+  - Dark backgrounds (#0*, #1*, #2*, #3*, #4*, #5*, #6*, black) → white text
+  
+  This must override theme-based colors for cards.
+*/
 
 .scrollbar-none {
   scrollbar-width: none;
