@@ -162,7 +162,10 @@ export function DynamicContent({
       const timeoutId = setTimeout(() => {
         if (contentRef.current) {
           sanitizeStyles(contentRef.current);
-          applyContrastColors(contentRef.current);
+          
+          if (!isStreaming) {
+            applyContrastColors(contentRef.current);
+          }
           
           const images = contentRef.current.querySelectorAll('img');
           images.forEach((img) => {
@@ -177,7 +180,7 @@ export function DynamicContent({
       }, 50);
       return () => clearTimeout(timeoutId);
     }
-  }, [displayHtml]);
+  }, [displayHtml, isStreaming]);
   
   return (
     <>
