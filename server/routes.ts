@@ -5,13 +5,35 @@ import fs from "fs";
 import path from "path";
 import multer from "multer";
 
-// Simple sanitization - just remove gradients, let CSS handle colors
+// Sanitize HTML: remove gradients AND all inline color declarations
+// This lets CSS fully control text colors based on context
 function sanitizeHtmlColors(html: string): string {
   let result = html;
   
-  // Remove gradients only
+  // Remove gradients
   result = result.replace(/linear-gradient\s*\([^)]+\)/gi, '#ffffff');
   result = result.replace(/radial-gradient\s*\([^)]+\)/gi, '#ffffff');
+  
+  // Remove ALL inline color declarations (including !important)
+  // This regex matches: color: <value>; or color: <value> !important; or color: <value>"
+  // But NOT background-color or border-color
+  
+  // Pattern: find style="..." and remove color properties inside
+  result = result.replace(/style="([^"]*)"/gi, (match, styleContent) => {
+    // Remove color declarations but keep background-color and border-color
+    let cleaned = styleContent
+      // Remove color with !important
+      .replace(/(?<!background-)(?<!border-)color\s*:\s*[^;]+\s*!important\s*;?/gi, '')
+      // Remove color without !important  
+      .replace(/(?<!background-)(?<!border-)color\s*:\s*[^;]+;?/gi, '')
+      // Clean up double semicolons and trailing semicolons
+      .replace(/;\s*;/g, ';')
+      .replace(/;\s*$/g, '')
+      .replace(/^\s*;/g, '')
+      .trim();
+    
+    return cleaned ? `style="${cleaned}"` : '';
+  });
   
   return result;
 }
