@@ -300,8 +300,9 @@
 }
 
 .dynamic-html-content img {
-  @apply max-w-xl w-auto h-auto rounded-lg my-4;
+  @apply max-w-full w-auto h-auto rounded-lg my-4;
   max-height: 576px;
+  object-fit: contain;
 }
 
 .dynamic-html-content h1 {
@@ -561,6 +562,7 @@
 
 .dynamic-html-content .gallery-item img {
   @apply w-full h-auto max-w-none m-0 transition-transform duration-300;
+  object-fit: contain;
 }
 
 .dynamic-html-content .gallery-item.hover:hover img {
