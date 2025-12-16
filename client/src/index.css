@@ -378,14 +378,16 @@
   color: #111827 !important;
 }
 
-/* Ensure background for card classes */
+/* FORCE white background for all card-like elements - override any inline styles */
 .dynamic-html-content .card,
 .dynamic-html-content .metric,
 .dynamic-html-content .step-item,
+.dynamic-html-content .step,
 .dynamic-html-content .feature,
 .dynamic-html-content .feature-card,
 .dynamic-html-content .pricing-card {
-  background-color: #ffffff;
+  background-color: #ffffff !important;
+  background: #ffffff !important;
 }
 
 /* Secondary text in cards */
