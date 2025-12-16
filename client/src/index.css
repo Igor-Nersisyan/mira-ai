@@ -318,7 +318,7 @@
 }
 
 .dynamic-html-content p {
-  @apply text-foreground/80 leading-relaxed mb-4;
+  @apply text-foreground leading-relaxed mb-4;
 }
 
 .dynamic-html-content ul,
@@ -327,7 +327,7 @@
 }
 
 .dynamic-html-content li {
-  @apply text-foreground/80;
+  @apply text-foreground;
 }
 
 .dynamic-html-content table {
@@ -339,7 +339,7 @@
 }
 
 .dynamic-html-content td {
-  @apply p-3 border border-border text-foreground/80;
+  @apply p-3 border border-border text-foreground;
 }
 
 .dynamic-html-content .card {
@@ -399,7 +399,7 @@
 }
 
 .dynamic-html-content .feature-item {
-  @apply flex items-center gap-2 text-sm text-foreground/80;
+  @apply flex items-center gap-2 text-sm text-foreground;
 }
 
 .dynamic-html-content .icon-check {
@@ -415,7 +415,7 @@
 }
 
 .dynamic-html-content .faq-answer {
-  @apply text-sm text-foreground/75;
+  @apply text-sm text-foreground;
 }
 
 .dynamic-html-content .process-step {
@@ -435,7 +435,7 @@
 }
 
 .dynamic-html-content .step-description {
-  @apply text-sm text-foreground/75;
+  @apply text-sm text-foreground;
 }
 
 /* Hero Section Styles */
@@ -504,7 +504,7 @@
 }
 
 .dynamic-html-content .feature-card p {
-  @apply text-sm text-foreground/75 mb-3;
+  @apply text-sm text-foreground mb-3;
 }
 
 .dynamic-html-content .tag {
@@ -539,7 +539,7 @@
 }
 
 .dynamic-html-content .comparison-cell {
-  @apply py-4 px-4 text-sm text-foreground/80;
+  @apply py-4 px-4 text-sm text-foreground;
 }
 
 .dynamic-html-content .comparison-cell.highlight {
@@ -698,6 +698,57 @@
 .dynamic-html-content .grid-3 > *:nth-child(2),
 .dynamic-html-content .grid-2 > *:nth-child(2) { animation-delay: 0.2s; }
 .dynamic-html-content .grid-3 > *:nth-child(3) { animation-delay: 0.3s; }
+
+/* Dark background cards need light text */
+.dynamic-html-content [style*="background"][style*="#1"] *,
+.dynamic-html-content [style*="background"][style*="#2"] *,
+.dynamic-html-content [style*="background"][style*="#3"] *,
+.dynamic-html-content [style*="background"][style*="#4"] *,
+.dynamic-html-content [style*="background"][style*="#5"] *,
+.dynamic-html-content [style*="background-color"][style*="#1"] *,
+.dynamic-html-content [style*="background-color"][style*="#2"] *,
+.dynamic-html-content [style*="background-color"][style*="#3"] *,
+.dynamic-html-content [style*="background-color"][style*="#4"] *,
+.dynamic-html-content [style*="background-color"][style*="#5"] *,
+.dynamic-html-content [style*="background: #1"] *,
+.dynamic-html-content [style*="background: #2"] *,
+.dynamic-html-content [style*="background: #3"] *,
+.dynamic-html-content [style*="background: #4"] *,
+.dynamic-html-content [style*="background: #5"] *,
+.dynamic-html-content [style*="background:#1"] *,
+.dynamic-html-content [style*="background:#2"] *,
+.dynamic-html-content [style*="background:#3"] *,
+.dynamic-html-content [style*="background:#4"] *,
+.dynamic-html-content [style*="background:#5"] * {
+  color: white !important;
+}
+
+/* Ensure cards inherit proper text color */
+.dynamic-html-content .card,
+.dynamic-html-content .feature-card,
+.dynamic-html-content .pricing-card,
+.dynamic-html-content .metric {
+  color: hsl(var(--card-foreground));
+}
+
+.dynamic-html-content .card *,
+.dynamic-html-content .feature-card *,
+.dynamic-html-content .pricing-card *,
+.dynamic-html-content .metric * {
+  color: inherit;
+}
+
+.dynamic-html-content .card h1,
+.dynamic-html-content .card h2,
+.dynamic-html-content .card h3,
+.dynamic-html-content .feature-card h1,
+.dynamic-html-content .feature-card h2,
+.dynamic-html-content .feature-card h3,
+.dynamic-html-content .pricing-card h1,
+.dynamic-html-content .pricing-card h2,
+.dynamic-html-content .pricing-card h3 {
+  color: hsl(var(--card-foreground));
+}
 
 .scrollbar-none {
   scrollbar-width: none;

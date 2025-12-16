@@ -261,15 +261,17 @@ export default function Home() {
       </div>
       
       <div className="relative flex-1 overflow-y-auto">
-        <div className="absolute inset-0 backdrop-blur-[2px] bg-white/15 dark:bg-black/10 pointer-events-none z-0 min-h-full" />
         <div className="relative z-10">
-          <DynamicContent 
-            html={dynamicHtml} 
-            streamingHtml={streamingHtml}
-            isStreaming={isHtmlStreaming}
-          >
-            <HeroBlock />
-          </DynamicContent>
+          <div className="absolute inset-0 backdrop-blur-[2px] bg-white/15 dark:bg-black/10 pointer-events-none" style={{ minHeight: '100%', height: 'auto' }} />
+          <div className="relative z-20">
+            <DynamicContent 
+              html={dynamicHtml} 
+              streamingHtml={streamingHtml}
+              isStreaming={isHtmlStreaming}
+            >
+              <HeroBlock />
+            </DynamicContent>
+          </div>
         </div>
       </div>
     </div>
