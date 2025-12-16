@@ -4,32 +4,54 @@ import { chatRequestSchema, htmlRequestSchema, type AIResponse, type Message } f
 import fs from "fs";
 import path from "path";
 import multer from "multer";
+import { JSDOM } from "jsdom";
+
+// Brand colors that are allowed to have white text
+const BRAND_COLORS = ['#FF8B36', '#ff8b36', '#2D8CFF', '#2d8cff'];
 
 function sanitizeHtmlColors(html: string): string {
-  let result = html;
+  // Quick check - if no style attributes, return as is
+  if (!html.includes('style=')) {
+    return html;
+  }
   
-  // Remove gradients
-  result = result.replace(/linear-gradient\s*\([^)]+\)/gi, '#ffffff');
-  result = result.replace(/radial-gradient\s*\([^)]+\)/gi, '#ffffff');
-  
-  // FUNDAMENTAL FIX: Remove ALL inline text color declarations
-  // CSS will handle colors based on context (card vs non-card)
-  
-  // More aggressive approach: match "color:" that is NOT preceded by "background-" or "border-"
-  // Using simple string replacement without lookbehind (better compatibility)
-  
-  // Step 1: Temporarily replace background-color and border-color
-  result = result.replace(/background-color\s*:/gi, '___BG_COLOR___:');
-  result = result.replace(/border-color\s*:/gi, '___BORDER_COLOR___:');
-  
-  // Step 2: Remove ALL remaining color: declarations
-  result = result.replace(/color\s*:\s*[^;"}]+[;]?/gi, '');
-  
-  // Step 3: Restore background-color and border-color
-  result = result.replace(/___BG_COLOR___:/gi, 'background-color:');
-  result = result.replace(/___BORDER_COLOR___:/gi, 'border-color:');
-  
-  return result;
+  try {
+    const dom = new JSDOM(`<body>${html}</body>`, { contentType: "text/html" });
+    const document = dom.window.document;
+    
+    // Process all elements with style attributes
+    const elements = document.body.querySelectorAll('[style]');
+    
+    elements.forEach((element) => {
+      const style = (element as HTMLElement).style;
+      const bgColor = style.background || style.backgroundColor || '';
+      
+      // Check if this is a button with brand color
+      const isBrandButton = BRAND_COLORS.some(color => 
+        bgColor.toLowerCase().includes(color.toLowerCase())
+      );
+      
+      if (isBrandButton) {
+        // Force white text on brand-colored buttons
+        style.color = '#ffffff';
+      } else {
+        // Remove ALL color declarations - let CSS handle it
+        style.removeProperty('color');
+      }
+      
+      // Remove gradients
+      if (bgColor.includes('gradient')) {
+        style.background = '#ffffff';
+        style.backgroundImage = '';
+      }
+    });
+    
+    return document.body.innerHTML;
+  } catch (error) {
+    console.error('JSDOM sanitization error:', error);
+    // Fallback: just return original HTML
+    return html;
+  }
 }
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
