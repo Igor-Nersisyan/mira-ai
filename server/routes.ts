@@ -366,6 +366,7 @@ Hero с аватаром → Процесс интервью (4 шага) → Г
 - Верни ТОЛЬКО HTML код
 - Если тема не изменилась и контент релевантен — пустая строка
 - НЕ используй markdown, НЕ оборачивай в \`\`\``;
+}
 
 async function* streamOpenRouterChat(messages: Message[], systemPrompt: string): AsyncGenerator<string> {
   if (!OPENROUTER_API_KEY) {
