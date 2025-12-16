@@ -8,15 +8,14 @@ import multer from "multer";
 function sanitizeHtmlColors(html: string): string {
   let result = html;
   
-  result = result.replace(/color:\s*#fff(?:fff)?(?![0-9a-f])/gi, 'color: #111827');
-  result = result.replace(/color:\s*white(?![a-z])/gi, 'color: #111827');
-  result = result.replace(/color:\s*rgb\s*\(\s*255\s*,\s*255\s*,\s*255\s*\)/gi, 'color: #111827');
-  
+  // Only remove gradients and semi-transparent backgrounds - DO NOT touch text colors!
+  // AI is responsible for choosing correct text colors based on background
   result = result.replace(/linear-gradient\s*\([^)]+\)/gi, '#ffffff');
   result = result.replace(/radial-gradient\s*\([^)]+\)/gi, '#ffffff');
   
-  result = result.replace(/rgba\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*0?\.?\d*\s*\)/gi, (match, r, g, b) => {
-    return `rgb(${r}, ${g}, ${b})`;
+  // Convert semi-transparent backgrounds to solid (but not text colors)
+  result = result.replace(/background[^:]*:\s*rgba\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*0?\.?\d*\s*\)/gi, (match, r, g, b) => {
+    return `background: rgb(${r}, ${g}, ${b})`;
   });
   
   return result;
@@ -220,29 +219,30 @@ function buildHtmlSystemPrompt(): string {
     .metric:hover { background: #e5e7eb; }
     .img-card { transition: transform 0.4s ease; }
     .img-card:hover { transform: scale(1.01); }
-    .feature { transition: all 0.3s ease; }
+    .feature { transition: all 0.3s ease; background: #ffffff; }
     .feature:hover { background: #f9fafb; }
     .step-item { position: relative; background: #ffffff; }
     .step-item:hover { background: #f9fafb; }
     .step-item::before { content: ''; position: absolute; left: 24px; top: 60px; width: 2px; height: calc(100% - 60px); background: #2D8CFF; }
-    @media (prefers-color-scheme: dark) {
-      .dark-text { color: #f3f4f6 !important; }
-      .dark-text-secondary { color: #d1d5db !important; }
-      .dark-text-muted { color: #9ca3af !important; }
-    }
+    
+    /* Theme-aware text colors - .dark class is added to html/body in dark mode */
+    .theme-text { color: #111827; }
+    .theme-text-secondary { color: #374151; }
+    .theme-text-muted { color: #6b7280; }
   </style>
   
-  🌙 ТЁМНАЯ ТЕМА — ТЕКСТ БЕЗ ФОНА:
+  🌙 АДАПТИВНЫЙ ТЕКСТ ВНЕ КАРТОЧЕК:
   
-  Для одиночного текста БЕЗ фонового блока добавляй класс dark-text:
-  - Заголовки вне карточек: class="dark-text" style="color: #111827; ..."
-  - Подзаголовки вне карточек: class="dark-text-secondary" style="color: #374151; ..."  
-  - Описания вне карточек: class="dark-text-muted" style="color: #6b7280; ..."
+  Для одиночного текста БЕЗ фонового блока используй class="theme-text":
+  - Заголовки вне карточек: class="theme-text" style="color: #111827; ..."
+  - Подзаголовки вне карточек: class="theme-text-secondary" style="color: #374151; ..."  
+  - Описания вне карточек: class="theme-text-muted" style="color: #6b7280; ..."
   
-  ❌ НЕ добавляй dark-text для текста ВНУТРИ:
-  - Карточек (class="card") — там всегда белый фон
-  - Метрик (class="metric") — там светлый фон
-  - Тёмных секций — там всегда белый текст
+  CSS автоматически изменит цвет в тёмной теме!
+  
+  ❌ НЕ добавляй theme-text для текста ВНУТРИ:
+  - Карточек (class="card") — там CSS уже обеспечивает тёмный текст
+  - Метрик (class="metric") — там светлый фон, CSS обеспечивает контраст
   - Кнопок — там всегда белый текст
 
   📐 СТРУКТУРА:

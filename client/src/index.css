@@ -295,35 +295,48 @@
 }
 
 /* Dynamic HTML Content Styles - Smart Contrast */
-/* Base: dark text in light mode, light text in dark mode */
-.dynamic-html-content {
-  color: #111827 !important;
-}
+/* 
+  CONTRAST SYSTEM:
+  - Light mode: dark text (#111827) on light backgrounds
+  - Dark mode: light text (#f5f5f5) on dark backgrounds
+  - Cards: ALWAYS dark text because cards are always white
+  
+  AI generates inline styles, CSS provides fallbacks and card overrides.
+*/
 
-/* All text elements in light mode - FORCE dark text to override inline styles */
-.dynamic-html-content h1,
-.dynamic-html-content h2,
-.dynamic-html-content h3,
-.dynamic-html-content h4,
-.dynamic-html-content h5,
-.dynamic-html-content h6,
-.dynamic-html-content p,
-.dynamic-html-content span:not(.highlight),
-.dynamic-html-content div:not([style*="background"]) {
-  color: #111827 !important;
+/* Base fallback colors (when AI doesn't specify) */
+.dynamic-html-content {
+  color: #111827;
 }
 
 .dark .dynamic-html-content {
   color: #f5f5f5;
 }
 
-/* Dark mode standalone text (outside cards) - light text */
-.dark .dynamic-html-content > h1,
-.dark .dynamic-html-content > h2,
-.dark .dynamic-html-content > h3,
-.dark .dynamic-html-content > p,
-.dark .dynamic-html-content > div:not(.card):not(.metric):not(.step):not(.feature):not(.step-item) {
-  color: #f5f5f5;
+/* Theme-aware text classes - adapt to light/dark mode */
+.dynamic-html-content .theme-text {
+  color: #111827;
+}
+
+.dynamic-html-content .theme-text-secondary {
+  color: #374151;
+}
+
+.dynamic-html-content .theme-text-muted {
+  color: #6b7280;
+}
+
+/* Dark mode overrides for theme-text classes */
+.dark .dynamic-html-content .theme-text {
+  color: #f5f5f5 !important;
+}
+
+.dark .dynamic-html-content .theme-text-secondary {
+  color: #d1d5db !important;
+}
+
+.dark .dynamic-html-content .theme-text-muted {
+  color: #9ca3af !important;
 }
 
 /* 
