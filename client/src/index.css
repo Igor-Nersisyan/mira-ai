@@ -296,7 +296,15 @@
 
 /* Dynamic HTML Content Styles */
 .dynamic-html-content {
-  @apply text-foreground;
+  color: #1a1a1a !important;
+}
+
+.dark .dynamic-html-content {
+  color: #f5f5f5 !important;
+}
+
+.dynamic-html-content * {
+  color: inherit;
 }
 
 .dynamic-html-content img {
@@ -306,19 +314,39 @@
 }
 
 .dynamic-html-content h1 {
-  @apply text-3xl lg:text-4xl font-bold tracking-tight text-foreground mb-6;
+  @apply text-3xl lg:text-4xl font-bold tracking-tight mb-6;
+  color: #1a1a1a !important;
+}
+
+.dark .dynamic-html-content h1 {
+  color: #ffffff !important;
 }
 
 .dynamic-html-content h2 {
-  @apply text-2xl lg:text-3xl font-semibold text-foreground mb-4 mt-8;
+  @apply text-2xl lg:text-3xl font-semibold mb-4 mt-8;
+  color: #1a1a1a !important;
+}
+
+.dark .dynamic-html-content h2 {
+  color: #ffffff !important;
 }
 
 .dynamic-html-content h3 {
-  @apply text-xl lg:text-2xl font-semibold text-foreground mb-3 mt-6;
+  @apply text-xl lg:text-2xl font-semibold mb-3 mt-6;
+  color: #1a1a1a !important;
+}
+
+.dark .dynamic-html-content h3 {
+  color: #ffffff !important;
 }
 
 .dynamic-html-content p {
-  @apply text-foreground leading-relaxed mb-4;
+  @apply leading-relaxed mb-4;
+  color: #1a1a1a !important;
+}
+
+.dark .dynamic-html-content p {
+  color: #f5f5f5 !important;
 }
 
 .dynamic-html-content ul,
@@ -327,7 +355,11 @@
 }
 
 .dynamic-html-content li {
-  @apply text-foreground;
+  color: #1a1a1a !important;
+}
+
+.dark .dynamic-html-content li {
+  color: #f5f5f5 !important;
 }
 
 .dynamic-html-content table {
