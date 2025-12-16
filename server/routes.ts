@@ -213,11 +213,13 @@ function buildHtmlSystemPrompt(): string {
   
   ❌ НИКОГДА не добавляй border к карточкам!
 
-  КНОПКИ ОРАНЖЕВЫЕ:
-  class="btn" style="display: inline-block; padding: 14px 28px; background: #FF8B36; border-radius: 12px; color: #ffffff; font-weight: 600; text-decoration: none;"
+  КНОПКИ ОРАНЖЕВЫЕ (ВСЕГДА со ссылкой!):
+  <a href="https://ai-recruiter.ru/" target="_blank" class="btn" style="display: inline-block; padding: 14px 28px; background: #FF8B36; border-radius: 12px; color: #ffffff; font-weight: 600; text-decoration: none;">Попробовать бесплатно</a>
 
-  КНОПКИ СИНИЕ:
-  class="btn" style="display: inline-block; padding: 14px 28px; background: #2D8CFF; border-radius: 12px; color: #ffffff; font-weight: 600; text-decoration: none;"
+  КНОПКИ СИНИЕ (ВСЕГДА со ссылкой!):
+  <a href="https://ai-recruiter.ru/" target="_blank" class="btn" style="display: inline-block; padding: 14px 28px; background: #2D8CFF; border-radius: 12px; color: #ffffff; font-weight: 600; text-decoration: none;">Смотреть демо</a>
+  
+  ⚠️ ВСЕ кнопки ОБЯЗАТЕЛЬНО должны быть ссылками <a href="https://ai-recruiter.ru/" target="_blank">!
 
   МЕТРИКИ (центрированные, крупный шрифт):
   class="metric" style="background: var(--dynamic-card-bg); border-radius: 12px; padding: 20px; text-align: center;"
