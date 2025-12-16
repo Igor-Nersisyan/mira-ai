@@ -8,7 +8,6 @@ export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [dynamicHtml, setDynamicHtml] = useState<string | null>(null);
   const [streamingMessage, setStreamingMessage] = useState<string>("");
-  const [streamingHtml, setStreamingHtml] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [isHtmlStreaming, setIsHtmlStreaming] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -71,7 +70,6 @@ export default function Home() {
     currentHtml: string | null
   ): Promise<string | null> => {
     setIsHtmlStreaming(true);
-    setStreamingHtml("");
 
     try {
       const response = await fetch("/api/html/stream", {
@@ -112,7 +110,6 @@ export default function Home() {
               
               if (event.type === "html_chunk") {
                 fullHtml += event.content;
-                setStreamingHtml(fullHtml);
               } else if (event.type === "html_end") {
                 return event.fullHtml;
               } else if (event.type === "error") {
@@ -200,7 +197,6 @@ export default function Home() {
     setMessages([]);
     setDynamicHtml(null);
     setStreamingMessage("");
-    setStreamingHtml("");
     setIsLoading(false);
     setIsHtmlStreaming(false);
   }, []);
@@ -221,7 +217,6 @@ export default function Home() {
         <DynamicContent 
           html={dynamicHtml} 
           isStreaming={isHtmlStreaming}
-          streamingHtml={streamingHtml}
         >
           <HeroBlock />
         </DynamicContent>
