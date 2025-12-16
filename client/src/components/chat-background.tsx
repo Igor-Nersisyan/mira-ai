@@ -1,10 +1,10 @@
 export function ChatBackground() {
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-[0.08] dark:opacity-[0.12]">
-      <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <svg className="w-full h-full" style={{ opacity: 0.15 }} xmlns="http://www.w3.org/2000/svg">
         <defs>
           <pattern id="hr-pattern" x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse">
-            <g fill="none" stroke="currentColor" strokeWidth="1.5" className="text-primary">
+            <g fill="none" stroke="#FF8B36" strokeWidth="1.5">
               <circle cx="20" cy="20" r="8" />
               <circle cx="20" cy="16" r="4" />
               
@@ -40,11 +40,6 @@ export function ChatBackground() {
               
               <path d="M15,120 L25,110 L35,120 L25,130 Z" />
               
-              <circle cx="70" cy="120" r="8" />
-              <path d="M67,120 L70,123 L77,116" />
-              <path d="M78,112 L82,108" />
-              <path d="M78,128 L82,132" />
-              
               <rect x="105" y="110" width="22" height="16" rx="2" />
               <path d="M105,114 L116,122 L127,114" />
               
@@ -69,17 +64,22 @@ export function ChatBackground() {
               <circle cx="164" cy="178" r="2" />
             </g>
             
-            <g fill="none" stroke="currentColor" strokeWidth="1.2" className="text-blue-500 dark:text-blue-400">
-              <circle cx="180" cy="45" r="3" />
-              <circle cx="45" cy="95" r="2" />
-              <circle cx="140" cy="140" r="2.5" />
-              <circle cx="90" cy="185" r="2" />
-              <circle cx="175" cy="135" r="1.5" />
-              <circle cx="5" cy="145" r="2" />
+            <g fill="none" stroke="#2D8CFF" strokeWidth="1.5">
+              <circle cx="70" cy="120" r="8" />
+              <path d="M67,120 L70,123 L77,116" />
+              <path d="M78,112 L82,108" />
+              <path d="M78,128 L82,132" />
               
-              <path d="M185,85 L195,95 M195,85 L185,95" strokeWidth="1" />
-              <path d="M5,55 L10,60 M10,55 L5,60" strokeWidth="1" />
-              <path d="M145,185 L150,190 M150,185 L145,190" strokeWidth="1" />
+              <circle cx="180" cy="45" r="4" />
+              <circle cx="45" cy="95" r="3" />
+              <circle cx="140" cy="140" r="3" />
+              <circle cx="90" cy="185" r="3" />
+              <circle cx="175" cy="135" r="2" />
+              <circle cx="5" cy="145" r="3" />
+              
+              <path d="M185,85 L195,95 M195,85 L185,95" />
+              <path d="M5,55 L10,60 M10,55 L5,60" />
+              <path d="M145,185 L150,190 M150,185 L145,190" />
             </g>
           </pattern>
         </defs>
