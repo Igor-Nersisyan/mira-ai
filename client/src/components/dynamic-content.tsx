@@ -11,45 +11,6 @@ interface DynamicContentProps {
   contentRef?: React.RefObject<HTMLDivElement | null>;
 }
 
-function getLuminance(r: number, g: number, b: number): number {
-  const [rs, gs, bs] = [r, g, b].map(c => {
-    c = c / 255;
-    return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
-  });
-  return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
-}
-
-function parseColor(color: string): { r: number; g: number; b: number } | null {
-  if (!color || color === 'transparent' || color === 'rgba(0, 0, 0, 0)') {
-    return null;
-  }
-  
-  const rgbMatch = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-  if (rgbMatch) {
-    return {
-      r: parseInt(rgbMatch[1]),
-      g: parseInt(rgbMatch[2]),
-      b: parseInt(rgbMatch[3])
-    };
-  }
-  return null;
-}
-
-function getEffectiveBackground(element: HTMLElement): { r: number; g: number; b: number } | null {
-  let current: HTMLElement | null = element;
-  
-  while (current && current !== document.body) {
-    const style = window.getComputedStyle(current);
-    const bg = parseColor(style.backgroundColor);
-    if (bg) {
-      return bg;
-    }
-    current = current.parentElement;
-  }
-  
-  return null;
-}
-
 function sanitizeStyles(container: HTMLElement) {
   const allElements = container.querySelectorAll('*');
   
@@ -89,59 +50,6 @@ function sanitizeStyles(container: HTMLElement) {
       if (newStyle !== style) {
         element.setAttribute('style', newStyle);
       }
-    }
-  });
-}
-
-function applyContrastColors(container: HTMLElement) {
-  // First, find all elements with background colors (cards, sections, etc.)
-  const allElements = container.querySelectorAll('*');
-  
-  allElements.forEach((el) => {
-    const element = el as HTMLElement;
-    const style = window.getComputedStyle(element);
-    const bgColor = parseColor(style.backgroundColor);
-    
-    // Only process elements that have their own background color
-    if (bgColor) {
-      const luminance = getLuminance(bgColor.r, bgColor.g, bgColor.b);
-      const isLightBg = luminance > 0.4; // Use 0.4 threshold for better contrast
-      const textColor = isLightBg ? '#1a1a1a' : '#ffffff';
-      
-      // Apply color to the element itself if it has text content
-      if (element.childNodes.length > 0) {
-        element.style.setProperty('color', textColor, 'important');
-      }
-      
-      // Apply color to all text children within this background
-      const textChildren = element.querySelectorAll('h1, h2, h3, h4, h5, h6, p, span, li, a, td, th, label, strong, em, b, i');
-      textChildren.forEach((child) => {
-        const childEl = child as HTMLElement;
-        // Check if child has its own background that overrides parent
-        const childBg = parseColor(window.getComputedStyle(childEl).backgroundColor);
-        if (!childBg) {
-          // No own background, inherit contrast from parent
-          childEl.style.setProperty('color', textColor, 'important');
-        }
-      });
-    }
-  });
-  
-  // Also apply to any text element that doesn't have explicit color set
-  const textElements = container.querySelectorAll('h1, h2, h3, h4, h5, h6, p, span, li, a, div, td, th, label, strong, em, b, i');
-  
-  textElements.forEach((el) => {
-    const element = el as HTMLElement;
-    // Skip if already has inline color
-    if (element.style.color) return;
-    
-    const bg = getEffectiveBackground(element);
-    
-    if (bg) {
-      const luminance = getLuminance(bg.r, bg.g, bg.b);
-      const isLightBg = luminance > 0.4;
-      
-      element.style.setProperty('color', isLightBg ? '#1a1a1a' : '#ffffff', 'important');
     }
   });
 }
@@ -219,13 +127,6 @@ export function DynamicContent({
       lastHtmlRef.current = currentHtml;
       
       sanitizeStyles(contentRef.current);
-      
-      // Apply contrast colors after a short delay to ensure styles are computed
-      requestAnimationFrame(() => {
-        if (contentRef.current) {
-          applyContrastColors(contentRef.current);
-        }
-      });
       
       const images = contentRef.current.querySelectorAll('img');
       images.forEach((img) => {
