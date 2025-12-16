@@ -4,81 +4,30 @@ import { chatRequestSchema, htmlRequestSchema, type AIResponse, type Message } f
 import fs from "fs";
 import path from "path";
 import multer from "multer";
-import { JSDOM } from "jsdom";
-
-// Brand colors that are allowed
-const BRAND_ORANGE = '#FF8B36';
-const BRAND_BLUE = '#2D8CFF';
-const ALLOWED_BG_COLORS = ['#FF8B36', '#2D8CFF', '#ffffff', '#fff', 'white', '#f9fafb', '#f3f4f6'];
 
 function sanitizeHtmlColors(html: string): string {
-  // Quick regex cleanup first
   let result = html;
+  
+  // Remove gradients
   result = result.replace(/linear-gradient\s*\([^)]+\)/gi, '#ffffff');
   result = result.replace(/radial-gradient\s*\([^)]+\)/gi, '#ffffff');
   
-  // DOM-based sanitization for complete control
-  try {
-    const dom = new JSDOM(`<div id="wrapper">${result}</div>`);
-    const doc = dom.window.document;
-    const wrapper = doc.getElementById('wrapper');
-    
-    if (wrapper) {
-      // Process all elements with inline styles
-      const elements = wrapper.querySelectorAll('[style]');
-      elements.forEach((el) => {
-        const style = el.getAttribute('style') || '';
-        let newStyle = style;
-        
-        // Check if this is a button (has brand background color)
-        const hasBrandBg = style.includes('#FF8B36') || style.includes('#ff8b36') ||
-                          style.includes('#2D8CFF') || style.includes('#2d8cff');
-        
-        // Check if this is a card-like element
-        const isCard = el.classList.contains('card') || el.classList.contains('metric') ||
-                      el.classList.contains('feature') || el.classList.contains('step');
-        
-        // Remove ALL color declarations - CSS will handle it
-        newStyle = newStyle.replace(/(?<!background-)(?<!border-)color\s*:\s*[^;]+;?/gi, '');
-        
-        // For buttons with brand backgrounds, add white text
-        if (hasBrandBg) {
-          newStyle += ' color: #ffffff;';
-          el.classList.add('btn');
-        }
-        
-        // Remove transparent/semi-transparent backgrounds (except for subtle overlays)
-        newStyle = newStyle.replace(/background(-color)?\s*:\s*rgba\([^)]+,\s*0(\.[0-5])?\)/gi, 'background: transparent');
-        newStyle = newStyle.replace(/background(-color)?\s*:\s*transparent\s*;?/gi, '');
-        
-        // Ensure cards have white background
-        if (isCard && !hasBrandBg) {
-          if (!newStyle.includes('background')) {
-            newStyle += ' background: #ffffff;';
-          }
-        }
-        
-        el.setAttribute('style', newStyle.trim());
-      });
-      
-      // Ensure all .btn elements have proper colors
-      const buttons = wrapper.querySelectorAll('.btn, a[class*="btn"]');
-      buttons.forEach((btn) => {
-        const style = btn.getAttribute('style') || '';
-        if (!style.includes('#FF8B36') && !style.includes('#2D8CFF')) {
-          // Default to orange brand color if no brand color specified
-          btn.setAttribute('style', style + ' background: #FF8B36; color: #ffffff;');
-        } else if (!style.includes('color:') || style.includes('color: transparent') || style.includes('color:transparent')) {
-          btn.setAttribute('style', style.replace(/color\s*:\s*[^;]+;?/gi, '') + ' color: #ffffff;');
-        }
-      });
-      
-      result = wrapper.innerHTML;
-    }
-  } catch (e) {
-    // If DOM parsing fails, return the regex-cleaned version
-    console.error('DOM sanitization failed:', e);
-  }
+  // FUNDAMENTAL FIX: Remove ALL inline text color declarations
+  // CSS will handle colors based on context (card vs non-card)
+  
+  // More aggressive approach: match "color:" that is NOT preceded by "background-" or "border-"
+  // Using simple string replacement without lookbehind (better compatibility)
+  
+  // Step 1: Temporarily replace background-color and border-color
+  result = result.replace(/background-color\s*:/gi, '___BG_COLOR___:');
+  result = result.replace(/border-color\s*:/gi, '___BORDER_COLOR___:');
+  
+  // Step 2: Remove ALL remaining color: declarations
+  result = result.replace(/color\s*:\s*[^;"}]+[;]?/gi, '');
+  
+  // Step 3: Restore background-color and border-color
+  result = result.replace(/___BG_COLOR___:/gi, 'background-color:');
+  result = result.replace(/___BORDER_COLOR___:/gi, 'border-color:');
   
   return result;
 }
