@@ -300,7 +300,7 @@
   color: #111827 !important;
 }
 
-/* All text elements in light mode - ensure dark text */
+/* All text elements in light mode - FORCE dark text to override inline styles */
 .dynamic-html-content h1,
 .dynamic-html-content h2,
 .dynamic-html-content h3,
@@ -308,9 +308,9 @@
 .dynamic-html-content h5,
 .dynamic-html-content h6,
 .dynamic-html-content p,
-.dynamic-html-content span,
-.dynamic-html-content div {
-  color: #111827;
+.dynamic-html-content span:not(.highlight),
+.dynamic-html-content div:not([style*="background"]) {
+  color: #111827 !important;
 }
 
 .dark .dynamic-html-content {
