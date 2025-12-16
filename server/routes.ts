@@ -160,7 +160,7 @@ function buildHtmlSystemPrompt(): string {
   
   <style>
     .card { transition: all 0.3s ease; background: #ffffff; }
-    .card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px -12px rgba(45,140,255,0.3); }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px -8px rgba(17,24,39,0.12); }
     .btn { transition: all 0.2s ease; }
     .btn:hover { transform: scale(1.05); filter: brightness(1.1); }
     .btn:active { transform: scale(0.98); }
@@ -194,14 +194,14 @@ function buildHtmlSystemPrompt(): string {
 
   📐 СТРУКТУРА:
 
-  КАРТОЧКИ:
-  class="card" style="background: #ffffff; border-radius: 20px; padding: 32px; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.07);"
+  КАРТОЧКИ (утончённый стиль):
+  class="card" style="background: #ffffff; border-radius: 20px; padding: 32px; border: 1px solid rgba(17,24,39,0.04); box-shadow: 0 1px 3px rgba(17,24,39,0.06);"
 
   КНОПКИ ОРАНЖЕВЫЕ:
-  class="btn" style="display: inline-block; padding: 14px 28px; background: #FF8B36; border-radius: 12px; color: white; font-weight: 600; text-decoration: none; box-shadow: 0 8px 24px -8px rgba(255,139,54,0.5);"
+  class="btn" style="display: inline-block; padding: 14px 28px; background: #FF8B36; border-radius: 12px; color: white; font-weight: 600; text-decoration: none; box-shadow: 0 4px 12px -4px rgba(255,139,54,0.3);"
 
   КНОПКИ СИНИЕ:
-  class="btn" style="display: inline-block; padding: 14px 28px; background: #2D8CFF; border-radius: 12px; color: white; font-weight: 600; text-decoration: none; box-shadow: 0 8px 24px -8px rgba(45,140,255,0.5);"
+  class="btn" style="display: inline-block; padding: 14px 28px; background: #2D8CFF; border-radius: 12px; color: white; font-weight: 600; text-decoration: none; box-shadow: 0 4px 12px -4px rgba(45,140,255,0.3);"
 
   МЕТРИКИ:
   class="metric" style="background: #f3f4f6; border-radius: 16px; padding: 24px; text-align: center; cursor: pointer;"
@@ -308,7 +308,7 @@ function buildHtmlSystemPrompt(): string {
   Стили изображений:
   - Аватар: style="max-width: 220px; border-radius: 12px;"
   - Скриншоты в карточках: style="width: 100%; display: block; border-radius: 12px 12px 0 0;"
-  - Отдельные изображения: style="max-width: 680px; border-radius: 12px; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.1);"
+  - Отдельные изображения: style="max-width: 680px; border-radius: 12px; box-shadow: 0 4px 16px -4px rgba(17,24,39,0.08);"
 
   ТИПЫ КОНТЕНТА ПО ТЕМАМ:
 
