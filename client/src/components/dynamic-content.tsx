@@ -1,12 +1,14 @@
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Loader2, X } from "lucide-react";
+import morphdom from "morphdom";
 
 interface DynamicContentProps {
   html: string | null;
   streamingHtml?: string | null;
   isStreaming?: boolean;
   children: ReactNode;
+  contentRef?: React.RefObject<HTMLDivElement | null>;
 }
 
 function getLuminance(r: number, g: number, b: number): number {
@@ -147,36 +149,54 @@ export function DynamicContent({
   html, 
   streamingHtml = null,
   isStreaming = false,
-  children 
+  children,
+  contentRef: externalRef
 }: DynamicContentProps) {
-  const contentRef = useRef<HTMLDivElement>(null);
+  const internalRef = useRef<HTMLDivElement>(null);
+  const contentRef = externalRef || internalRef;
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
-  const hasStreamingContent = streamingHtml && streamingHtml.trim().length > 0;
-  const hasFinalHtml = html && html.trim().length > 0;
+  const lastHtmlRef = useRef<string>("");
   
-  const displayHtml = hasStreamingContent ? streamingHtml : (hasFinalHtml ? html : null);
-  const showDefault = !displayHtml && !isStreaming;
+  const hasFinalHtml = html && html.trim().length > 0;
+  const showDefault = !hasFinalHtml && !isStreaming && !streamingHtml;
   
   useEffect(() => {
-    if (contentRef.current && displayHtml) {
-      const timeoutId = setTimeout(() => {
-        if (contentRef.current) {
-          sanitizeStyles(contentRef.current);
-          
-          const images = contentRef.current.querySelectorAll('img');
-          images.forEach((img) => {
-            img.style.cursor = 'zoom-in';
-            img.onclick = (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setLightboxImage(img.src);
-            };
-          });
+    if (!contentRef.current) return;
+    
+    const currentHtml = streamingHtml || html || "";
+    
+    if (currentHtml && currentHtml !== lastHtmlRef.current) {
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = currentHtml;
+      
+      morphdom(contentRef.current, wrapper, {
+        childrenOnly: true,
+        onBeforeElUpdated: (fromEl, toEl) => {
+          if (fromEl.isEqualNode(toEl)) {
+            return false;
+          }
+          return true;
         }
-      }, 50);
-      return () => clearTimeout(timeoutId);
+      });
+      
+      lastHtmlRef.current = currentHtml;
+      
+      sanitizeStyles(contentRef.current);
+      
+      const images = contentRef.current.querySelectorAll('img');
+      images.forEach((img) => {
+        if (!img.dataset.lightboxBound) {
+          img.style.cursor = 'zoom-in';
+          img.dataset.lightboxBound = 'true';
+          img.onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setLightboxImage(img.src);
+          };
+        }
+      });
     }
-  }, [displayHtml]);
+  }, [streamingHtml, html, contentRef]);
   
   return (
     <>
@@ -190,15 +210,18 @@ export function DynamicContent({
           </div>
         )}
         <div data-testid="dynamic-content-container">
-          {displayHtml ? (
+          {showDefault ? (
+            children
+          ) : (
             <div
               ref={contentRef}
               className="dynamic-html-content prose prose-slate dark:prose-invert max-w-none"
-              dangerouslySetInnerHTML={{ __html: displayHtml }}
+              style={{ 
+                contain: 'layout style',
+                willChange: 'contents'
+              }}
             />
-          ) : showDefault ? (
-            children
-          ) : null}
+          )}
         </div>
       </div>
       
