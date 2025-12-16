@@ -1,0 +1,110 @@
+{
+  "colorScheme": "light",
+  "fonts": [
+    {
+      "family": "Manrope",
+      "role": "body"
+    },
+    {
+      "family": "Arial",
+      "role": "body"
+    }
+  ],
+  "colors": {
+    "primary": "#FF8B36",
+    "accent": "#FF8B36",
+    "background": "#FFFFFF",
+    "textPrimary": "#474648",
+    "link": "#E1E8F3"
+  },
+  "typography": {
+    "fontFamilies": {
+      "primary": "Manrope",
+      "heading": "Manrope"
+    },
+    "fontStacks": {
+      "heading": [
+        "Times New Roman"
+      ],
+      "body": [
+        "Times New Roman"
+      ],
+      "paragraph": [
+        "Times New Roman"
+      ]
+    },
+    "fontSizes": {
+      "h1": "16px",
+      "h2": "16px",
+      "body": "16px"
+    }
+  },
+  "spacing": {
+    "baseUnit": 4,
+    "borderRadius": "15px"
+  },
+  "components": {
+    "buttonPrimary": {
+      "background": "#FF8B36",
+      "textColor": "#FFFFFF",
+      "borderRadius": "8px",
+      "borderRadiusCorners": {
+        "topLeft": "8px",
+        "topRight": "8px",
+        "bottomRight": "8px",
+        "bottomLeft": "8px"
+      },
+      "shadow": "none"
+    },
+    "buttonSecondary": {
+      "background": "#FFFFFF",
+      "textColor": "#000000",
+      "borderRadius": "0px",
+      "borderRadiusCorners": {
+        "topLeft": "0px",
+        "topRight": "0px",
+        "bottomRight": "0px",
+        "bottomLeft": "0px"
+      },
+      "shadow": "none"
+    }
+  },
+  "images": {
+    "favicon": "File saved at: attached_assets/favicon.png",
+    "ogImage": "File saved at: attached_assets/ogImage.png"
+  },
+  "__framework_hints": [],
+  "__llm_logo_reasoning": {
+    "selectedIndex": -1,
+    "reasoning": "No logo candidates were provided for evaluation, so no selection could be made.",
+    "confidence": 0,
+    "rejected": true
+  },
+  "__llm_button_reasoning": {
+    "primary": {
+      "index": 0,
+      "text": "ОТВЕТИТЬ #rec1264037001 .t-btnflex.t-btnflex_type_button {color:#ffffff;background-color:#ff8b36;bor",
+      "reasoning": "Button #0 is selected as the primary CTA because it uses the vibrant brand color #FF8B36, which is consistent with the primary color scheme of the website. The text 'ОТВЕТИТЬ' suggests an action-oriented purpose, making it a strong candidate for the primary call-to-action."
+    },
+    "secondary": {
+      "index": 3,
+      "text": "#rec1343869371 .t-btnflex.t-btnflex_type_button2 {border-style:none !important;border-radius:8px;box",
+      "reasoning": "Button #3 is selected as the secondary CTA because it has a different background color (#FFFFFF) compared to the primary button. It is less prominent and likely serves a supportive role."
+    },
+    "confidence": 0.95
+  },
+  "personality": {
+    "tone": "modern",
+    "energy": "medium",
+    "targetAudience": "Russian-speaking professionals and businesses looking for AI recruitment solutions."
+  },
+  "designSystem": {
+    "framework": "custom",
+    "componentLibrary": null
+  },
+  "confidence": {
+    "buttons": 0.95,
+    "colors": 0.9,
+    "overall": 0.925
+  }
+}

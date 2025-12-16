@@ -1,12 +1,28 @@
 # AIR Mira Design Guidelines
 
+## Brand Colors (from ai-recruiter.ru)
+
+**Primary Palette**:
+- **Orange (Primary)**: #FF8B36 - HSL(27, 100%, 60%) - Main CTA, accents, highlights
+- **Blue (Secondary)**: #2D8CFF - HSL(211, 100%, 59%) - Supporting accent, links, secondary actions
+- **Black (Dark)**: #1A1A1A - HSL(0, 0%, 10%) - Dark backgrounds, text on light
+- **White (Light)**: #FFFFFF - HSL(0, 0%, 100%) - Backgrounds, text on dark
+- **Text Gray**: #474648 - HSL(270, 1%, 28%) - Primary body text color
+
+**Color Usage**:
+- Primary buttons and CTAs: Orange gradient or solid
+- Secondary buttons and links: Blue
+- Hero sections: Dark overlays with orange/blue accents
+- Cards and panels: White with subtle gray borders
+- Text hierarchy: Dark gray (primary), medium gray (secondary), light gray (tertiary)
+
 ## Design Approach
 
-**Reference-Based Approach** drawing from modern AI/SaaS leaders:
-- **Linear**: Clean typography, minimal interface, purposeful whitespace
-- **Stripe**: Trust-building through clarity and professionalism
-- **Intercom**: Conversational, approachable chat interfaces
-- **Notion**: Friendly AI personality, accessible design
+**Reference-Based Approach** from ai-recruiter.ru:
+- **Modern SaaS**: Clean, professional, trust-building
+- **Conversational AI**: Approachable chat interface with Mira personality
+- **B2B Focus**: Professional credibility with clear value propositions
+- **Russian Market**: Localized content and cultural relevance
 
 **Core Principles**:
 - Conversational AI personality with professional credibility
@@ -16,8 +32,8 @@
 
 ## Typography System
 
-**Primary Font**: Inter or SF Pro Display via Google Fonts CDN
-**Secondary Font**: System font stack for chat messages (natural conversation feel)
+**Primary Font**: Manrope (from ai-recruiter.ru branding) via Google Fonts CDN
+**Fallback Font**: Inter, system font stack
 
 **Hierarchy**:
 - Hero Headlines: text-5xl to text-7xl, font-bold, tracking-tight
