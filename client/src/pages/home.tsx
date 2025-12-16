@@ -14,74 +14,6 @@ export default function Home() {
   const [isHtmlStreaming, setIsHtmlStreaming] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const extractCompleteBlocks = (html: string): string => {
-    let result = "";
-    let remaining = html;
-    
-    const styleMatch = remaining.match(/^(\s*<style[^>]*>[\s\S]*?<\/style>\s*)/i);
-    if (styleMatch) {
-      result += styleMatch[1];
-      remaining = remaining.slice(styleMatch[0].length);
-    }
-    
-    const blockTags = ['section', 'div', 'article', 'header', 'footer', 'main', 'aside', 'nav'];
-    
-    let lastValidEnd = 0;
-    let i = 0;
-    
-    while (i < remaining.length) {
-      let foundTag = null;
-      let tagStart = -1;
-      
-      for (const tag of blockTags) {
-        const openPattern = `<${tag}`;
-        if (remaining.slice(i, i + openPattern.length).toLowerCase() === openPattern) {
-          const nextChar = remaining[i + openPattern.length];
-          if (nextChar === ' ' || nextChar === '>' || nextChar === '\n' || nextChar === '\t') {
-            foundTag = tag;
-            tagStart = i;
-            break;
-          }
-        }
-      }
-      
-      if (foundTag && tagStart !== -1) {
-        let depth = 1;
-        let j = tagStart + foundTag.length + 1;
-        
-        while (j < remaining.length && depth > 0) {
-          const openTag = `<${foundTag}`;
-          const closeTag = `</${foundTag}>`;
-          
-          if (remaining.slice(j, j + closeTag.length).toLowerCase() === closeTag) {
-            depth--;
-            if (depth === 0) {
-              lastValidEnd = j + closeTag.length;
-            }
-            j += closeTag.length;
-          } else if (remaining.slice(j, j + openTag.length).toLowerCase() === openTag) {
-            const nextChar = remaining[j + openTag.length];
-            if (nextChar === ' ' || nextChar === '>' || nextChar === '\n' || nextChar === '\t') {
-              depth++;
-            }
-            j++;
-          } else {
-            j++;
-          }
-        }
-        
-        i = j;
-      } else {
-        i++;
-      }
-    }
-    
-    if (lastValidEnd > 0) {
-      return result + remaining.slice(0, lastValidEnd);
-    }
-    
-    return result;
-  };
 
   const streamChat = useCallback(async (allMessages: Message[]): Promise<string> => {
     setIsChatTyping(true);
@@ -169,7 +101,6 @@ export default function Home() {
       const decoder = new TextDecoder();
       let buffer = "";
       let fullHtml = "";
-      let lastShownHtml = "";
 
       while (true) {
         const { done, value } = await reader.read();
@@ -186,11 +117,7 @@ export default function Home() {
               
               if (event.type === "html_chunk") {
                 fullHtml += event.content;
-                const completeBlocks = extractCompleteBlocks(fullHtml);
-                if (completeBlocks.length > lastShownHtml.length) {
-                  lastShownHtml = completeBlocks;
-                  setStreamingHtml(completeBlocks);
-                }
+                setStreamingHtml(fullHtml);
               } else if (event.type === "html_end") {
                 setStreamingHtml(null);
                 return event.fullHtml;
