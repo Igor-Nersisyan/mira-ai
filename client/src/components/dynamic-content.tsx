@@ -1,5 +1,5 @@
-import { type ReactNode, useEffect, useRef } from "react";
-import { Loader2 } from "lucide-react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
+import { Loader2, X } from "lucide-react";
 
 interface DynamicContentProps {
   html: string | null;
@@ -106,6 +106,42 @@ function applyContrastColors(container: HTMLElement) {
   });
 }
 
+function ImageLightbox({ src, onClose }: { src: string; onClose: () => void }) {
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', handleEscape);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = '';
+    };
+  }, [onClose]);
+
+  return (
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm animate-in fade-in duration-200"
+      onClick={onClose}
+      data-testid="image-lightbox"
+    >
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+        data-testid="button-close-lightbox"
+      >
+        <X className="w-6 h-6 text-white" />
+      </button>
+      <img
+        src={src}
+        alt=""
+        className="max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-2xl animate-in zoom-in-95 duration-300"
+        onClick={(e) => e.stopPropagation()}
+      />
+    </div>
+  );
+}
+
 export function DynamicContent({ 
   html, 
   streamingHtml = null,
@@ -113,6 +149,7 @@ export function DynamicContent({
   children 
 }: DynamicContentProps) {
   const contentRef = useRef<HTMLDivElement>(null);
+  const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const hasStreamingContent = streamingHtml && streamingHtml.trim().length > 0;
   const hasFinalHtml = html && html.trim().length > 0;
   
@@ -125,6 +162,16 @@ export function DynamicContent({
         if (contentRef.current) {
           sanitizeStyles(contentRef.current);
           applyContrastColors(contentRef.current);
+          
+          const images = contentRef.current.querySelectorAll('img');
+          images.forEach((img) => {
+            img.style.cursor = 'zoom-in';
+            img.onclick = (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setLightboxImage(img.src);
+            };
+          });
         }
       }, 50);
       return () => clearTimeout(timeoutId);
@@ -132,26 +179,35 @@ export function DynamicContent({
   }, [displayHtml]);
   
   return (
-    <div className="min-h-screen p-6 lg:p-8 xl:p-12">
-      {isStreaming && (
-        <div className="flex items-center gap-2 mb-4 text-muted-foreground">
-          <Loader2 className="w-4 h-4 animate-spin" />
-          <span className="text-sm" data-testid="html-streaming-indicator">
-            Генерация контента...
-          </span>
+    <>
+      <div className="min-h-screen p-6 lg:p-8 xl:p-12">
+        {isStreaming && (
+          <div className="flex items-center gap-2 mb-4 text-muted-foreground">
+            <Loader2 className="w-4 h-4 animate-spin" />
+            <span className="text-sm" data-testid="html-streaming-indicator">
+              Генерация контента...
+            </span>
+          </div>
+        )}
+        <div data-testid="dynamic-content-container">
+          {displayHtml ? (
+            <div
+              ref={contentRef}
+              className="dynamic-html-content prose prose-slate dark:prose-invert max-w-none"
+              dangerouslySetInnerHTML={{ __html: displayHtml }}
+            />
+          ) : showDefault ? (
+            children
+          ) : null}
         </div>
-      )}
-      <div data-testid="dynamic-content-container">
-        {displayHtml ? (
-          <div
-            ref={contentRef}
-            className="dynamic-html-content prose prose-slate dark:prose-invert max-w-none"
-            dangerouslySetInnerHTML={{ __html: displayHtml }}
-          />
-        ) : showDefault ? (
-          children
-        ) : null}
       </div>
-    </div>
+      
+      {lightboxImage && (
+        <ImageLightbox 
+          src={lightboxImage} 
+          onClose={() => setLightboxImage(null)} 
+        />
+      )}
+    </>
   );
 }
