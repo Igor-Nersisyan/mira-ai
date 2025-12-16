@@ -173,7 +173,14 @@ function buildHtmlSystemPrompt(): string {
     .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
     .step-item { position: relative; }
     .step-item::before { content: ''; position: absolute; left: 24px; top: 60px; width: 2px; height: calc(100% - 60px); background: linear-gradient(180deg, #2D8CFF, transparent); }
+    /* Эмодзи не должны быть в градиенте */
+    .gradient-text .emoji, .gradient-text span[role="img"] { -webkit-text-fill-color: initial; background: none; }
   </style>
+  
+  ВАЖНО ПРО ЭМОДЗИ В ГРАДИЕНТНЫХ ЗАГОЛОВКАХ:
+  Если используешь эмодзи в градиентном заголовке, оберни текст в span, а эмодзи оставь снаружи:
+  <h1 class="gradient-text" style="...градиент..."><span class="emoji">🚀</span> <span>Текст заголовка</span></h1>
+  Или НЕ используй эмодзи в градиентных заголовках вообще — лучше используй иконки.
 
   📐 СТРУКТУРА:
 

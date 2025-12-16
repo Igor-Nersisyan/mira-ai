@@ -211,7 +211,7 @@ export default function Home() {
         />
       </div>
       
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto bg-gradient-to-br from-pink-100 via-purple-50 to-blue-100 dark:from-pink-950/30 dark:via-purple-950/20 dark:to-blue-950/30">
         <DynamicContent 
           html={dynamicHtml} 
           isStreaming={isHtmlStreaming}
