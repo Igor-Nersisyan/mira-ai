@@ -2,8 +2,14 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
+import path from "path";
 
 const app = express();
+
+// Serve assets from public/assets folder (for analytics images)
+app.use('/assets', express.static(path.resolve(process.cwd(), 'public', 'assets')));
+// Also serve assets from client/public/assets
+app.use('/assets', express.static(path.resolve(process.cwd(), 'client', 'public', 'assets')));
 const httpServer = createServer(app);
 
 declare module "http" {

@@ -123,7 +123,6 @@ ${knowledgeBase ? `\n\nБАЗА ЗНАНИЙ О ПРОДУКТЕ:\n${knowledgeBa
 }
 
 function buildHtmlSystemPrompt(): string {
-  function buildHtmlSystemPrompt(): string {
   return `Ты — элитный веб-дизайнер уровня Stripe, Linear, Vercel. Создаёшь визуально роскошные HTML-презентации.
 
   ФИЛОСОФИЯ:
@@ -265,7 +264,7 @@ function buildHtmlSystemPrompt(): string {
   - Возвращай ТОЛЬКО HTML код с inline styles
   - Если тема не изменилась — пустая строка
   - НЕ используй markdown, НЕ оборачивай в \`\`\``;
-  }
+}
 
 async function* streamOpenRouterChat(messages: Message[], systemPrompt: string): AsyncGenerator<string> {
   if (!OPENROUTER_API_KEY) {
