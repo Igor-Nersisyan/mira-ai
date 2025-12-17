@@ -7,6 +7,36 @@ function extractCompleteBlocks(html: string): string {
   if (!html || html.trim().length === 0) return "";
   
   const trimmed = html.trim();
+  
+  const rootMatch = trimmed.match(/^<(div|section|article|main)(\s[^>]*)?>/i);
+  if (!rootMatch) {
+    return parseBlocks(trimmed);
+  }
+  
+  const rootTag = rootMatch[1].toLowerCase();
+  const rootOpenEnd = trimmed.indexOf('>', rootMatch[0].length - 1) + 1;
+  
+  const lastCloseIndex = trimmed.lastIndexOf(`</${rootTag}>`);
+  const hasClosedRoot = lastCloseIndex !== -1;
+  
+  let innerContent: string;
+  if (hasClosedRoot) {
+    innerContent = trimmed.slice(rootOpenEnd, lastCloseIndex);
+  } else {
+    innerContent = trimmed.slice(rootOpenEnd);
+  }
+  
+  const parsedInner = parseBlocks(innerContent);
+  
+  if (!parsedInner) return "";
+  
+  return trimmed.slice(0, rootOpenEnd) + parsedInner + (hasClosedRoot ? `</${rootTag}>` : '');
+}
+
+function parseBlocks(html: string): string {
+  if (!html || html.trim().length === 0) return "";
+  
+  const trimmed = html.trim();
   const completeBlocks: string[] = [];
   let pos = 0;
   
@@ -21,7 +51,11 @@ function extractCompleteBlocks(html: string): string {
     
     if (trimmed[pos] !== '<') {
       const nextTagStart = trimmed.indexOf('<', pos);
-      if (nextTagStart === -1) break;
+      if (nextTagStart === -1) {
+        completeBlocks.push(trimmed.slice(pos));
+        break;
+      }
+      completeBlocks.push(trimmed.slice(pos, nextTagStart));
       pos = nextTagStart;
       continue;
     }
@@ -75,7 +109,7 @@ function extractCompleteBlocks(html: string): string {
     if (depth > 0) break;
   }
   
-  return completeBlocks.join("\n");
+  return completeBlocks.join("");
 }
 
 interface DynamicContentProps {
