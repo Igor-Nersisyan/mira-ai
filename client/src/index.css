@@ -211,85 +211,339 @@
   }
 }
 
-/* Dynamic HTML Content Styles - Clean Contrast System */
-/* 
-  SIMPLE CONTRAST RULES:
-  1. Base content inherits foreground color from theme
-  2. Cards (.card, .feature-card, etc.) get explicit white bg + dark text
-  3. Brand-colored elements (buttons, badges) get white text
-  4. No inline style parsing - rely on semantic classes
-*/
+/* ============================================================================
+   DYNAMIC HTML CONTENT - LUXURY VISUAL SYSTEM
+   Premium visuals with brand colors: Orange #FF8B36, Blue #2D8CFF, Black #1A1A1A
+   ============================================================================ */
 
-/* Base: inherit theme colors */
+/* Base styling - inherits theme */
 .dynamic-html-content {
   color: hsl(var(--foreground));
 }
 
-/* CARDS: Always white background with dark text */
-.dynamic-html-content .card,
-.dynamic-html-content .metric,
-.dynamic-html-content .step,
-.dynamic-html-content .feature,
-.dynamic-html-content .feature-card,
-.dynamic-html-content .pricing-card {
-  background-color: #ffffff !important;
-  background: #ffffff !important;
-  color: #111827 !important;
+/* ============================================================================
+   GRADIENT UTILITIES - Brand Colors
+   ============================================================================ */
+.dynamic-html-content .gradient-primary {
+  background: linear-gradient(135deg, #FF8B36 0%, #FF6B10 50%, #FF8B36 100%);
 }
 
-/* All text inside cards is dark */
-.dynamic-html-content .card *,
-.dynamic-html-content .metric *,
-.dynamic-html-content .step *,
-.dynamic-html-content .feature *,
-.dynamic-html-content .feature-card *,
-.dynamic-html-content .pricing-card * {
-  color: #111827 !important;
+.dynamic-html-content .gradient-secondary {
+  background: linear-gradient(135deg, #2D8CFF 0%, #1A6FD9 50%, #2D8CFF 100%);
 }
 
-/* Elements with inline white background also get dark text */
-.dynamic-html-content [style*="background: #fff"],
-.dynamic-html-content [style*="background:#fff"],
-.dynamic-html-content [style*="background: #ffffff"],
-.dynamic-html-content [style*="background:#ffffff"],
-.dynamic-html-content [style*="background: white"],
-.dynamic-html-content [style*="background:white"],
-.dynamic-html-content [style*="background-color: #fff"],
-.dynamic-html-content [style*="background-color:#fff"],
-.dynamic-html-content [style*="background-color: #ffffff"],
-.dynamic-html-content [style*="background-color:#ffffff"],
-.dynamic-html-content [style*="background-color: white"],
-.dynamic-html-content [style*="background-color:white"],
-.dynamic-html-content [style*="background: rgb(255"],
-.dynamic-html-content [style*="background:rgb(255"],
-.dynamic-html-content [style*="background: rgba(255"],
-.dynamic-html-content [style*="background:rgba(255"] {
-  color: #111827 !important;
+.dynamic-html-content .gradient-dark {
+  background: linear-gradient(135deg, #1A1A1A 0%, #2D2D2D 50%, #1A1A1A 100%);
 }
 
-.dynamic-html-content [style*="background: #fff"] *,
-.dynamic-html-content [style*="background:#fff"] *,
-.dynamic-html-content [style*="background: #ffffff"] *,
-.dynamic-html-content [style*="background:#ffffff"] *,
-.dynamic-html-content [style*="background: white"] *,
-.dynamic-html-content [style*="background:white"] *,
-.dynamic-html-content [style*="background-color: #fff"] *,
-.dynamic-html-content [style*="background-color:#fff"] *,
-.dynamic-html-content [style*="background-color: #ffffff"] *,
-.dynamic-html-content [style*="background-color:#ffffff"] *,
-.dynamic-html-content [style*="background-color: white"] *,
-.dynamic-html-content [style*="background-color:white"] *,
-.dynamic-html-content [style*="background: rgb(255"] *,
-.dynamic-html-content [style*="background:rgb(255"] *,
-.dynamic-html-content [style*="background: rgba(255"] *,
-.dynamic-html-content [style*="background:rgba(255"] * {
-  color: #111827 !important;
+.dynamic-html-content .gradient-mesh {
+  background: 
+    radial-gradient(ellipse at 20% 30%, rgba(255, 139, 54, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(45, 140, 255, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(26, 26, 26, 0.05) 0%, transparent 70%);
 }
 
-/* Brand buttons get white text */
-.dynamic-html-content .btn,
-.dynamic-html-content .cta-button {
-  color: #ffffff !important;
+.dynamic-html-content .gradient-radial-glow {
+  background: radial-gradient(ellipse at center, rgba(255, 139, 54, 0.2) 0%, transparent 70%);
+}
+
+/* ============================================================================
+   GLASSMORPHISM - Frosted glass effects
+   ============================================================================ */
+.dynamic-html-content .glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.dynamic-html-content .glass-dark {
+  background: rgba(26, 26, 26, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.dynamic-html-content .glass-primary {
+  background: rgba(255, 139, 54, 0.1);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 139, 54, 0.2);
+}
+
+.dynamic-html-content .glass-secondary {
+  background: rgba(45, 140, 255, 0.1);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(45, 140, 255, 0.2);
+}
+
+/* ============================================================================
+   GLOW & SHADOW EFFECTS
+   ============================================================================ */
+.dynamic-html-content .glow-primary {
+  box-shadow: 
+    0 0 20px rgba(255, 139, 54, 0.3),
+    0 0 40px rgba(255, 139, 54, 0.2),
+    0 0 60px rgba(255, 139, 54, 0.1);
+}
+
+.dynamic-html-content .glow-secondary {
+  box-shadow: 
+    0 0 20px rgba(45, 140, 255, 0.3),
+    0 0 40px rgba(45, 140, 255, 0.2),
+    0 0 60px rgba(45, 140, 255, 0.1);
+}
+
+.dynamic-html-content .shadow-luxury {
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 10px 20px -5px rgba(0, 0, 0, 0.1),
+    0 25px 50px -12px rgba(0, 0, 0, 0.15);
+}
+
+.dynamic-html-content .shadow-floating {
+  box-shadow: 
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 40px 60px -15px rgba(0, 0, 0, 0.15);
+}
+
+.dynamic-html-content .shadow-inset-glow {
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================================================
+   BORDER EFFECTS
+   ============================================================================ */
+.dynamic-html-content .border-gradient {
+  border: 2px solid transparent;
+  background: linear-gradient(white, white) padding-box,
+              linear-gradient(135deg, #FF8B36, #2D8CFF) border-box;
+}
+
+.dynamic-html-content .border-glow {
+  border: 1px solid rgba(255, 139, 54, 0.3);
+  box-shadow: 0 0 15px rgba(255, 139, 54, 0.1);
+}
+
+/* ============================================================================
+   HOVER EFFECTS - Stripe-level micro-interactions
+   ============================================================================ */
+.dynamic-html-content .hover-lift {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+              box-shadow 0.3s ease;
+}
+
+.dynamic-html-content .hover-lift:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 
+    0 20px 40px -15px rgba(0, 0, 0, 0.2),
+    0 0 30px rgba(255, 139, 54, 0.1);
+}
+
+.dynamic-html-content .hover-glow {
+  transition: box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+.dynamic-html-content .hover-glow:hover {
+  box-shadow: 
+    0 0 30px rgba(255, 139, 54, 0.25),
+    0 10px 40px -10px rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 139, 54, 0.5);
+}
+
+.dynamic-html-content .hover-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.dynamic-html-content .hover-shine::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: left 0.6s ease;
+}
+
+.dynamic-html-content .hover-shine:hover::before {
+  left: 100%;
+}
+
+.dynamic-html-content .hover-border-animate {
+  position: relative;
+}
+
+.dynamic-html-content .hover-border-animate::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #FF8B36, #2D8CFF);
+  transition: width 0.4s ease, left 0.4s ease;
+}
+
+.dynamic-html-content .hover-border-animate:hover::after {
+  width: 100%;
+  left: 0;
+}
+
+/* ============================================================================
+   ANIMATIONS - Smooth entrances and effects
+   ============================================================================ */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(255, 139, 54, 0.3);
+  }
+  50% { 
+    box-shadow: 0 0 40px rgba(255, 139, 54, 0.5), 0 0 60px rgba(255, 139, 54, 0.3);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes scale-in {
+  0% { transform: scale(0.9); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes slide-up {
+  0% { transform: translateY(30px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes rotate-slow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.dynamic-html-content .animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.dynamic-html-content .animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.dynamic-html-content .animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+.dynamic-html-content .animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 5s ease infinite;
+}
+
+.dynamic-html-content .animate-scale-in {
+  animation: scale-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.dynamic-html-content .animate-slide-up {
+  animation: slide-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Staggered animations for grids */
+.dynamic-html-content [class*="grid"] > *:nth-child(1) { animation-delay: 0.05s; }
+.dynamic-html-content [class*="grid"] > *:nth-child(2) { animation-delay: 0.1s; }
+.dynamic-html-content [class*="grid"] > *:nth-child(3) { animation-delay: 0.15s; }
+.dynamic-html-content [class*="grid"] > *:nth-child(4) { animation-delay: 0.2s; }
+.dynamic-html-content [class*="grid"] > *:nth-child(5) { animation-delay: 0.25s; }
+.dynamic-html-content [class*="grid"] > *:nth-child(6) { animation-delay: 0.3s; }
+
+/* ============================================================================
+   DECORATIVE ELEMENTS
+   ============================================================================ */
+.dynamic-html-content .blob {
+  border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+}
+
+.dynamic-html-content .blob-animate {
+  animation: blob-morph 8s ease-in-out infinite;
+}
+
+@keyframes blob-morph {
+  0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+  25% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+  50% { border-radius: 50% 60% 30% 60% / 30% 60% 70% 40%; }
+  75% { border-radius: 60% 40% 60% 30% / 70% 30% 50% 60%; }
+}
+
+.dynamic-html-content .noise-overlay {
+  position: relative;
+}
+
+.dynamic-html-content .noise-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+}
+
+.dynamic-html-content .grid-pattern {
+  background-image: 
+    linear-gradient(rgba(255, 139, 54, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 139, 54, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+.dynamic-html-content .dot-pattern {
+  background-image: radial-gradient(rgba(255, 139, 54, 0.15) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* ============================================================================
+   TEXT EFFECTS
+   ============================================================================ */
+.dynamic-html-content .text-gradient {
+  background: linear-gradient(135deg, #FF8B36, #2D8CFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.dynamic-html-content .text-glow {
+  text-shadow: 0 0 20px rgba(255, 139, 54, 0.5);
+}
+
+.dynamic-html-content .text-shadow-luxury {
+  text-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 
