@@ -349,9 +349,9 @@ LAYOUT ДЛЯ SELF-INTRO (когда представляешься):
       <a href="https://ai-recruiter.ru/" class="air-btn" style="display: block; text-align: center; margin-top: 20px; padding: 12px 24px; background: transparent; border: 1px solid #3b82f6; border-radius: 12px; color: #60a5fa; font-weight: 600; text-decoration: none;">Выбрать</a>
     </div>
 
-    <!-- Рост (акцентный) -->
-    <div class="air-card" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border-radius: 20px; padding: 32px; color: white; position: relative; box-shadow: 0 8px 30px rgba(59,130,246,0.4);">
-      <div style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #10b981; color: white; font-size: 11px; font-weight: 600; padding: 6px 16px; border-radius: 100px;">ПОПУЛЯРНЫЙ</div>
+    <!-- Рост (акцентный — ОРАНЖЕВЫЙ!) -->
+    <div class="air-card" style="background: #f97316; border-radius: 20px; padding: 32px; color: white; position: relative; box-shadow: 0 8px 30px rgba(249,115,22,0.4);">
+      <div style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; font-size: 11px; font-weight: 600; padding: 6px 16px; border-radius: 100px;">ПОПУЛЯРНЫЙ</div>
       <div style="font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; opacity: 0.9;">Рост</div>
       <div style="font-size: 36px; font-weight: 800; margin-bottom: 4px;">49 900 ₽<span style="font-size: 16px; font-weight: 400; opacity: 0.8;">/мес</span></div>
       <div style="font-size: 13px; opacity: 0.9; margin-bottom: 24px;">от 34 930 ₽ при оплате за год</div>
@@ -369,7 +369,7 @@ LAYOUT ДЛЯ SELF-INTRO (когда представляешься):
           <span>✓</span> Приоритетная поддержка
         </div>
       </div>
-      <a href="https://ai-recruiter.ru/" class="air-btn" style="display: block; text-align: center; margin-top: 20px; padding: 12px 24px; background: white; border-radius: 12px; color: #2563eb; font-weight: 600; text-decoration: none;">Выбрать</a>
+      <a href="https://ai-recruiter.ru/" class="air-btn" style="display: block; text-align: center; margin-top: 20px; padding: 12px 24px; background: white; border-radius: 12px; color: #ea580c; font-weight: 600; text-decoration: none;">Выбрать</a>
     </div>
 
     <!-- Масштаб -->
