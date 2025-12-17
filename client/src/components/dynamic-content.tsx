@@ -32,18 +32,6 @@ function extractCompleteBlocks(html: string): string {
     return html.slice(0, lastSectionEnd);
   }
   
-  const divEndPattern = /<\/div>/gi;
-  let lastDivEnd = -1;
-  let match;
-  
-  while ((match = divEndPattern.exec(html)) !== null) {
-    lastDivEnd = match.index + match[0].length;
-  }
-  
-  if (lastDivEnd > 0) {
-    return html.slice(0, lastDivEnd);
-  }
-  
   return "";
 }
 
