@@ -216,6 +216,29 @@
    Premium visuals with brand colors: Orange #FF8B36, Blue #2D8CFF, Black #1A1A1A
    ============================================================================ */
 
+/* Block streaming animation - blocks fade in as they appear */
+@keyframes block-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dynamic-html-content > section,
+.dynamic-html-content > article,
+.dynamic-html-content > header,
+.dynamic-html-content > footer,
+.dynamic-html-content > nav,
+.dynamic-html-content > aside,
+.dynamic-html-content > main,
+.dynamic-html-content > div {
+  animation: block-fade-in 0.4s ease-out forwards;
+}
+
 /* Base styling - inherits theme */
 .dynamic-html-content {
   color: hsl(var(--foreground));

@@ -3,72 +3,78 @@ import { createPortal } from "react-dom";
 import { Loader2, X } from "lucide-react";
 import morphdom from "morphdom";
 
+function findClosingTag(html: string, tagName: string, startPos: number): number {
+  let depth = 1;
+  let searchPos = startPos;
+  
+  const openTagRegex = new RegExp(`<${tagName}(\\s[^>]*)?>`, 'gi');
+  const closeTagRegex = new RegExp(`</${tagName}>`, 'gi');
+  
+  while (depth > 0 && searchPos < html.length) {
+    openTagRegex.lastIndex = searchPos;
+    closeTagRegex.lastIndex = searchPos;
+    
+    const nextOpen = openTagRegex.exec(html);
+    const nextClose = closeTagRegex.exec(html);
+    
+    if (!nextClose) {
+      return -1;
+    }
+    
+    if (nextOpen && nextOpen.index < nextClose.index) {
+      depth++;
+      searchPos = nextOpen.index + nextOpen[0].length;
+    } else {
+      depth--;
+      searchPos = nextClose.index + nextClose[0].length;
+      if (depth === 0) {
+        return searchPos;
+      }
+    }
+  }
+  
+  return -1;
+}
+
 function extractCompleteBlocks(html: string): string {
   if (!html || html.trim().length === 0) return "";
   
-  const semanticTags = ['section', 'article', 'header', 'footer', 'nav', 'aside', 'main'];
-  const blockClasses = ['hero', 'grid', 'metrics', 'showcase', 'gallery', 'features', 'stats', 'cards', 'benefits', 'testimonials', 'cta', 'pricing', 'team', 'faq', 'contact', 'about', 'services', 'portfolio', 'luxury-canvas'];
+  const tagPattern = /<(section|article|header|footer|nav|aside|main|div)(\s[^>]*)?>/gi;
   
-  const tempDiv = document.createElement('div');
-  tempDiv.innerHTML = html;
+  let result = "";
+  let lastEnd = 0;
+  let match;
   
-  let validEndPos = 0;
-  let pos = 0;
+  tagPattern.lastIndex = 0;
   
-  for (let i = 0; i < tempDiv.childNodes.length; i++) {
-    const node = tempDiv.childNodes[i];
+  while ((match = tagPattern.exec(html)) !== null) {
+    const tagName = match[1].toLowerCase();
+    const tagStart = match.index;
+    const contentStart = match.index + match[0].length;
     
-    if (node.nodeType === Node.TEXT_NODE) {
-      const textContent = node.textContent || '';
-      pos += textContent.length;
-      continue;
-    }
+    const blockEnd = findClosingTag(html, tagName, contentStart);
     
-    if (node.nodeType !== Node.ELEMENT_NODE) continue;
-    
-    const el = node as Element;
-    const tagName = el.tagName.toLowerCase();
-    const outerHtml = el.outerHTML;
-    const startInOriginal = html.indexOf(outerHtml, pos);
-    
-    if (startInOriginal === -1) {
-      pos += outerHtml.length;
-      continue;
-    }
-    
-    const endTag = `</${tagName}>`;
-    const closingPos = html.indexOf(endTag, startInOriginal);
-    
-    if (closingPos === -1) {
+    if (blockEnd > 0) {
+      if (tagStart >= lastEnd) {
+        const prefix = tagStart > lastEnd ? html.slice(lastEnd, tagStart) : "";
+        result += prefix + html.slice(tagStart, blockEnd);
+        lastEnd = blockEnd;
+      }
+      tagPattern.lastIndex = blockEnd;
+    } else {
+      const innerContent = html.slice(contentStart);
+      const innerResult = extractCompleteBlocks(innerContent);
+      
+      if (innerResult.length > 0) {
+        const prefix = tagStart > lastEnd ? html.slice(lastEnd, tagStart) : "";
+        result += prefix + match[0] + innerResult;
+        lastEnd = contentStart + innerResult.length;
+      }
       break;
     }
-    
-    const blockEnd = closingPos + endTag.length;
-    
-    if (semanticTags.includes(tagName)) {
-      validEndPos = blockEnd;
-      pos = blockEnd;
-      continue;
-    }
-    
-    if (tagName === 'div') {
-      const className = el.className || '';
-      const hasBlockClass = blockClasses.some(cls => className.toLowerCase().includes(cls));
-      const hasEnoughContent = el.textContent && el.textContent.trim().length > 50;
-      
-      if (hasBlockClass || hasEnoughContent) {
-        validEndPos = blockEnd;
-      }
-    }
-    
-    pos = blockEnd;
   }
   
-  if (validEndPos > 0) {
-    return html.slice(0, validEndPos);
-  }
-  
-  return "";
+  return result;
 }
 
 interface DynamicContentProps {
