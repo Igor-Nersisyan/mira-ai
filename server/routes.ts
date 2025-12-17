@@ -140,9 +140,11 @@ function buildHtmlSystemPrompt(): string {
 
 ЗАПРЕЩЁННЫЕ ЦВЕТА И ПАТТЕРНЫ:
 - НИКОГДА не используй фиолетовый (#8b5cf6, #a78bfa, #7c3aed, purple, violet)!
+- НИКОГДА НЕ ОБОРАЧИВАЙ весь контент в div с background! Страница уже тёмная!
 - НИКОГДА не создавай вложенные тёмные блоки внутри карточек!
 - Карточки должны быть ПЛОСКИМИ — один background: #1e293b, без внутренних подложек
 - Если нужен список внутри карточки — просто текст, НЕ оборачивай в div с background
+- Внешний div должен быть БЕЗ background, только для layout!
 
 ЦВЕТА ТЕКСТА (КРИТИЧНО — ЧИТАЕМОСТЬ!):
 - Заголовки: #ffffff (белый)
@@ -205,10 +207,10 @@ HOVER-ЭФФЕКТЫ (ОБЯЗАТЕЛЬНО!):
 .air-img:hover { transform: scale(1.02); }
 </style>
 
-<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; padding: 32px; border-radius: 24px;">
+<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
 
   <!-- HERO -->
-  <div style="text-align: center; padding: 48px 24px; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 20px; margin-bottom: 32px; border: 1px solid #334155;">
+  <div style="text-align: center; padding: 48px 24px; background: #1e293b; border-radius: 20px; margin-bottom: 32px; border: 1px solid #334155;">
     <div style="font-size: 14px; font-weight: 600; color: #60a5fa; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px;">AI-РЕКРУТЕР НОВОГО ПОКОЛЕНИЯ</div>
     <h1 style="font-size: 42px; font-weight: 800; color: #ffffff; margin: 0 0 24px 0; line-height: 1.2;">Нанимайте в 5 раз дешевле<br/>и быстрее с AIR Mira</h1>
     <p style="font-size: 18px; color: #94a3b8; max-width: 600px; margin: 0 auto 32px;">Первый в России AI-рекрутер, который ищет кандидатов, звонит и проводит собеседования 24/7</p>
@@ -256,18 +258,18 @@ HOVER-ЭФФЕКТЫ (ОБЯЗАТЕЛЬНО!):
   </div>
 
   <!-- СКРИНШОТЫ ИНТЕРФЕЙСА -->
-  <div style="background: #1e293b; border-radius: 20px; padding: 40px; border: 1px solid #334155;">
+  <div style="margin-top: 32px;">
     <h2 style="font-size: 24px; font-weight: 700; margin: 0 0 8px 0; text-align: center; color: #ffffff;">Интерфейс платформы</h2>
     <p style="font-size: 14px; color: #94a3b8; text-align: center; margin: 0 0 32px 0;">Всё управление наймом в одном окне</p>
     <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
-      <div class="air-card" style="background: #0f172a; border-radius: 16px; overflow: hidden; border: 1px solid #334155;">
+      <div class="air-card" style="background: #1e293b; border-radius: 16px; overflow: hidden; border: 1px solid #334155;">
         <img src="/assets/candidates_list.png" class="air-img" style="width: 100%; display: block;" alt="Список кандидатов"/>
         <div style="padding: 16px;">
           <div style="font-size: 14px; font-weight: 600; color: #ffffff;">Список кандидатов</div>
           <div style="font-size: 12px; color: #94a3b8;">Все отклики с оценками</div>
         </div>
       </div>
-      <div class="air-card" style="background: #0f172a; border-radius: 16px; overflow: hidden; border: 1px solid #334155;">
+      <div class="air-card" style="background: #1e293b; border-radius: 16px; overflow: hidden; border: 1px solid #334155;">
         <img src="/assets/candidate_card.png" class="air-img" style="width: 100%; display: block;" alt="Карточка кандидата"/>
         <div style="padding: 16px;">
           <div style="font-size: 14px; font-weight: 600; color: #ffffff;">Карточка кандидата</div>
@@ -290,7 +292,7 @@ HOVER-ЭФФЕКТЫ (ОБЯЗАТЕЛЬНО!):
 .air-btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
 </style>
 
-<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; padding: 32px; border-radius: 24px;">
+<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
 
   <!-- ЗАГОЛОВОК -->
   <div style="text-align: center; margin-bottom: 32px;">
@@ -401,7 +403,7 @@ HOVER-ЭФФЕКТЫ (ОБЯЗАТЕЛЬНО!):
 .air-img:hover { transform: scale(1.02); }
 </style>
 
-<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; padding: 32px; border-radius: 24px;">
+<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
 
   <div style="text-align: center; margin-bottom: 32px;">
     <h2 style="font-size: 28px; font-weight: 800; color: #ffffff; margin: 0 0 12px 0;">Аналитика и отчёты</h2>
