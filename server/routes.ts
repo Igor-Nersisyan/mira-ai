@@ -189,10 +189,39 @@ SHOWCASES:
 - Staggered/offset расположение
 - Floating decorations (круги, линии)
 
-ФОНОВЫЕ ПАТТЕРНЫ:
-- Сетка: background-image: linear-gradient(rgba(255,139,54,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,139,54,0.1) 1px, transparent 1px); background-size: 50px 50px;
-- Точки: radial-gradient(circle, rgba(255,139,54,0.2) 1px, transparent 1px)
-- Noise texture для глубины
+АНИМИРОВАННЫЕ ФОНЫ (ОБЯЗАТЕЛЬНО! Фон должен ЖИТЬ!):
+
+AURORA/MESH эффект (переливающийся градиент):
+<style>
+@keyframes aurora { 
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+</style>
+background: linear-gradient(-45deg, #1A1A1A, #2D8CFF20, #FF8B3620, #1A1A1A);
+background-size: 400% 400%;
+animation: aurora 15s ease infinite;
+
+ПЛАВАЮЩИЕ BLOB-ЭЛЕМЕНТЫ (добавляй 2-3 штуки на фон):
+<div style="position: absolute; top: 10%; right: 20%; width: 300px; height: 300px; 
+  background: radial-gradient(circle, rgba(255,139,54,0.3), transparent 70%);
+  filter: blur(60px); animation: float 8s ease-in-out infinite;"></div>
+<div style="position: absolute; bottom: 20%; left: 10%; width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(45,140,255,0.2), transparent 70%);
+  filter: blur(80px); animation: float 12s ease-in-out infinite reverse;"></div>
+
+ПУЛЬСИРУЮЩЕЕ СВЕЧЕНИЕ:
+@keyframes pulse-glow { 0%,100% { opacity: 0.3; } 50% { opacity: 0.6; } }
+animation: pulse-glow 4s ease-in-out infinite;
+
+СЕТКА С ГРАДИЕНТОМ:
+background-image: 
+  linear-gradient(rgba(255,139,54,0.05) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(255,139,54,0.05) 1px, transparent 1px);
+background-size: 60px 60px;
+
+ВАЖНО: Каждая секция должна иметь ЖИВОЙ фон — анимированный градиент или плавающие элементы!
 
 ═══════════════════════════════════════════════════════════
 КОГДА ГЕНЕРИРОВАТЬ:
