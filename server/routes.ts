@@ -288,6 +288,76 @@ Background:
 Если генерация не нужна — верни ПУСТУЮ СТРОКУ.`;
 }
 
+const MAX_RETRIES = 3;
+const RETRY_DELAY_MS = 1000;
+
+function logError(context: string, error: unknown, attempt?: number) {
+  const timestamp = new Date().toISOString();
+  const attemptInfo = attempt !== undefined ? ` [Attempt ${attempt}/${MAX_RETRIES}]` : '';
+  const errorMessage = error instanceof Error ? error.message : String(error);
+  const errorStack = error instanceof Error ? error.stack : undefined;
+  
+  console.error(`[${timestamp}] ${context}${attemptInfo}:`);
+  console.error(`  Message: ${errorMessage}`);
+  if (errorStack) {
+    console.error(`  Stack: ${errorStack}`);
+  }
+}
+
+async function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function* streamOpenRouterChatWithRetry(messages: Message[], systemPrompt: string): AsyncGenerator<string> {
+  let lastError: Error | null = null;
+  
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      console.log(`[${new Date().toISOString()}] Chat request attempt ${attempt}/${MAX_RETRIES}`);
+      
+      for await (const chunk of streamOpenRouterChat(messages, systemPrompt)) {
+        yield chunk;
+      }
+      return;
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+      logError("Chat stream error", error, attempt);
+      
+      if (attempt < MAX_RETRIES) {
+        console.log(`[${new Date().toISOString()}] Retrying chat in ${RETRY_DELAY_MS}ms...`);
+        await sleep(RETRY_DELAY_MS);
+      }
+    }
+  }
+  
+  throw lastError || new Error("All retry attempts failed");
+}
+
+async function* streamOpenRouterHtmlWithRetry(context: string, userMessage: string, currentHtml: string | null): AsyncGenerator<string> {
+  let lastError: Error | null = null;
+  
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      console.log(`[${new Date().toISOString()}] HTML request attempt ${attempt}/${MAX_RETRIES}`);
+      
+      for await (const chunk of streamOpenRouterHtml(context, userMessage, currentHtml)) {
+        yield chunk;
+      }
+      return;
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+      logError("HTML stream error", error, attempt);
+      
+      if (attempt < MAX_RETRIES) {
+        console.log(`[${new Date().toISOString()}] Retrying HTML in ${RETRY_DELAY_MS}ms...`);
+        await sleep(RETRY_DELAY_MS);
+      }
+    }
+  }
+  
+  throw lastError || new Error("All retry attempts failed");
+}
+
 async function* streamOpenRouterChat(messages: Message[], systemPrompt: string): AsyncGenerator<string> {
   if (!OPENROUTER_API_KEY) {
     throw new Error("OPENROUTER_API_KEY is not configured");
@@ -320,13 +390,13 @@ async function* streamOpenRouterChat(messages: Message[], systemPrompt: string):
 
   if (!response.ok) {
     const errorText = await response.text();
-    console.error("OpenRouter error:", errorText);
-    throw new Error(`OpenRouter API error: ${response.status}`);
+    console.error(`[${new Date().toISOString()}] OpenRouter Chat API error (${response.status}):`, errorText);
+    throw new Error(`OpenRouter API error: ${response.status} - ${errorText.slice(0, 200)}`);
   }
 
   const reader = response.body?.getReader();
   if (!reader) {
-    throw new Error("No response body");
+    throw new Error("No response body from OpenRouter");
   }
 
   const decoder = new TextDecoder();
@@ -402,13 +472,13 @@ async function* streamOpenRouterHtml(context: string, userMessage: string, curre
 
   if (!response.ok) {
     const errorText = await response.text();
-    console.error("OpenRouter HTML error:", errorText);
-    throw new Error(`OpenRouter API error: ${response.status}`);
+    console.error(`[${new Date().toISOString()}] OpenRouter HTML API error (${response.status}):`, errorText);
+    throw new Error(`OpenRouter API error: ${response.status} - ${errorText.slice(0, 200)}`);
   }
 
   const reader = response.body?.getReader();
   if (!reader) {
-    throw new Error("No response body");
+    throw new Error("No response body from OpenRouter");
   }
 
   const decoder = new TextDecoder();
@@ -495,7 +565,7 @@ export async function registerRoutes(
 
       let fullMessage = "";
 
-      for await (const chunk of streamOpenRouterChat(messages, chatSystemPrompt)) {
+      for await (const chunk of streamOpenRouterChatWithRetry(messages, chatSystemPrompt)) {
         fullMessage += chunk;
         res.write(`data: ${JSON.stringify({ type: "chat_chunk", content: chunk })}\n\n`);
       }
@@ -503,7 +573,7 @@ export async function registerRoutes(
       res.write(`data: ${JSON.stringify({ type: "chat_end", fullMessage })}\n\n`);
       res.end();
     } catch (error) {
-      console.error("Chat stream error:", error);
+      logError("Chat stream final error (all retries failed)", error);
       res.write(`data: ${JSON.stringify({ type: "error", message: error instanceof Error ? error.message : "Internal server error" })}\n\n`);
       res.end();
     }
@@ -534,7 +604,7 @@ export async function registerRoutes(
 
       let fullHtml = "";
 
-      for await (const chunk of streamOpenRouterHtml(conversationContext, lastUserMessage, currentHtml || null)) {
+      for await (const chunk of streamOpenRouterHtmlWithRetry(conversationContext, lastUserMessage, currentHtml || null)) {
         fullHtml += chunk;
         res.write(`data: ${JSON.stringify({ type: "html_chunk", content: chunk })}\n\n`);
       }
@@ -545,7 +615,7 @@ export async function registerRoutes(
       res.write(`data: ${JSON.stringify({ type: "html_end", fullHtml: finalHtml })}\n\n`);
       res.end();
     } catch (error) {
-      console.error("HTML stream error:", error);
+      logError("HTML stream final error (all retries failed)", error);
       res.write(`data: ${JSON.stringify({ type: "error", message: error instanceof Error ? error.message : "Internal server error" })}\n\n`);
       res.end();
     }
@@ -572,13 +642,13 @@ export async function registerRoutes(
       }
 
       let fullMessage = "";
-      for await (const chunk of streamOpenRouterChat(messages, chatSystemPrompt)) {
+      for await (const chunk of streamOpenRouterChatWithRetry(messages, chatSystemPrompt)) {
         fullMessage += chunk;
       }
 
       return res.json({ message: fullMessage, html: null });
     } catch (error) {
-      console.error("Chat error:", error);
+      logError("Chat API error (all retries failed)", error);
       return res.status(500).json({
         success: false,
         error: error instanceof Error ? error.message : "Internal server error",
