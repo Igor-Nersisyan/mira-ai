@@ -6,30 +6,66 @@ import morphdom from "morphdom";
 function extractCompleteBlocks(html: string): string {
   if (!html || html.trim().length === 0) return "";
   
-  const sectionEndPatterns = [
-    /<\/section>/gi,
-    /<\/article>/gi,
-    /<\/header>/gi,
-    /<\/footer>/gi,
-    /<\/nav>/gi,
-    /<\/aside>/gi,
-    /<\/main>/gi,
-  ];
+  const semanticTags = ['section', 'article', 'header', 'footer', 'nav', 'aside', 'main'];
+  const blockClasses = ['hero', 'grid', 'metrics', 'showcase', 'gallery', 'features', 'stats', 'cards', 'benefits', 'testimonials', 'cta', 'pricing', 'team', 'faq', 'contact', 'about', 'services', 'portfolio', 'luxury-canvas'];
   
-  let lastSectionEnd = -1;
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = html;
   
-  for (const pattern of sectionEndPatterns) {
-    let match;
-    while ((match = pattern.exec(html)) !== null) {
-      const endPos = match.index + match[0].length;
-      if (endPos > lastSectionEnd) {
-        lastSectionEnd = endPos;
+  let validEndPos = 0;
+  let pos = 0;
+  
+  for (let i = 0; i < tempDiv.childNodes.length; i++) {
+    const node = tempDiv.childNodes[i];
+    
+    if (node.nodeType === Node.TEXT_NODE) {
+      const textContent = node.textContent || '';
+      pos += textContent.length;
+      continue;
+    }
+    
+    if (node.nodeType !== Node.ELEMENT_NODE) continue;
+    
+    const el = node as Element;
+    const tagName = el.tagName.toLowerCase();
+    const outerHtml = el.outerHTML;
+    const startInOriginal = html.indexOf(outerHtml, pos);
+    
+    if (startInOriginal === -1) {
+      pos += outerHtml.length;
+      continue;
+    }
+    
+    const endTag = `</${tagName}>`;
+    const closingPos = html.indexOf(endTag, startInOriginal);
+    
+    if (closingPos === -1) {
+      break;
+    }
+    
+    const blockEnd = closingPos + endTag.length;
+    
+    if (semanticTags.includes(tagName)) {
+      validEndPos = blockEnd;
+      pos = blockEnd;
+      continue;
+    }
+    
+    if (tagName === 'div') {
+      const className = el.className || '';
+      const hasBlockClass = blockClasses.some(cls => className.toLowerCase().includes(cls));
+      const hasEnoughContent = el.textContent && el.textContent.trim().length > 50;
+      
+      if (hasBlockClass || hasEnoughContent) {
+        validEndPos = blockEnd;
       }
     }
+    
+    pos = blockEnd;
   }
   
-  if (lastSectionEnd > 0) {
-    return html.slice(0, lastSectionEnd);
+  if (validEndPos > 0) {
+    return html.slice(0, validEndPos);
   }
   
   return "";
