@@ -6,52 +6,45 @@ import morphdom from "morphdom";
 function extractCompleteBlocks(html: string): string {
   if (!html || html.trim().length === 0) return "";
   
-  const trimmed = html.trim();
+  const sectionEndPatterns = [
+    /<\/section>/gi,
+    /<\/article>/gi,
+    /<\/header>/gi,
+    /<\/footer>/gi,
+    /<\/nav>/gi,
+    /<\/aside>/gi,
+    /<\/main>/gi,
+  ];
   
-  const closeTagPattern = /<\/[a-zA-Z][a-zA-Z0-9]*\s*>/g;
-  let lastCompleteEnd = 0;
-  let match;
+  let lastSectionEnd = -1;
   
-  while ((match = closeTagPattern.exec(trimmed)) !== null) {
-    const endPos = match.index + match[0].length;
-    const substring = trimmed.slice(0, endPos);
-    
-    if (isBalanced(substring)) {
-      lastCompleteEnd = endPos;
-    }
-  }
-  
-  if (lastCompleteEnd === 0) return "";
-  
-  return trimmed.slice(0, lastCompleteEnd);
-}
-
-function isBalanced(html: string): boolean {
-  const tagStack: string[] = [];
-  const selfClosing = new Set(['img', 'br', 'hr', 'input', 'meta', 'link', 'area', 'base', 'col', 'embed', 'param', 'source', 'track', 'wbr']);
-  
-  const tagPattern = /<\/?([a-zA-Z][a-zA-Z0-9]*)[^>]*\/?>/g;
-  let match;
-  
-  while ((match = tagPattern.exec(html)) !== null) {
-    const fullTag = match[0];
-    const tagName = match[1].toLowerCase();
-    
-    if (selfClosing.has(tagName) || fullTag.endsWith('/>')) {
-      continue;
-    }
-    
-    if (fullTag.startsWith('</')) {
-      if (tagStack.length === 0 || tagStack[tagStack.length - 1] !== tagName) {
-        return false;
+  for (const pattern of sectionEndPatterns) {
+    let match;
+    while ((match = pattern.exec(html)) !== null) {
+      const endPos = match.index + match[0].length;
+      if (endPos > lastSectionEnd) {
+        lastSectionEnd = endPos;
       }
-      tagStack.pop();
-    } else {
-      tagStack.push(tagName);
     }
   }
   
-  return tagStack.length === 0;
+  if (lastSectionEnd > 0) {
+    return html.slice(0, lastSectionEnd);
+  }
+  
+  const divEndPattern = /<\/div>/gi;
+  let lastDivEnd = -1;
+  let match;
+  
+  while ((match = divEndPattern.exec(html)) !== null) {
+    lastDivEnd = match.index + match[0].length;
+  }
+  
+  if (lastDivEnd > 0) {
+    return html.slice(0, lastDivEnd);
+  }
+  
+  return "";
 }
 
 interface DynamicContentProps {
