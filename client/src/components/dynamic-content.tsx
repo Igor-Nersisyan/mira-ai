@@ -465,6 +465,15 @@ export function DynamicContent({
       const wrapper = document.createElement('div');
       wrapper.innerHTML = displayHtml;
       
+      wrapper.querySelectorAll('section, article, header, footer, nav, aside, main, div').forEach((el) => {
+        const htmlEl = el as HTMLElement;
+        const key = htmlEl.outerHTML.substring(0, 50);
+        if (!blockLengthsRef.current.has(key)) {
+          htmlEl.classList.add('stream-new-block');
+          blockLengthsRef.current.set(key, 1);
+        }
+      });
+      
       morphdom(contentRef.current, wrapper, {
         childrenOnly: true,
         onBeforeElUpdated: (fromEl, toEl) => {
@@ -476,40 +485,6 @@ export function DynamicContent({
       });
       
       lastHtmlRef.current = displayHtml;
-      
-      const children = Array.from(contentRef.current.children);
-      let animationIndex = 0;
-      
-      children.forEach((el, index) => {
-        const htmlEl = el as HTMLElement;
-        
-        if (!htmlEl.dataset.streamId) {
-          htmlEl.dataset.streamId = `stream-${Date.now()}-${index}`;
-        }
-        
-        const streamId = htmlEl.dataset.streamId;
-        const currentLength = htmlEl.innerHTML.length;
-        const prevLength = blockLengthsRef.current.get(streamId) || 0;
-        
-        const isNewOrGrown = prevLength === 0 || currentLength > prevLength * 1.1;
-        
-        if (isNewOrGrown && !htmlEl.classList.contains('stream-visible')) {
-          htmlEl.classList.add('stream-fade-in');
-          
-          setTimeout(() => {
-            htmlEl.classList.add('stream-visible');
-            
-            setTimeout(() => {
-              htmlEl.classList.remove('stream-fade-in');
-              htmlEl.classList.remove('stream-visible');
-            }, 700);
-          }, animationIndex * 100);
-          
-          animationIndex++;
-        }
-        
-        blockLengthsRef.current.set(streamId, currentLength);
-      });
       
       sanitizeStyles(contentRef.current);
       
