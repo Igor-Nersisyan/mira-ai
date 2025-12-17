@@ -129,29 +129,37 @@ function buildHtmlSystemPrompt(): string {
 ЦЕЛЬ: Создавать богатый, впечатляющий HTML-контент в ТЁМНОЙ ТЕМЕ, который ДОПОЛНЯЕТ текстовый ответ в чате.
 
 ═══════════════════════════════════════════════════════════
-ДИЗАЙН-СИСТЕМА (ТЁМНАЯ ТЕМА — ОБЯЗАТЕЛЬНО!):
+ДИЗАЙН-СИСТЕМА (СВЕТЛЫЙ ФОН СТРАНИЦЫ + ТЁМНЫЕ КАРТОЧКИ):
 ═══════════════════════════════════════════════════════════
 
+ВАЖНО! ФОН СТРАНИЦЫ СВЕТЛЫЙ! Контент отображается на светлом фоне!
+
 ЦВЕТА ФОНОВ:
-- Основной фон: #0f172a (тёмно-синий)
-- Карточки: #1e293b (чуть светлее)
+- Страница: СВЕТЛЫЙ фон (не добавляй свой background!)
+- Карточки: #1e293b (тёмно-синий)
 - Акцентный: #3b82f6 (синий)
 - Акцентный hover: #2563eb (темнее синий)
 
 ЗАПРЕЩЁННЫЕ ЦВЕТА И ПАТТЕРНЫ:
 - НИКОГДА не используй фиолетовый (#8b5cf6, #a78bfa, #7c3aed, purple, violet)!
-- НИКОГДА НЕ ОБОРАЧИВАЙ весь контент в div с background! Страница уже тёмная!
+- НИКОГДА НЕ ОБОРАЧИВАЙ весь контент в div с background!
 - НИКОГДА не создавай вложенные тёмные блоки внутри карточек!
 - Карточки должны быть ПЛОСКИМИ — один background: #1e293b, без внутренних подложек
-- Если нужен список внутри карточки — просто текст, НЕ оборачивай в div с background
 - Внешний div должен быть БЕЗ background, только для layout!
 
-ЦВЕТА ТЕКСТА (КРИТИЧНО — ЧИТАЕМОСТЬ!):
+ЦВЕТА ТЕКСТА (КРИТИЧНО — КОНТЕКСТ ОПРЕДЕЛЯЕТ ЦВЕТ!):
+
+ВНЕ КАРТОЧЕК (на светлом фоне страницы):
+- Заголовки: #0f172a (тёмный)
+- Основной текст: #1e293b (тёмный)
+- Вторичный текст: #475569 (серый)
+- Акцентный текст: #2563eb (синий)
+
+ВНУТРИ КАРТОЧЕК (на тёмном фоне #1e293b):
 - Заголовки: #ffffff (белый)
 - Основной текст: #e2e8f0 (светло-серый)
 - Вторичный текст: #94a3b8 (серый)
 - Акцентный текст: #60a5fa (голубой)
-- НИКОГДА не используй тёмный текст (#1f2937, #374151) на тёмном фоне!
 
 ГРАНИЦЫ И ТЕНИ:
 - Границы карточек: border: 1px solid #334155
@@ -209,7 +217,7 @@ HOVER-ЭФФЕКТЫ (ОБЯЗАТЕЛЬНО!):
 
 <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
 
-  <!-- HERO -->
+  <!-- HERO (карточка с тёмным фоном) -->
   <div style="text-align: center; padding: 48px 24px; background: #1e293b; border-radius: 20px; margin-bottom: 32px; border: 1px solid #334155;">
     <div style="font-size: 14px; font-weight: 600; color: #60a5fa; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px;">AI-РЕКРУТЕР НОВОГО ПОКОЛЕНИЯ</div>
     <h1 style="font-size: 42px; font-weight: 800; color: #ffffff; margin: 0 0 24px 0; line-height: 1.2;">Нанимайте в 5 раз дешевле<br/>и быстрее с AIR Mira</h1>
@@ -257,10 +265,10 @@ HOVER-ЭФФЕКТЫ (ОБЯЗАТЕЛЬНО!):
     </div>
   </div>
 
-  <!-- СКРИНШОТЫ ИНТЕРФЕЙСА -->
+  <!-- СКРИНШОТЫ ИНТЕРФЕЙСА (заголовок вне карточки — тёмный текст!) -->
   <div style="margin-top: 32px;">
-    <h2 style="font-size: 24px; font-weight: 700; margin: 0 0 8px 0; text-align: center; color: #ffffff;">Интерфейс платформы</h2>
-    <p style="font-size: 14px; color: #94a3b8; text-align: center; margin: 0 0 32px 0;">Всё управление наймом в одном окне</p>
+    <h2 style="font-size: 24px; font-weight: 700; margin: 0 0 8px 0; text-align: center; color: #0f172a;">Интерфейс платформы</h2>
+    <p style="font-size: 14px; color: #475569; text-align: center; margin: 0 0 32px 0;">Всё управление наймом в одном окне</p>
     <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
       <div class="air-card" style="background: #1e293b; border-radius: 16px; overflow: hidden; border: 1px solid #334155;">
         <img src="/assets/candidates_list.png" class="air-img" style="width: 100%; display: block;" alt="Список кандидатов"/>
@@ -294,10 +302,10 @@ HOVER-ЭФФЕКТЫ (ОБЯЗАТЕЛЬНО!):
 
 <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
 
-  <!-- ЗАГОЛОВОК -->
+  <!-- ЗАГОЛОВОК (вне карточки — тёмный текст!) -->
   <div style="text-align: center; margin-bottom: 32px;">
-    <h2 style="font-size: 32px; font-weight: 800; color: #ffffff; margin: 0 0 12px 0;">Тарифы AIR Mira</h2>
-    <p style="font-size: 16px; color: #94a3b8; margin: 0;">Гибкие планы под любой объём найма</p>
+    <h2 style="font-size: 32px; font-weight: 800; color: #0f172a; margin: 0 0 12px 0;">Тарифы AIR Mira</h2>
+    <p style="font-size: 16px; color: #475569; margin: 0;">Гибкие планы под любой объём найма</p>
   </div>
 
   <!-- ТАРИФНЫЕ КАРТОЧКИ -->
@@ -405,9 +413,10 @@ HOVER-ЭФФЕКТЫ (ОБЯЗАТЕЛЬНО!):
 
 <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
 
+  <!-- ЗАГОЛОВОК (вне карточки — тёмный текст!) -->
   <div style="text-align: center; margin-bottom: 32px;">
-    <h2 style="font-size: 28px; font-weight: 800; color: #ffffff; margin: 0 0 12px 0;">Аналитика и отчёты</h2>
-    <p style="font-size: 16px; color: #94a3b8; margin: 0;">Полная прозрачность на каждом этапе найма</p>
+    <h2 style="font-size: 28px; font-weight: 800; color: #0f172a; margin: 0 0 12px 0;">Аналитика и отчёты</h2>
+    <p style="font-size: 16px; color: #475569; margin: 0;">Полная прозрачность на каждом этапе найма</p>
   </div>
 
   <!-- Галерея скриншотов -->
