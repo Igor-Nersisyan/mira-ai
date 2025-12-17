@@ -497,14 +497,16 @@ export function DynamicContent({
           
           if (!renderedBlocksRef.current.has(blockId)) {
             renderedBlocksRef.current.add(blockId);
-            htmlEl.style.opacity = '0';
-            htmlEl.style.transform = 'translateY(12px)';
+            htmlEl.classList.add('stream-block-enter');
             
             setTimeout(() => {
-              htmlEl.style.transition = 'opacity 0.4s ease-out, transform 0.4s ease-out';
-              htmlEl.style.opacity = '1';
-              htmlEl.style.transform = 'translateY(0)';
-            }, index * 50);
+              htmlEl.classList.remove('stream-block-enter');
+              htmlEl.classList.add('stream-block-enter-active');
+              
+              setTimeout(() => {
+                htmlEl.classList.remove('stream-block-enter-active');
+              }, 600);
+            }, index * 80);
           }
         });
       });

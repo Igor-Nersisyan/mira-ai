@@ -220,12 +220,35 @@
 @keyframes block-fade-in {
   0% {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(12px);
   }
   100% {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Staged animation class - element starts invisible */
+.stream-block-enter {
+  opacity: 0 !important;
+  transform: translateY(12px) !important;
+}
+
+/* Active animation class - triggers smooth transition */
+.stream-block-enter-active {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out !important;
+}
+
+/* Animate ALL elements inside newly added blocks */
+.stream-block-enter * {
+  opacity: 0;
+}
+
+.stream-block-enter-active * {
+  opacity: 1;
+  transition: opacity 0.5s ease-out !important;
 }
 
 .dynamic-html-content > section,
@@ -236,7 +259,7 @@
 .dynamic-html-content > aside,
 .dynamic-html-content > main,
 .dynamic-html-content > div {
-  animation: block-fade-in 0.4s ease-out forwards;
+  animation: block-fade-in 0.5s ease-out forwards;
 }
 
 /* Base styling - inherits theme */
