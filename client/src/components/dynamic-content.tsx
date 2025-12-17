@@ -10,6 +10,8 @@ function extractCompleteBlocks(html: string): string {
   const completeBlocks: string[] = [];
   let pos = 0;
   
+  const selfClosingTags = ['img', 'br', 'hr', 'input', 'meta', 'link', 'area', 'base', 'col', 'embed', 'param', 'source', 'track', 'wbr'];
+  
   while (pos < trimmed.length) {
     while (pos < trimmed.length && /\s/.test(trimmed[pos])) {
       pos++;
@@ -19,9 +21,7 @@ function extractCompleteBlocks(html: string): string {
     
     if (trimmed[pos] !== '<') {
       const nextTagStart = trimmed.indexOf('<', pos);
-      if (nextTagStart === -1) {
-        break;
-      }
+      if (nextTagStart === -1) break;
       pos = nextTagStart;
       continue;
     }
@@ -33,7 +33,6 @@ function extractCompleteBlocks(html: string): string {
     }
     
     const tagName = tagNameMatch[1].toLowerCase();
-    const selfClosingTags = ['img', 'br', 'hr', 'input', 'meta', 'link', 'area', 'base', 'col', 'embed', 'param', 'source', 'track', 'wbr'];
     
     if (selfClosingTags.includes(tagName)) {
       const tagEnd = trimmed.indexOf('>', pos);
@@ -43,47 +42,37 @@ function extractCompleteBlocks(html: string): string {
       continue;
     }
     
-    let depth = 0;
-    let searchPos = pos;
-    let blockEnd = -1;
+    const closeTag = `</${tagName}>`;
+    let depth = 1;
+    let searchPos = pos + tagNameMatch[0].length;
     
-    while (searchPos < trimmed.length) {
-      const openTagRegex = new RegExp(`<${tagName}(?:\\s|>|/>)`, 'gi');
-      const closeTagRegex = new RegExp(`</${tagName}\\s*>`, 'gi');
+    while (searchPos < trimmed.length && depth > 0) {
+      const openPattern = new RegExp(`<${tagName}(?:\\s[^>]*>|>)`, 'i');
+      const remaining = trimmed.slice(searchPos);
       
-      openTagRegex.lastIndex = searchPos;
-      closeTagRegex.lastIndex = searchPos;
+      const openMatch = remaining.match(openPattern);
+      const closeIndex = remaining.toLowerCase().indexOf(closeTag.toLowerCase());
       
-      const nextOpen = trimmed.slice(searchPos).search(new RegExp(`<${tagName}(?:\\s|>)`, 'i'));
-      const nextClose = trimmed.slice(searchPos).search(new RegExp(`</${tagName}\\s*>`, 'i'));
+      if (closeIndex === -1) break;
       
-      if (nextClose === -1) {
-        break;
-      }
+      const openIndex = openMatch ? remaining.indexOf(openMatch[0]) : -1;
       
-      if (nextOpen !== -1 && nextOpen < nextClose) {
+      if (openIndex !== -1 && openIndex < closeIndex) {
         depth++;
-        searchPos = searchPos + nextOpen + 1;
+        searchPos += openIndex + openMatch![0].length;
       } else {
+        depth--;
         if (depth === 0) {
-          const closeMatch = trimmed.slice(searchPos).match(new RegExp(`</${tagName}\\s*>`, 'i'));
-          if (closeMatch && closeMatch.index !== undefined) {
-            blockEnd = searchPos + closeMatch.index + closeMatch[0].length;
-          }
-          break;
+          const blockEnd = searchPos + closeIndex + closeTag.length;
+          completeBlocks.push(trimmed.slice(pos, blockEnd));
+          pos = blockEnd;
         } else {
-          depth--;
-          searchPos = searchPos + nextClose + 1;
+          searchPos += closeIndex + closeTag.length;
         }
       }
     }
     
-    if (blockEnd !== -1) {
-      completeBlocks.push(trimmed.slice(pos, blockEnd));
-      pos = blockEnd;
-    } else {
-      break;
-    }
+    if (depth > 0) break;
   }
   
   return completeBlocks.join("\n");
@@ -323,6 +312,47 @@ function getEffectiveBackground(element: HTMLElement): { r: number; g: number; b
   return result;
 }
 
+const emojiRegex = /(\p{Emoji_Presentation}|\p{Extended_Pictographic})/gu;
+
+function wrapEmojisInElement(element: HTMLElement) {
+  const walker = document.createTreeWalker(
+    element,
+    NodeFilter.SHOW_TEXT,
+    null
+  );
+  
+  const textNodes: Text[] = [];
+  let node: Node | null;
+  while ((node = walker.nextNode())) {
+    if (node.textContent && emojiRegex.test(node.textContent)) {
+      textNodes.push(node as Text);
+    }
+  }
+  
+  textNodes.forEach((textNode) => {
+    const text = textNode.textContent || '';
+    const parts = text.split(emojiRegex);
+    
+    if (parts.length > 1) {
+      const fragment = document.createDocumentFragment();
+      parts.forEach((part) => {
+        if (emojiRegex.test(part)) {
+          const span = document.createElement('span');
+          span.className = 'emoji';
+          span.style.cssText = 'color: initial; font-style: normal;';
+          span.textContent = part;
+          fragment.appendChild(span);
+        } else if (part) {
+          fragment.appendChild(document.createTextNode(part));
+        }
+        emojiRegex.lastIndex = 0;
+      });
+      textNode.parentNode?.replaceChild(fragment, textNode);
+    }
+    emojiRegex.lastIndex = 0;
+  });
+}
+
 function sanitizeStyles(container: HTMLElement) {
   const allElements = container.querySelectorAll('*');
   
@@ -355,6 +385,8 @@ function sanitizeStyles(container: HTMLElement) {
       }
     }
   });
+  
+  wrapEmojisInElement(container);
 }
 
 function ImageLightbox({ src, onClose }: { src: string; onClose: () => void }) {

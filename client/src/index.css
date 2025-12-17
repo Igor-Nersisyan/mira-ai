@@ -221,6 +221,29 @@
   color: hsl(var(--foreground));
 }
 
+/* Emojis should render in their original colors, not inherit text color */
+.dynamic-html-content h1,
+.dynamic-html-content h2,
+.dynamic-html-content h3,
+.dynamic-html-content h4,
+.dynamic-html-content h5,
+.dynamic-html-content h6,
+.dynamic-html-content p,
+.dynamic-html-content span,
+.dynamic-html-content div,
+.dynamic-html-content a,
+.dynamic-html-content li {
+  color: inherit;
+}
+
+/* Emoji spans - use color emoji font */
+.dynamic-html-content .emoji,
+.dynamic-html-content [data-emoji] {
+  color: initial;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Twemoji Mozilla", sans-serif;
+  font-style: normal;
+}
+
 /* ============================================================================
    GRADIENT UTILITIES - Brand Colors
    ============================================================================ */
