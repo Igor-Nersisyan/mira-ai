@@ -440,15 +440,17 @@ export function DynamicContent({
   const showDefault = !hasFinalHtml && !isStreaming && !streamingHtml;
   const prevIsStreamingRef = useRef(false);
   
-  const renderedBlocksRef = useRef<Set<string>>(new Set());
-  
   useEffect(() => {
     if (isStreaming && !prevIsStreamingRef.current) {
       lastHtmlRef.current = "";
-      renderedBlocksRef.current.clear();
+      if (contentRef.current) {
+        contentRef.current.querySelectorAll('.stream-animated').forEach(el => {
+          el.classList.remove('stream-animated');
+        });
+      }
     }
     prevIsStreamingRef.current = isStreaming;
-  }, [isStreaming]);
+  }, [isStreaming, contentRef]);
   
   const displayHtml = useMemo(() => {
     if (isStreaming && streamingHtml) {
@@ -463,10 +465,9 @@ export function DynamicContent({
     if (!contentRef.current) return;
     
     if (displayHtml && displayHtml !== lastHtmlRef.current) {
+      const prevChildCount = contentRef.current.children.length;
       const wrapper = document.createElement('div');
       wrapper.innerHTML = displayHtml;
-      
-      const newElements: Element[] = [];
       
       morphdom(contentRef.current, wrapper, {
         childrenOnly: true,
@@ -475,38 +476,30 @@ export function DynamicContent({
             return false;
           }
           return true;
-        },
-        onNodeAdded: (node) => {
-          if (node.nodeType === Node.ELEMENT_NODE) {
-            const el = node as Element;
-            const blockTags = ['section', 'article', 'header', 'footer', 'nav', 'aside', 'main', 'div'];
-            if (blockTags.includes(el.tagName.toLowerCase())) {
-              newElements.push(el);
-            }
-          }
-          return node;
         }
       });
       
+      const prevHtml = lastHtmlRef.current;
       lastHtmlRef.current = displayHtml;
       
       requestAnimationFrame(() => {
-        newElements.forEach((el, index) => {
+        const children = Array.from(contentRef.current?.children || []);
+        children.forEach((el, index) => {
           const htmlEl = el as HTMLElement;
-          const blockId = `block-${displayHtml.indexOf(el.outerHTML)}`;
+          const outerHtml = el.outerHTML;
           
-          if (!renderedBlocksRef.current.has(blockId)) {
-            renderedBlocksRef.current.add(blockId);
-            htmlEl.classList.add('stream-block-enter');
-            
-            setTimeout(() => {
-              htmlEl.classList.remove('stream-block-enter');
-              htmlEl.classList.add('stream-block-enter-active');
+          if (!prevHtml.includes(outerHtml.substring(0, Math.min(100, outerHtml.length)))) {
+            if (!htmlEl.classList.contains('stream-animated')) {
+              htmlEl.style.opacity = '0';
+              htmlEl.style.transform = 'translateY(16px)';
               
               setTimeout(() => {
-                htmlEl.classList.remove('stream-block-enter-active');
-              }, 600);
-            }, index * 80);
+                htmlEl.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
+                htmlEl.style.opacity = '1';
+                htmlEl.style.transform = 'translateY(0)';
+                htmlEl.classList.add('stream-animated');
+              }, (index - prevChildCount + 1) * 100);
+            }
           }
         });
       });
