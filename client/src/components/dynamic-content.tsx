@@ -408,12 +408,23 @@ export function DynamicContent({
   
   const hasFinalHtml = html && html.trim().length > 0;
   const showDefault = !hasFinalHtml && !isStreaming && !streamingHtml;
+  const prevIsStreamingRef = useRef(false);
+  
+  useEffect(() => {
+    if (isStreaming && !prevIsStreamingRef.current) {
+      lastHtmlRef.current = "";
+    }
+    prevIsStreamingRef.current = isStreaming;
+  }, [isStreaming]);
   
   const displayHtml = useMemo(() => {
+    if (isStreaming && streamingHtml) {
+      return extractCompleteBlocks(streamingHtml);
+    }
     if (html) return html;
     if (streamingHtml) return extractCompleteBlocks(streamingHtml);
     return "";
-  }, [html, streamingHtml]);
+  }, [html, streamingHtml, isStreaming]);
   
   useEffect(() => {
     if (!contentRef.current) return;

@@ -158,6 +158,9 @@ export default function Home() {
       const allMessages = [...messages, userMessage];
       setMessages(allMessages);
       setStreamingMessage("");
+      
+      const previousHtml = dynamicHtml;
+      setDynamicHtml(null);
 
       try {
         const context = allMessages
@@ -165,7 +168,7 @@ export default function Home() {
           .map((m) => `${m.role}: ${m.content}`)
           .join("\n");
 
-        const htmlPromise = streamHtml(context, messageText.trim(), dynamicHtml).catch(() => null);
+        const htmlPromise = streamHtml(context, messageText.trim(), previousHtml).catch(() => null);
         
         const assistantResponse = await streamChat(allMessages);
         
