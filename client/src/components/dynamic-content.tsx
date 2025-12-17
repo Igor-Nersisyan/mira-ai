@@ -6,31 +6,83 @@ import morphdom from "morphdom";
 function extractCompleteBlocks(html: string): string {
   if (!html || html.trim().length === 0) return "";
   
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(`<div>${html}</div>`, "text/html");
-  const container = doc.body.firstChild as HTMLElement;
-  
-  if (!container) return "";
-  
+  const trimmed = html.trim();
   const completeBlocks: string[] = [];
+  let pos = 0;
   
-  for (const child of Array.from(container.childNodes)) {
-    if (child.nodeType === Node.ELEMENT_NODE) {
-      const element = child as HTMLElement;
-      const outerHTML = element.outerHTML;
-      
-      const openTags = (outerHTML.match(/<[a-zA-Z][^>]*(?<!\/)\s*>/g) || []).length;
-      const closeTags = (outerHTML.match(/<\/[a-zA-Z][^>]*>/g) || []).length;
-      const selfClosing = (outerHTML.match(/<[a-zA-Z][^>]*\/\s*>/g) || []).length;
-      
-      if (openTags <= closeTags + selfClosing) {
-        completeBlocks.push(outerHTML);
+  while (pos < trimmed.length) {
+    while (pos < trimmed.length && /\s/.test(trimmed[pos])) {
+      pos++;
+    }
+    
+    if (pos >= trimmed.length) break;
+    
+    if (trimmed[pos] !== '<') {
+      const nextTagStart = trimmed.indexOf('<', pos);
+      if (nextTagStart === -1) {
+        break;
       }
-    } else if (child.nodeType === Node.TEXT_NODE) {
-      const text = child.textContent?.trim();
-      if (text) {
-        completeBlocks.push(text);
+      pos = nextTagStart;
+      continue;
+    }
+    
+    const tagNameMatch = trimmed.slice(pos).match(/^<([a-zA-Z][a-zA-Z0-9]*)/);
+    if (!tagNameMatch) {
+      pos++;
+      continue;
+    }
+    
+    const tagName = tagNameMatch[1].toLowerCase();
+    const selfClosingTags = ['img', 'br', 'hr', 'input', 'meta', 'link', 'area', 'base', 'col', 'embed', 'param', 'source', 'track', 'wbr'];
+    
+    if (selfClosingTags.includes(tagName)) {
+      const tagEnd = trimmed.indexOf('>', pos);
+      if (tagEnd === -1) break;
+      completeBlocks.push(trimmed.slice(pos, tagEnd + 1));
+      pos = tagEnd + 1;
+      continue;
+    }
+    
+    let depth = 0;
+    let searchPos = pos;
+    let blockEnd = -1;
+    
+    while (searchPos < trimmed.length) {
+      const openTagRegex = new RegExp(`<${tagName}(?:\\s|>|/>)`, 'gi');
+      const closeTagRegex = new RegExp(`</${tagName}\\s*>`, 'gi');
+      
+      openTagRegex.lastIndex = searchPos;
+      closeTagRegex.lastIndex = searchPos;
+      
+      const nextOpen = trimmed.slice(searchPos).search(new RegExp(`<${tagName}(?:\\s|>)`, 'i'));
+      const nextClose = trimmed.slice(searchPos).search(new RegExp(`</${tagName}\\s*>`, 'i'));
+      
+      if (nextClose === -1) {
+        break;
       }
+      
+      if (nextOpen !== -1 && nextOpen < nextClose) {
+        depth++;
+        searchPos = searchPos + nextOpen + 1;
+      } else {
+        if (depth === 0) {
+          const closeMatch = trimmed.slice(searchPos).match(new RegExp(`</${tagName}\\s*>`, 'i'));
+          if (closeMatch && closeMatch.index !== undefined) {
+            blockEnd = searchPos + closeMatch.index + closeMatch[0].length;
+          }
+          break;
+        } else {
+          depth--;
+          searchPos = searchPos + nextClose + 1;
+        }
+      }
+    }
+    
+    if (blockEnd !== -1) {
+      completeBlocks.push(trimmed.slice(pos, blockEnd));
+      pos = blockEnd;
+    } else {
+      break;
     }
   }
   
