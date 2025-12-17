@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { ChatPanel } from "@/components/chat-panel";
 import { DynamicContent } from "@/components/dynamic-content";
 import { HeroBlock } from "@/components/hero-block";
@@ -72,12 +72,48 @@ export default function Home() {
     }
   }, []);
 
+  const htmlBufferRef = useRef<string>("");
+  const lastUpdateTimeRef = useRef<number>(0);
+  const updateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const UPDATE_INTERVAL = 300;
+
+  useEffect(() => {
+    return () => {
+      if (updateTimeoutRef.current) {
+        clearTimeout(updateTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const streamHtml = useCallback(async (
     conversationContext: string, 
     lastUserMessage: string, 
     currentHtml: string | null
   ): Promise<string | null> => {
     setIsHtmlStreaming(true);
+    htmlBufferRef.current = "";
+    lastUpdateTimeRef.current = 0;
+
+    const flushBuffer = () => {
+      if (htmlBufferRef.current) {
+        setStreamingHtml(htmlBufferRef.current);
+        lastUpdateTimeRef.current = Date.now();
+      }
+    };
+
+    const scheduleUpdate = () => {
+      const now = Date.now();
+      const timeSinceLastUpdate = now - lastUpdateTimeRef.current;
+      
+      if (timeSinceLastUpdate >= UPDATE_INTERVAL) {
+        flushBuffer();
+      } else if (!updateTimeoutRef.current) {
+        updateTimeoutRef.current = setTimeout(() => {
+          updateTimeoutRef.current = null;
+          flushBuffer();
+        }, UPDATE_INTERVAL - timeSinceLastUpdate);
+      }
+    };
 
     try {
       const response = await fetch("/api/html/stream", {
@@ -117,8 +153,17 @@ export default function Home() {
               
               if (event.type === "html_chunk") {
                 fullHtml += event.content;
-                setStreamingHtml(fullHtml);
+                htmlBufferRef.current = fullHtml;
+                scheduleUpdate();
               } else if (event.type === "html_end") {
+                if (updateTimeoutRef.current) {
+                  clearTimeout(updateTimeoutRef.current);
+                  updateTimeoutRef.current = null;
+                }
+                if (htmlBufferRef.current) {
+                  setStreamingHtml(htmlBufferRef.current);
+                }
+                await new Promise(resolve => setTimeout(resolve, 100));
                 setStreamingHtml(null);
                 return event.fullHtml;
               } else if (event.type === "error") {
@@ -135,6 +180,10 @@ export default function Home() {
       setStreamingHtml(null);
       return fullHtml.trim() || null;
     } finally {
+      if (updateTimeoutRef.current) {
+        clearTimeout(updateTimeoutRef.current);
+        updateTimeoutRef.current = null;
+      }
       setIsHtmlStreaming(false);
       setStreamingHtml(null);
     }

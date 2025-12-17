@@ -440,9 +440,12 @@ export function DynamicContent({
   const showDefault = !hasFinalHtml && !isStreaming && !streamingHtml;
   const prevIsStreamingRef = useRef(false);
   
+  const renderedBlocksRef = useRef<Set<string>>(new Set());
+  
   useEffect(() => {
     if (isStreaming && !prevIsStreamingRef.current) {
       lastHtmlRef.current = "";
+      renderedBlocksRef.current.clear();
     }
     prevIsStreamingRef.current = isStreaming;
   }, [isStreaming]);
@@ -463,6 +466,8 @@ export function DynamicContent({
       const wrapper = document.createElement('div');
       wrapper.innerHTML = displayHtml;
       
+      const newElements: Element[] = [];
+      
       morphdom(contentRef.current, wrapper, {
         childrenOnly: true,
         onBeforeElUpdated: (fromEl, toEl) => {
@@ -470,10 +475,39 @@ export function DynamicContent({
             return false;
           }
           return true;
+        },
+        onNodeAdded: (node) => {
+          if (node.nodeType === Node.ELEMENT_NODE) {
+            const el = node as Element;
+            const blockTags = ['section', 'article', 'header', 'footer', 'nav', 'aside', 'main', 'div'];
+            if (blockTags.includes(el.tagName.toLowerCase())) {
+              newElements.push(el);
+            }
+          }
+          return node;
         }
       });
       
       lastHtmlRef.current = displayHtml;
+      
+      requestAnimationFrame(() => {
+        newElements.forEach((el, index) => {
+          const htmlEl = el as HTMLElement;
+          const blockId = `block-${displayHtml.indexOf(el.outerHTML)}`;
+          
+          if (!renderedBlocksRef.current.has(blockId)) {
+            renderedBlocksRef.current.add(blockId);
+            htmlEl.style.opacity = '0';
+            htmlEl.style.transform = 'translateY(12px)';
+            
+            setTimeout(() => {
+              htmlEl.style.transition = 'opacity 0.4s ease-out, transform 0.4s ease-out';
+              htmlEl.style.opacity = '1';
+              htmlEl.style.transform = 'translateY(0)';
+            }, index * 50);
+          }
+        });
+      });
       
       sanitizeStyles(contentRef.current);
       
