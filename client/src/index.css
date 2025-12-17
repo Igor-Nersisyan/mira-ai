@@ -216,50 +216,31 @@
    Premium visuals with brand colors: Orange #FF8B36, Blue #2D8CFF, Black #1A1A1A
    ============================================================================ */
 
-/* Block streaming animation - blocks fade in as they appear */
-@keyframes block-fade-in {
-  0% {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+/* Block streaming animation classes - applied dynamically via JS */
 
-/* Staged animation class - element starts invisible */
-.stream-block-enter {
+/* Initial state - invisible and shifted down */
+.stream-fade-in {
   opacity: 0 !important;
-  transform: translateY(12px) !important;
+  transform: translateY(20px) !important;
 }
 
-/* Active animation class - triggers smooth transition */
-.stream-block-enter-active {
+/* Animated state - visible with smooth transition */
+.stream-fade-in.stream-visible {
   opacity: 1 !important;
   transform: translateY(0) !important;
-  transition: opacity 0.5s ease-out, transform 0.5s ease-out !important;
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-/* Animate ALL elements inside newly added blocks */
-.stream-block-enter * {
-  opacity: 0;
+/* Also fade in all child elements */
+.stream-fade-in > * {
+  opacity: 0 !important;
+  transform: translateY(10px) !important;
 }
 
-.stream-block-enter-active * {
-  opacity: 1;
-  transition: opacity 0.5s ease-out !important;
-}
-
-.dynamic-html-content > section,
-.dynamic-html-content > article,
-.dynamic-html-content > header,
-.dynamic-html-content > footer,
-.dynamic-html-content > nav,
-.dynamic-html-content > aside,
-.dynamic-html-content > main,
-.dynamic-html-content > div {
-  animation: block-fade-in 0.5s ease-out forwards;
+.stream-fade-in.stream-visible > * {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.1s, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.1s !important;
 }
 
 /* Base styling - inherits theme */

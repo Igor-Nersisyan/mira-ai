@@ -439,18 +439,15 @@ export function DynamicContent({
   const hasFinalHtml = html && html.trim().length > 0;
   const showDefault = !hasFinalHtml && !isStreaming && !streamingHtml;
   const prevIsStreamingRef = useRef(false);
+  const blockLengthsRef = useRef<Map<string, number>>(new Map());
   
   useEffect(() => {
     if (isStreaming && !prevIsStreamingRef.current) {
       lastHtmlRef.current = "";
-      if (contentRef.current) {
-        contentRef.current.querySelectorAll('.stream-animated').forEach(el => {
-          el.classList.remove('stream-animated');
-        });
-      }
+      blockLengthsRef.current.clear();
     }
     prevIsStreamingRef.current = isStreaming;
-  }, [isStreaming, contentRef]);
+  }, [isStreaming]);
   
   const displayHtml = useMemo(() => {
     if (isStreaming && streamingHtml) {
@@ -465,7 +462,6 @@ export function DynamicContent({
     if (!contentRef.current) return;
     
     if (displayHtml && displayHtml !== lastHtmlRef.current) {
-      const prevChildCount = contentRef.current.children.length;
       const wrapper = document.createElement('div');
       wrapper.innerHTML = displayHtml;
       
@@ -479,29 +475,40 @@ export function DynamicContent({
         }
       });
       
-      const prevHtml = lastHtmlRef.current;
       lastHtmlRef.current = displayHtml;
       
-      requestAnimationFrame(() => {
-        const children = Array.from(contentRef.current?.children || []);
-        children.forEach((el, index) => {
-          const htmlEl = el as HTMLElement;
-          const outerHtml = el.outerHTML;
+      const children = Array.from(contentRef.current.children);
+      let animationIndex = 0;
+      
+      children.forEach((el, index) => {
+        const htmlEl = el as HTMLElement;
+        
+        if (!htmlEl.dataset.streamId) {
+          htmlEl.dataset.streamId = `stream-${Date.now()}-${index}`;
+        }
+        
+        const streamId = htmlEl.dataset.streamId;
+        const currentLength = htmlEl.innerHTML.length;
+        const prevLength = blockLengthsRef.current.get(streamId) || 0;
+        
+        const isNewOrGrown = prevLength === 0 || currentLength > prevLength * 1.1;
+        
+        if (isNewOrGrown && !htmlEl.classList.contains('stream-visible')) {
+          htmlEl.classList.add('stream-fade-in');
           
-          if (!prevHtml.includes(outerHtml.substring(0, Math.min(100, outerHtml.length)))) {
-            if (!htmlEl.classList.contains('stream-animated')) {
-              htmlEl.style.opacity = '0';
-              htmlEl.style.transform = 'translateY(16px)';
-              
-              setTimeout(() => {
-                htmlEl.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
-                htmlEl.style.opacity = '1';
-                htmlEl.style.transform = 'translateY(0)';
-                htmlEl.classList.add('stream-animated');
-              }, (index - prevChildCount + 1) * 100);
-            }
-          }
-        });
+          setTimeout(() => {
+            htmlEl.classList.add('stream-visible');
+            
+            setTimeout(() => {
+              htmlEl.classList.remove('stream-fade-in');
+              htmlEl.classList.remove('stream-visible');
+            }, 700);
+          }, animationIndex * 100);
+          
+          animationIndex++;
+        }
+        
+        blockLengthsRef.current.set(streamId, currentLength);
       });
       
       sanitizeStyles(contentRef.current);
