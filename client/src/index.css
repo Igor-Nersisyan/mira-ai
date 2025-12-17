@@ -221,6 +221,20 @@
   color: hsl(var(--foreground));
 }
 
+/* Headings need proper line-height to prevent text clipping */
+.dynamic-html-content h1 {
+  line-height: 1.2;
+}
+.dynamic-html-content h2 {
+  line-height: 1.25;
+}
+.dynamic-html-content h3,
+.dynamic-html-content h4,
+.dynamic-html-content h5,
+.dynamic-html-content h6 {
+  line-height: 1.3;
+}
+
 /* Emojis should render in their original colors, not inherit text color */
 .dynamic-html-content h1,
 .dynamic-html-content h2,
