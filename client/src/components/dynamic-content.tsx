@@ -1,7 +1,41 @@
-import { type ReactNode, useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { Loader2, X } from "lucide-react";
 import morphdom from "morphdom";
+
+function extractCompleteBlocks(html: string): string {
+  if (!html || html.trim().length === 0) return "";
+  
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(`<div>${html}</div>`, "text/html");
+  const container = doc.body.firstChild as HTMLElement;
+  
+  if (!container) return "";
+  
+  const completeBlocks: string[] = [];
+  
+  for (const child of Array.from(container.childNodes)) {
+    if (child.nodeType === Node.ELEMENT_NODE) {
+      const element = child as HTMLElement;
+      const outerHTML = element.outerHTML;
+      
+      const openTags = (outerHTML.match(/<[a-zA-Z][^>]*(?<!\/)\s*>/g) || []).length;
+      const closeTags = (outerHTML.match(/<\/[a-zA-Z][^>]*>/g) || []).length;
+      const selfClosing = (outerHTML.match(/<[a-zA-Z][^>]*\/\s*>/g) || []).length;
+      
+      if (openTags <= closeTags + selfClosing) {
+        completeBlocks.push(outerHTML);
+      }
+    } else if (child.nodeType === Node.TEXT_NODE) {
+      const text = child.textContent?.trim();
+      if (text) {
+        completeBlocks.push(text);
+      }
+    }
+  }
+  
+  return completeBlocks.join("\n");
+}
 
 interface DynamicContentProps {
   html: string | null;
@@ -322,14 +356,18 @@ export function DynamicContent({
   const hasFinalHtml = html && html.trim().length > 0;
   const showDefault = !hasFinalHtml && !isStreaming && !streamingHtml;
   
+  const displayHtml = useMemo(() => {
+    if (html) return html;
+    if (streamingHtml) return extractCompleteBlocks(streamingHtml);
+    return "";
+  }, [html, streamingHtml]);
+  
   useEffect(() => {
     if (!contentRef.current) return;
     
-    const currentHtml = streamingHtml || html || "";
-    
-    if (currentHtml && currentHtml !== lastHtmlRef.current) {
+    if (displayHtml && displayHtml !== lastHtmlRef.current) {
       const wrapper = document.createElement('div');
-      wrapper.innerHTML = currentHtml;
+      wrapper.innerHTML = displayHtml;
       
       morphdom(contentRef.current, wrapper, {
         childrenOnly: true,
@@ -341,7 +379,7 @@ export function DynamicContent({
         }
       });
       
-      lastHtmlRef.current = currentHtml;
+      lastHtmlRef.current = displayHtml;
       
       sanitizeStyles(contentRef.current);
       
@@ -358,7 +396,7 @@ export function DynamicContent({
         }
       });
     }
-  }, [streamingHtml, html, contentRef]);
+  }, [displayHtml, contentRef]);
   
   return (
     <>
@@ -378,10 +416,6 @@ export function DynamicContent({
             <div
               ref={contentRef}
               className="dynamic-html-content max-w-none"
-              style={{ 
-                contain: 'layout style',
-                willChange: 'contents'
-              }}
             />
           )}
         </div>
