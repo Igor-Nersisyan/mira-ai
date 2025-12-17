@@ -8,108 +8,50 @@ function extractCompleteBlocks(html: string): string {
   
   const trimmed = html.trim();
   
-  const rootMatch = trimmed.match(/^<(div|section|article|main)(\s[^>]*)?>/i);
-  if (!rootMatch) {
-    return parseBlocks(trimmed);
+  const closeTagPattern = /<\/[a-zA-Z][a-zA-Z0-9]*\s*>/g;
+  let lastCompleteEnd = 0;
+  let match;
+  
+  while ((match = closeTagPattern.exec(trimmed)) !== null) {
+    const endPos = match.index + match[0].length;
+    const substring = trimmed.slice(0, endPos);
+    
+    if (isBalanced(substring)) {
+      lastCompleteEnd = endPos;
+    }
   }
   
-  const rootTag = rootMatch[1].toLowerCase();
-  const rootOpenEnd = trimmed.indexOf('>', rootMatch[0].length - 1) + 1;
+  if (lastCompleteEnd === 0) return "";
   
-  const lastCloseIndex = trimmed.lastIndexOf(`</${rootTag}>`);
-  const hasClosedRoot = lastCloseIndex !== -1;
-  
-  let innerContent: string;
-  if (hasClosedRoot) {
-    innerContent = trimmed.slice(rootOpenEnd, lastCloseIndex);
-  } else {
-    innerContent = trimmed.slice(rootOpenEnd);
-  }
-  
-  const parsedInner = parseBlocks(innerContent);
-  
-  if (!parsedInner) return "";
-  
-  return trimmed.slice(0, rootOpenEnd) + parsedInner + (hasClosedRoot ? `</${rootTag}>` : '');
+  return trimmed.slice(0, lastCompleteEnd);
 }
 
-function parseBlocks(html: string): string {
-  if (!html || html.trim().length === 0) return "";
+function isBalanced(html: string): boolean {
+  const tagStack: string[] = [];
+  const selfClosing = new Set(['img', 'br', 'hr', 'input', 'meta', 'link', 'area', 'base', 'col', 'embed', 'param', 'source', 'track', 'wbr']);
   
-  const trimmed = html.trim();
-  const completeBlocks: string[] = [];
-  let pos = 0;
+  const tagPattern = /<\/?([a-zA-Z][a-zA-Z0-9]*)[^>]*\/?>/g;
+  let match;
   
-  const selfClosingTags = ['img', 'br', 'hr', 'input', 'meta', 'link', 'area', 'base', 'col', 'embed', 'param', 'source', 'track', 'wbr'];
-  
-  while (pos < trimmed.length) {
-    while (pos < trimmed.length && /\s/.test(trimmed[pos])) {
-      pos++;
+  while ((match = tagPattern.exec(html)) !== null) {
+    const fullTag = match[0];
+    const tagName = match[1].toLowerCase();
+    
+    if (selfClosing.has(tagName) || fullTag.endsWith('/>')) {
+      continue;
     }
     
-    if (pos >= trimmed.length) break;
-    
-    if (trimmed[pos] !== '<') {
-      const nextTagStart = trimmed.indexOf('<', pos);
-      if (nextTagStart === -1) {
-        completeBlocks.push(trimmed.slice(pos));
-        break;
+    if (fullTag.startsWith('</')) {
+      if (tagStack.length === 0 || tagStack[tagStack.length - 1] !== tagName) {
+        return false;
       }
-      completeBlocks.push(trimmed.slice(pos, nextTagStart));
-      pos = nextTagStart;
-      continue;
+      tagStack.pop();
+    } else {
+      tagStack.push(tagName);
     }
-    
-    const tagNameMatch = trimmed.slice(pos).match(/^<([a-zA-Z][a-zA-Z0-9]*)/);
-    if (!tagNameMatch) {
-      pos++;
-      continue;
-    }
-    
-    const tagName = tagNameMatch[1].toLowerCase();
-    
-    if (selfClosingTags.includes(tagName)) {
-      const tagEnd = trimmed.indexOf('>', pos);
-      if (tagEnd === -1) break;
-      completeBlocks.push(trimmed.slice(pos, tagEnd + 1));
-      pos = tagEnd + 1;
-      continue;
-    }
-    
-    const closeTag = `</${tagName}>`;
-    let depth = 1;
-    let searchPos = pos + tagNameMatch[0].length;
-    
-    while (searchPos < trimmed.length && depth > 0) {
-      const openPattern = new RegExp(`<${tagName}(?:\\s[^>]*>|>)`, 'i');
-      const remaining = trimmed.slice(searchPos);
-      
-      const openMatch = remaining.match(openPattern);
-      const closeIndex = remaining.toLowerCase().indexOf(closeTag.toLowerCase());
-      
-      if (closeIndex === -1) break;
-      
-      const openIndex = openMatch ? remaining.indexOf(openMatch[0]) : -1;
-      
-      if (openIndex !== -1 && openIndex < closeIndex) {
-        depth++;
-        searchPos += openIndex + openMatch![0].length;
-      } else {
-        depth--;
-        if (depth === 0) {
-          const blockEnd = searchPos + closeIndex + closeTag.length;
-          completeBlocks.push(trimmed.slice(pos, blockEnd));
-          pos = blockEnd;
-        } else {
-          searchPos += closeIndex + closeTag.length;
-        }
-      }
-    }
-    
-    if (depth > 0) break;
   }
   
-  return completeBlocks.join("");
+  return tagStack.length === 0;
 }
 
 interface DynamicContentProps {
