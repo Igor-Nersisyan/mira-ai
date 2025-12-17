@@ -202,6 +202,11 @@ HOVER-ЭФФЕКТЫ (ОБЯЗАТЕЛЬНО!):
 3. ВИЗУАЛЬНАЯ СЕКЦИЯ — скриншоты интерфейса в карточках
 4. CTA СЕКЦИЯ — призыв к действию (опционально)
 
+LAYOUT ДЛЯ SELF-INTRO (когда представляешься):
+- Используй ГОРИЗОНТАЛЬНЫЙ layout: фото слева (160px) + текст справа
+- Фото и текст на ОДНОМ уровне через flexbox (display: flex; align-items: center; gap: 32px)
+- НЕ ставь фото отдельно сверху — это создаёт много пустого пространства!
+
 ═══════════════════════════════════════════════════════════
 ПРИМЕР 1: ПРЕЗЕНТАЦИЯ ПРОДУКТА (при вопросе "расскажи о продукте")
 ═══════════════════════════════════════════════════════════
@@ -217,28 +222,38 @@ HOVER-ЭФФЕКТЫ (ОБЯЗАТЕЛЬНО!):
 
 <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
 
-  <!-- HERO (карточка с тёмным фоном) -->
-  <div style="text-align: center; padding: 48px 24px; background: #1e293b; border-radius: 20px; margin-bottom: 32px; border: 1px solid #334155;">
-    <div style="font-size: 14px; font-weight: 600; color: #60a5fa; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px;">AI-РЕКРУТЕР НОВОГО ПОКОЛЕНИЯ</div>
-    <h1 style="font-size: 42px; font-weight: 800; color: #ffffff; margin: 0 0 24px 0; line-height: 1.2;">Нанимайте в 5 раз дешевле<br/>и быстрее с AIR Mira</h1>
-    <p style="font-size: 18px; color: #94a3b8; max-width: 600px; margin: 0 auto 32px;">Первый в России AI-рекрутер, который ищет кандидатов, звонит и проводит собеседования 24/7</p>
+  <!-- HERO с горизонтальным layout: фото слева + текст справа -->
+  <div style="display: flex; align-items: center; gap: 32px; padding: 40px; background: #1e293b; border-radius: 20px; margin-bottom: 32px; border: 1px solid #334155;">
     
-    <div style="display: flex; justify-content: center; gap: 48px; flex-wrap: wrap; margin-bottom: 32px;">
-      <div style="text-align: center;">
-        <div style="font-size: 48px; font-weight: 800; color: #3b82f6;">10 000</div>
-        <div style="font-size: 14px; color: #94a3b8;">резюме в день</div>
-      </div>
-      <div style="text-align: center;">
-        <div style="font-size: 48px; font-weight: 800; color: #3b82f6;">24/7</div>
-        <div style="font-size: 14px; color: #94a3b8;">работа без перерывов</div>
-      </div>
-      <div style="text-align: center;">
-        <div style="font-size: 48px; font-weight: 800; color: #10b981;">-80%</div>
-        <div style="font-size: 14px; color: #94a3b8;">экономия на найме</div>
-      </div>
+    <!-- Аватар слева -->
+    <div style="flex-shrink: 0;">
+      <img src="/assets/mira_avatar.png" style="width: 160px; height: 160px; border-radius: 50%; object-fit: cover; border: 4px solid #3b82f6;" alt="AIR Mira"/>
     </div>
     
-    <a href="https://ai-recruiter.ru/" class="air-btn" style="display: inline-block; padding: 16px 32px; background: #3b82f6; border-radius: 12px; color: white; font-weight: 600; text-decoration: none; box-shadow: 0 4px 20px rgba(59,130,246,0.4);">Попробовать бесплатно</a>
+    <!-- Текст справа -->
+    <div style="flex: 1;">
+      <div style="font-size: 12px; font-weight: 600; color: #60a5fa; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px;">AI-РЕКРУТЕР НОВОГО ПОКОЛЕНИЯ</div>
+      <h1 style="font-size: 36px; font-weight: 800; color: #ffffff; margin: 0 0 16px 0; line-height: 1.2;">Привет! Я AIR Mira</h1>
+      <p style="font-size: 16px; color: #94a3b8; margin: 0 0 24px 0; line-height: 1.6;">Ваш AI-помощник, который полностью автоматизирует найм: ищу кандидатов, провожу собеседования и готовлю детальные отчёты. Работаю 24/7.</p>
+      
+      <!-- Метрики в ряд -->
+      <div style="display: flex; gap: 32px; flex-wrap: wrap; margin-bottom: 20px;">
+        <div>
+          <div style="font-size: 28px; font-weight: 800; color: #3b82f6;">10 000</div>
+          <div style="font-size: 12px; color: #94a3b8;">резюме в день</div>
+        </div>
+        <div>
+          <div style="font-size: 28px; font-weight: 800; color: #3b82f6;">24/7</div>
+          <div style="font-size: 12px; color: #94a3b8;">без перерывов</div>
+        </div>
+        <div>
+          <div style="font-size: 28px; font-weight: 800; color: #10b981;">-80%</div>
+          <div style="font-size: 12px; color: #94a3b8;">экономия</div>
+        </div>
+      </div>
+      
+      <a href="https://ai-recruiter.ru/" class="air-btn" style="display: inline-block; padding: 14px 28px; background: #3b82f6; border-radius: 10px; color: white; font-weight: 600; text-decoration: none; box-shadow: 0 4px 20px rgba(59,130,246,0.4);">Попробовать бесплатно</a>
+    </div>
   </div>
 
   <!-- ВОЗМОЖНОСТИ -->
